@@ -30,7 +30,7 @@ const LoginClient: FC = () => {
 
   return (
     <Box className='user h-screen flex flex-col items-center justify-center'>
-      <Card sx={{ minWidth: 450 }}>
+      <Card sx={{ minWidth: 350 }}>
         <CardContent>
           <Box className='bg-[purple] rounded-full w-10 h-10 flex items-center justify-center mx-auto'>
             <LogIn size={30} color='#fff' />
