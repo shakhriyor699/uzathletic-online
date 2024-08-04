@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { FC, useEffect } from 'react'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,65 +7,112 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { IEvent } from '@/types/eventTypes';
+import { TablePagination } from '@mui/material';
+import { getAllevents } from '@/app/actions/getAllevents';
 
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-  protein2?: number,
-) {
-  return { name, calories, fat, carbs, protein, protein2 };
+interface Column {
+  id: string;
+  label: string;
+  minWidth?: number;
+  align?: 'center';
+  format?: (value: number) => string;
 }
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 4.3),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0, 4.3),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 4.3),
+const columns: Column[] = [
+  { id: 'name', label: 'Название', minWidth: 170, align: 'center' },
+  { id: 'date_of_event', label: 'Дата проведения', minWidth: 170, align: 'center' },
+  {
+    id: 'Country',
+    label: 'Страна',
+    minWidth: 170,
+    align: 'center',
+  },
 ];
 
-const EventTable = () => {
+interface EventTableProps {
+  data: IEvent[]
+}
+
+const EventTable: FC<EventTableProps> = ({ data }) => {
+  const [events, setEvents] = React.useState<IEvent[]>(data)
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  useEffect(() => {
+    loadEvents(page + 1)
+  }, [page]);
+
+
+  const loadEvents = async (page: number) => {
+    const res = await getAllevents(page)
+    setEvents(res.data)
+  }
+
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+
   return (
     <>
-      <TableContainer component={Paper} sx={{ width: 920 }}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Dessert (100g serving)</TableCell>
-              <TableCell align="right">Calories</TableCell>
-              <TableCell align="right">Fat&nbsp;(g)</TableCell>
-              <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-              <TableCell align="right">Protein&nbsp;(g)</TableCell>
-              <TableCell align="right">Protein&nbsp;(g)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell>
-                <TableCell align="right">{row.protein2}</TableCell>
+      <Paper sx={{ width: '70%' }}>
+        <TableContainer sx={{ maxHeight: 440 }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ top: 0, minWidth: column.minWidth }}
+                  >
+                    {column.label}
+                  </TableCell>
+
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {events
+                .filter(row => row.status === 1)
+                .map((row) => {
+                  return (
+                    row.status === 1 &&
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                      <TableCell align="center">
+                        {row.name.ru}
+                      </TableCell>
+                      <TableCell align="center">
+                        {`${row.date_from} - ${row.date_to} ${row.days.length} дней`}
+                      </TableCell>
+                      <TableCell align="center">
+                        {row.country?.name && JSON.parse(row.country?.name).ru}
+                      </TableCell>
+
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[15]}
+          component="div"
+          count={events.filter(row => row.status === 1).length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
     </>
   )
 }
