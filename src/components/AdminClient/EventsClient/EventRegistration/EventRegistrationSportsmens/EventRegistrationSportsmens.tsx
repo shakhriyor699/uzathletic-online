@@ -1,18 +1,22 @@
 'use client'
 import { IEventRegistrationResponse } from '@/types/eventRegistrationTypes'
+import { StartListSportsmen } from '@/types/startListType'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import { Autocomplete, Box, Button, InputLabel, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, Typography } from '@mui/material'
+import axios from 'axios'
 import { CircleX, Trash2 } from 'lucide-react'
 import React, { FC, useState } from 'react'
 import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 interface EventRegistrationSportsmens {
   eventRegistration: IEventRegistrationResponse
+  startList: StartListSportsmen[]
 }
 
-const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventRegistration }) => {
+const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventRegistration, startList }) => {
   const [value, setValue] = React.useState('1');
   const [open, setOpen] = React.useState(false)
   const [selectedAthletes, setSelectedAthletes] = useState<any[]>([]);
@@ -20,7 +24,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
     mode: 'onChange',
   })
 
-  console.log(eventRegistration);
+  console.log(startList);
 
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -35,11 +39,22 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
     setSelectedAthletes(selectedAthletes.filter(option => option !== optionToDelete));
   };
 
-  const onSubmit:SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const newData = {
+      event_registration_id: Number(eventRegistration.id),
+      sportsmen: selectedAthletes.map((item: any) => ({ id: item.id, position: Number(data.position) })),
+    }
+    const res = await axios.post('/api/startList', newData)
+    if (res.status === 200) {
+      toast.success('Спортсмен добавлен в стартлист')
+    } else {
+      toast.error('Произошла ошибка при добавлении спортсмена в стартлист')
+    }
+    setOpen(false)
+    reset()
+    setSelectedAthletes([])
     resetField('sportsmen')
-    console.log(data);
   }
-
 
 
   return (
@@ -49,7 +64,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             <Tab label="Спортсмены" value="1" />
             <Tab label="Стартлист" value="2" />
-            <Tab label="Item Three" value="3" />
+            {/* <Tab label="Item Three" value="3" /> */}
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -108,7 +123,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
                   render={({ field }) => (
                     <Autocomplete
                       {...field}
-                      options={eventRegistration.sportsmen.map((athletes) => ({ label: athletes.name }))}
+                      options={eventRegistration.sportsmen.map((athletes) => ({ id: athletes.id, label: athletes.name }))}
                       getOptionLabel={(option) => option.label}
                       onChange={(event, value) => {
                         field.onChange(value)
@@ -124,7 +139,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
                 />
                 {selectedAthletes.map((option, index) => (
                   <Box sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }} key={index}>
-                    <TextField value={option.label} disabled  />
+                    <TextField value={option.label} disabled />
                     <Box sx={{ display: 'flex', gap: 0.7, alignItems: 'center' }}>
                       <InputLabel sx={{ mb: 2 }} htmlFor="pb">Позиция в соревновании:</InputLabel>
                       <TextField
@@ -147,8 +162,39 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
               </form>
             </Box>
           }
+          <Paper sx={{ width: '100%', mt: 10 }}>
+            <TableContainer sx={{ maxHeight: 440 }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>№</TableCell>
+                    <TableCell>Спортсмен</TableCell>
+                    <TableCell>Регион</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {
+                    startList.map((startList, index) => (
+                      <TableRow
+                        key={index}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell component="th" scope="row">
+                          {startList.name} {startList.family_name}
+                        </TableCell>
+                        <TableCell>{startList.address}</TableCell>
+                      </TableRow>
+                    ))
+
+                  }
+                </TableBody>
+              </Table>
+            </TableContainer>
+
+          </Paper>
         </TabPanel>
-        <TabPanel value="3">Item Three</TabPanel>
+        {/* <TabPanel value="3">Item Three</TabPanel> */}
       </TabContext>
     </Box>
   )
