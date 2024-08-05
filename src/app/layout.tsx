@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "UzAthletics-online Platform",
   description: "created by UzAthletics",
+  icons: {
+    icon: "/assets/images/logo.png",
+  }
 };
 
 export default async function RootLayout({
