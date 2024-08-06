@@ -24,7 +24,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
     mode: 'onChange',
   })
 
-  console.log(startList);
+  console.log(eventRegistration);
 
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {

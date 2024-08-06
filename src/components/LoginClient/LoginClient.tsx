@@ -51,6 +51,7 @@ const LoginClient: FC = () => {
               autoFocus
             />
             <TextField
+              type='password'
               {...register('password')}
               variant="outlined"
               margin="normal"

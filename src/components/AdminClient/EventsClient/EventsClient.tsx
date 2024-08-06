@@ -115,7 +115,7 @@ const EventsClient: FC<EventsClientProps> = ({ data, currentUser }) => {
                           {row.country?.name && JSON.parse(row.country?.name).ru}
                         </TableCell>
                         <TableCell sx={{ display: 'flex', justifyContent: 'center', gap: 2 }} align="center">
-                          <Link href={`/admin/events/${row.id}`}><Eye color='gray' /></Link>
+                          <Link href={currentUser?.role.name === 'admin' ? `/admin/events/${row.id}` : `/user/events/${row.id}`}><Eye color='gray' /></Link>
                           {
                             currentUser?.role.name === 'admin' && <Trash color='red' />
                           }
