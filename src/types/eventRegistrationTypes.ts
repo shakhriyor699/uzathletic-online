@@ -27,7 +27,7 @@ export interface IEventRegistrationSportsmenResponse {
 
 export interface IEventRegistrationResponse {
   id: string,
-  user_id: string,
+  user_id: number,
   event_id: string,
   city_id: string,
   parent_id?: string,
@@ -40,6 +40,10 @@ export interface IEventRegistrationResponse {
   status: boolean
   sportsmen: IEventRegistrationSportsmenResponse[]
   event: IEvent
+  attempts: {
+    [key: string]: string
+  }[]
+  sport_type_id: number
   
 }
 

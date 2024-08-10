@@ -5,7 +5,7 @@ import { StartListResponse, StartListType } from "@/types/startListType"
 
 
 export const createStartList = async (startList: StartListType) => {
-  const res = await axiosWithAuth.post<StartListResponse>('/sortable/create-or-update/position', startList)
+  const res = await axiosWithAuth.post<StartListResponse>('/sortable/create', startList)
   return res
 }
 

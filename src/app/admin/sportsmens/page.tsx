@@ -6,6 +6,7 @@ import SportsmensClient from '@/components/AdminClient/SportsmensClient/Sportsme
 import CreateSportsmenModal from '@/components/Modals/CreateSportsmenModal'
 import React from 'react'
 
+export const revalidate = 3600
 
 const SportsmensPage = async () => {
   const sportsmens = await getAllSportsmens()

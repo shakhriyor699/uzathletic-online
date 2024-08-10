@@ -23,7 +23,7 @@ const LoginClient: FC = () => {
     if (role === 'admin') {
       router.replace('/admin')
     }
-    if (role === 'judge') {
+    if (role === 'judge' || role === 'operator') {
       router.replace('/user')
     }
   }

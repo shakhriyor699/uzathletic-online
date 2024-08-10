@@ -20,6 +20,15 @@ export default async function middleware(req: NextRequest, res: NextResponse) {
       }
     }
   }
+  if (token) {
+    const url = req.nextUrl.clone()
+    if (url.pathname.includes('/admin')) {
+      const decoded = jwtDecode(token) as any
+      if (decoded['user-data'].role.name === 'operator') {
+        return NextResponse.redirect(new URL('/user', req.url))
+      }
+    }
+  }
 
   if (token) {
     const url = req.nextUrl.clone()
@@ -44,7 +53,7 @@ export default async function middleware(req: NextRequest, res: NextResponse) {
     const url = req.nextUrl.clone()
     if (url.pathname.includes('/login')) {
       const decoded = jwtDecode(token) as any
-      if (decoded['user-data'].role.name === 'judge') {
+      if (decoded['user-data'].role.name === 'judge' || decoded['user-data'].role.name === 'operator') {
         return NextResponse.redirect(new URL('/user', req.url))
       }
     }

@@ -1,30 +1,10 @@
 'use client'
-import React, { FC, useEffect } from 'react'
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Button, Typography } from '@mui/material';
-import { Eye, Pen, Trash } from 'lucide-react';
-import useEventCreateModal from '@/hooks/useEventCreateModal';
-import { IEvent } from '@/types/eventTypes';
-import Link from 'next/link';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
 import { getAllevents } from '@/app/actions/getAllevents';
 import { IUserData } from '@/types/authTypes';
-import axios from 'axios';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import { IEvent } from '@/types/eventTypes';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from '@mui/material';
+import React, { FC, useEffect } from 'react'
 
-
-interface EventsClientProps {
-  data: IEvent[]
-  currentUser?: IUserData | undefined
-}
 
 interface Column {
   id: string;
@@ -45,13 +25,15 @@ const columns: Column[] = [
   },
 ];
 
+interface EventsClientProps {
+  data: IEvent[]
+  currentUser?: IUserData | undefined
+}
 
-const EventsClient: FC<EventsClientProps> = ({ data, currentUser }) => {
-  const { handleOpen } = useEventCreateModal()
+const ArchiveClient: FC<EventsClientProps> = ({ data, currentUser }) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [events, setEvents] = React.useState<IEvent[]>(data)
-  const router = useRouter()
 
   useEffect(() => {
     loadEvents(page + 1)
@@ -73,27 +55,11 @@ const EventsClient: FC<EventsClientProps> = ({ data, currentUser }) => {
     setPage(0);
   };
 
-  const handleDelete = async (id: number | undefined) => {
-    const res = await axios.delete(`/api/event/${id}`)
-    if (res.status === 200) {
-      toast.success('Соревнование удалено')
-    } else {
-      toast.error('Произошла ошибка при удалении соревнования')
-    }
-    router.refresh()
-  }
-
 
   return (
     <div className='flex flex-col items-center'>
       <div style={{ height: 400, width: '70%' }}>
         <Typography variant='h4' sx={{ mb: 3 }}>Соревнования</Typography>
-        {
-          currentUser?.role.name === 'admin' && <Button onClick={handleOpen} sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1, marginLeft: 'auto' }} variant='contained'>
-            <Pen size={15} />
-            Создать
-          </Button>
-        }
         <Paper sx={{ width: '100%' }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
@@ -114,10 +80,10 @@ const EventsClient: FC<EventsClientProps> = ({ data, currentUser }) => {
               </TableHead>
               <TableBody>
                 {events
-                  .filter(row => row.status === 1)
+                  .filter(row => row.status === 0)
                   .map((row) => {
                     return (
-                      row.status === 1 &&
+                      row.status === 0 &&
                       <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                         <TableCell align="center">
                           {row.name.ru}
@@ -129,10 +95,7 @@ const EventsClient: FC<EventsClientProps> = ({ data, currentUser }) => {
                           {row.country?.name && JSON.parse(row.country?.name).ru}
                         </TableCell>
                         <TableCell sx={{ display: 'flex', justifyContent: 'center', gap: 2 }} align="center">
-                          <Link href={currentUser?.role.name === 'admin' ? `/admin/events/${row.id}` : `/user/events/${row.id}`}><Eye color='gray' /></Link>
-                          {
-                            currentUser?.role.name === 'admin' && <Trash className='cursor-pointer' color='red' onClick={() => handleDelete(row.id)} />
-                          }
+                          {/* <Link href={currentUser?.role.name === 'admin' ? `/admin/events/${row.id}` : `/user/events/${row.id}`}><Eye color='gray' /></Link> */}
                         </TableCell>
                       </TableRow>
                     );
@@ -155,4 +118,4 @@ const EventsClient: FC<EventsClientProps> = ({ data, currentUser }) => {
   )
 }
 
-export default EventsClient
+export default ArchiveClient

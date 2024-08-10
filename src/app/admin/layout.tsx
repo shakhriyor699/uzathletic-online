@@ -9,6 +9,8 @@ interface LayoutProps {
   children: React.ReactNode
 }
 
+export const revalidate = 3600
+
 const AdminLayout: FC<LayoutProps> = async ({ children }) => {
   const currentUser = await getCurrentUser()
 

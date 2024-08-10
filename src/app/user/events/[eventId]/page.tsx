@@ -1,3 +1,5 @@
+import { getEventById, transformData } from '@/app/actions/getEventById'
+import UserEventClient from '@/components/UserClient/UserEventClient/UserEventClient'
 import React, { FC } from 'react'
 
 interface Params {
@@ -6,11 +8,14 @@ interface Params {
   }
 }
 
-const Page: FC<Params> = ({ params }) => {
-  
-  
+const Page: FC<Params> = async ({ params }) => {
+  const getEvent = await getEventById(params.eventId)
+  const days = await transformData(params.eventId)
+
   return (
-    <div>Page</div>
+    <>
+      <UserEventClient event={getEvent} days={days} />
+    </>
   )
 }
 
