@@ -48,9 +48,9 @@ export const userPageUrl = [
     icon: CalendarCheck2,
     name: 'Соревнования'
   },
-  {
-    url: '/user/sportsmens',
-    icon: Medal,
-    name: 'Спортсмены'
-  },
+  // {
+  //   url: '/user/sportsmens',
+  //   icon: Medal,
+  //   name: 'Спортсмены'
+  // },
 ]

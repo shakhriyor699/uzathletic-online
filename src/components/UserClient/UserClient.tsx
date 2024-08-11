@@ -1,5 +1,5 @@
 'use client'
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -108,8 +108,7 @@ const UserClient: FC<UserClientProps> = ({ currentUser, children }) => {
   const [open, setOpen] = React.useState(false);
   const router = useRouter()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
-  console.log(currentUser);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -217,7 +216,12 @@ const UserClient: FC<UserClientProps> = ({ currentUser, children }) => {
                       minHeight: 48,
                       justifyContent: open ? 'initial' : 'center',
                       px: 2.5,
+                      background: activeIndex === index ? '#1976d2' : 'inherit',
+                      '&:hover': {
+                        backgroundColor: activeIndex === index ? '#1976d2' : 'inherit',
+                      },
                     }}
+                    onClick={() => setActiveIndex(index)}
                   >
                     <ListItemIcon
                       sx={{
@@ -226,9 +230,13 @@ const UserClient: FC<UserClientProps> = ({ currentUser, children }) => {
                         justifyContent: 'center',
                       }}
                     >
-                      <url.icon />
+                      <url.icon color={activeIndex === index ? 'white' : 'black'} />
                     </ListItemIcon>
-                    <Link href={`${url.url}`} className={`w-full ${open ? 'block' : 'hidden'}`}>{url.name}</Link>
+                    <Link
+                      style={{
+                        color: activeIndex === index ? 'white' : 'inherit',  
+                      }}
+                      href={`${url.url}`} className={`w-full ${open ? 'block' : 'hidden'}`}>{url.name}</Link>
                   </ListItemButton>
                 </ListItem>
               </>
