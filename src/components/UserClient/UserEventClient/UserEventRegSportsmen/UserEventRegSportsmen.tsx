@@ -253,11 +253,20 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                         ) : <TableCell sx={{ display: 'flex', gap: 1 }} align='center'>
                                           {
                                             attempts.map((attempt, index) => (
-                                              <TextField inputProps={{
-                                                style: { height: '7px' }
-                                              }} key={index} placeholder={`Попытка № ${index + 1}`} />
+                                              <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
+                                                <TextField inputProps={{
+                                                  style: { height: '7px' }
+                                                }} key={index} placeholder={`Попытка № ${index + 1}`} />
+                                               {
+                                                eventRegistration.event_registration_setting.condition.status === false &&
+                                                <TextField inputProps={{
+                                                  style: { height: '7px' }
+                                                }} key={index} placeholder={`Ветер`} />
+                                               }
+                                              </Box>
                                             ))
                                           }
+
                                         </TableCell>
                                       }
                                       <TableCell>
