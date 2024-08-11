@@ -10,7 +10,7 @@ import React, { FC } from 'react'
 
 interface UserEventRegSportsmenProps {
   eventRegistration: IEventRegistrationResponse
-  startList: IStartList
+  startList: StartListSportsmen[]
   currentUser: IUserData
 }
 
@@ -27,7 +27,8 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
     setValue(newValue);
   };
 
-  console.log(eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49);
+console.log(eventRegistration);
+
 
 
 
@@ -82,78 +83,91 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant='h4'>Стартлист</Typography>
           </Box>
-          <Paper sx={{ width: '100%', mt: 10 }}>
-            <TableContainer sx={{ maxHeight: 440 }}>
-              <Table stickyHeader aria-label="sticky table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>№</TableCell>
-                    <TableCell>Имя</TableCell>
-                    <TableCell>Фамилия</TableCell>
-                    <TableCell>Регион</TableCell>
-                    <TableCell>Нагрудной номер</TableCell>
 
-                    {
-                      true && (
-                        <TableCell align='center'>Попытки {attempts.length}</TableCell>
-                      )
-                    }
-                    <TableCell>Итоговый результат</TableCell>
-                    <TableCell>Занятое место</TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                </TableHead>
-                {/* <TableBody>
-                  {
-                    startList.sportsmen_sortable.map((start, index) => (
-                      <TableRow
-                        key={index}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      >
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell component="th" scope="row">
-                          {start.name}
-                        </TableCell>
-                        <TableCell>
-                          {start.family_name}
-                        </TableCell>
-                        <TableCell>{start.address}</TableCell>
-                        <TableCell>
-                          {start.chest_number}
-                        </TableCell>
-                        {
-                          true && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49 ? (
-                            null
-                          ) : <TableCell sx={{ display: 'flex', gap: 1 }} align='center'>
-                            {
-                              attempts.map((attempt, index) => (
-                                <TextField inputProps={{
-                                  style: { height: '7px' }
-                                }} key={index} placeholder={`Попытка № ${index + 1}`} />
-                              ))
-                            }
-                          </TableCell>
-                        }
-                        <TableCell>
-                          <TextField inputProps={{
-                            style: { height: '7px' }
-                          }} placeholder='Результат' />
-                        </TableCell>
-                        <TableCell>
-                          <TextField inputProps={{
-                            style: { height: '7px' }
-                          }} placeholder='Место' />
-                        </TableCell>
-                        <TableCell>
-                          <Button variant='contained'>Сохранить</Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  }
-                </TableBody> */}
-              </Table>
-            </TableContainer>
-          </Paper>
+          {
+            startList.map((startList, index) => (
+              <Box key={index}>
+                {
+                  Object.keys(startList.sportsmen).map((key, index) => (
+                    <Box sx={{ my: 5 }} key={index}>
+                      <Typography sx={{ mb: 2 }} variant='h4'>{key}</Typography>
+                      <Paper sx={{ width: '100%' }}>
+                        <TableContainer sx={{ maxHeight: 440 }}>
+                          <Table stickyHeader aria-label="sticky table">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>№</TableCell>
+                                <TableCell>Спортсмен</TableCell>
+                                <TableCell>Регион</TableCell>
+                                <TableCell>BIB</TableCell>
+                                <TableCell>Заявленый результат</TableCell>
+                                <TableCell>Результат</TableCell>
+                                <TableCell>Место</TableCell>
+                                <TableCell></TableCell>
+                              </TableRow>
+                            </TableHead>  
+                            <TableBody>
+                              {
+                                startList.sportsmen[key].map((sportsmen: any, index: number) => (
+                                  <TableRow
+                                    key={index}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                  >
+                                    <TableCell>{index + 1}</TableCell>
+                                    <TableCell component="th" scope="row">
+                                      {sportsmen.sportsman.name} {sportsmen.sportsman.family_name}
+                                    </TableCell>
+                                    <TableCell>{sportsmen.sportsman.address}</TableCell>
+                                    <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
+                                    <TableCell>
+                                      {
+                                        sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => (
+                                          <Typography key={discipline.id} component={'span'}>
+                                            {discipline.sb}
+                                          </Typography>
+                                        ))
+                                      }
+                                    </TableCell>
+                                    {
+                                      eventRegistration.user_id === currentUser.id && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49 ? (
+                                        null
+                                      ) : <TableCell sx={{ display: 'flex', gap: 1 }} align='center'>
+                                        {
+                                          attempts.map((attempt, index) => (
+                                            <TextField inputProps={{
+                                              style: { height: '7px' }
+                                            }} key={index} placeholder={`Попытка № ${index + 1}`} />
+                                          ))
+                                        }
+                                      </TableCell>
+                                    }
+                                    <TableCell>
+                                      <TextField inputProps={{
+                                        style: { height: '7px' }
+                                      }} placeholder='Результат' />
+                                    </TableCell>
+                                    <TableCell>
+                                      <TextField inputProps={{
+                                        style: { height: '7px' }
+                                      }} placeholder='Место' />
+                                    </TableCell>
+                                    <TableCell>
+                                      <Button variant='contained'>Сохранить</Button>
+                                    </TableCell>
+                                  </TableRow>
+                                ))
+                              }
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </Paper>
+                    </Box>
+                  ))
+                }
+              </Box>
+            ))
+
+          }
         </TabPanel>
         {/* <TabPanel value="3">Item Three</TabPanel> */}
       </TabContext>

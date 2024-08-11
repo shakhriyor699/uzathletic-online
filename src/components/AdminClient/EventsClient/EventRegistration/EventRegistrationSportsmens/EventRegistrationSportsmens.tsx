@@ -321,7 +321,7 @@ return (
                                   <TableCell>
                                     {
                                       sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => (
-                                        <Typography component={'span'}>
+                                        <Typography key={discipline.id} component={'span'}>
                                           {discipline.sb}
                                         </Typography>
                                       ))

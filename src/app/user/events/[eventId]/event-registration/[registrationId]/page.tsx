@@ -17,7 +17,7 @@ const Page: FC<Params> = async ({ params }) => {
 
   return (
     <>
-      <UserEventRegSportsmen eventRegistration={eventRegistration} startList={startList} currentUser={currentUser['user-data']} />
+      <UserEventRegSportsmen eventRegistration={eventRegistration} startList={startList.sportsmen_sortables} currentUser={currentUser['user-data']} />
     </>
   )
 }
