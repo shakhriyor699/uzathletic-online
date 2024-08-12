@@ -39,7 +39,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   const { register, control, reset, formState: { errors }, handleSubmit } = useForm({
     mode: 'onChange',
   });
-  const [options, setOptions] = useState(eventRegistrationTypes.filter((option) => option.event.status === 1));
+  const [options, setOptions] = useState(eventRegistrationTypes.filter((option) => option.event.status === true));
   const [page, setPage] = useState(1);
   const router = useRouter()
 
