@@ -34,7 +34,7 @@ export interface IEvent {
     id: number
     name: string
   }
-  status?: number
+  status?: boolean
 }
 
 // interface ICountry {

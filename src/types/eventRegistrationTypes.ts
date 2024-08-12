@@ -46,7 +46,7 @@ export interface IEventRegistrationResponse {
   sport_type_id: number
   event_registration_setting: {
     condition: {
-      status: boolean
+      status: string
     },
     contidion_type: string
     event_registration_id: number

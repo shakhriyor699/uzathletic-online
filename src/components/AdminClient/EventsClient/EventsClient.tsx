@@ -114,10 +114,10 @@ const EventsClient: FC<EventsClientProps> = ({ data, currentUser }) => {
               </TableHead>
               <TableBody>
                 {events
-                  .filter(row => row.status === 1)
+                  .filter(row => row.status === true)
                   .map((row) => {
                     return (
-                      row.status === 1 &&
+                      row.status === true &&
                       <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                         <TableCell align="center">
                           {row.name.ru}
@@ -143,7 +143,7 @@ const EventsClient: FC<EventsClientProps> = ({ data, currentUser }) => {
           <TablePagination
             rowsPerPageOptions={[15]}
             component="div"
-            count={events.filter(row => row.status === 1).length}
+            count={events.filter(row => row.status === true).length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

@@ -190,7 +190,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                       <Typography sx={{ mb: 2 }} variant='h4'>{key}</Typography>
                       <form action="">
                         {
-                          eventRegistration.event_registration_setting.condition.status ? (
+                          eventRegistration.event_registration_setting.condition.status === 'true' ? (
                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                               <TextField
                                 id="outlined-basic"
@@ -258,7 +258,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                                   style: { height: '7px' }
                                                 }} key={index} placeholder={`Попытка № ${index + 1}`} />
                                                {
-                                                eventRegistration.event_registration_setting.condition.status === false &&
+                                                eventRegistration.event_registration_setting.condition.status === 'false' &&
                                                 <TextField inputProps={{
                                                   style: { height: '7px' }
                                                 }} key={index} placeholder={`Ветер`} />
