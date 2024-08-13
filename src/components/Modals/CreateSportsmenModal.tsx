@@ -34,9 +34,9 @@ interface CreateSportsmenModalProps {
 }
 
 const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventRegistrationTypes }) => {
-  const { open, handleClose } = useSportsmenModal()
-  const [selectedOptions, setSelectedOptions] = useState<any[]>([]);
-  const { register, control, reset, formState: { errors }, handleSubmit } = useForm({
+  const { open, handleClose, isEdit, sportsmanToEdit } = useSportsmenModal()
+  const [selectedOptions, setSelectedOptions] = useState<any[]>(sportsmanToEdit?.sportsmen_disciplines || []);
+  const { register, control, reset, formState: { errors }, handleSubmit, setValue } = useForm({
     mode: 'onChange',
   });
   const [options, setOptions] = useState(eventRegistrationTypes.filter((option) => option.event.status === true));
@@ -50,11 +50,37 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
 
 
 
+  // console.log(sportsmanToEdit && JSON.parse(sportsmanToEdit.gender.name).ru);
+  useEffect(() => {
+    if (isEdit && sportsmanToEdit) {
+      setValue('name', sportsmanToEdit.name);
+      setValue('surname', sportsmanToEdit.family_name);
+      setValue('address', sportsmanToEdit.address);
+      // setValue('gender', gender?.ru);
+      setValue('birth', sportsmanToEdit.birth);
+      setValue('bib', sportsmanToEdit.chest_number);
+      sportsmanToEdit.coaches.forEach((coach: any, index: number) => {
+        setValue(`input1.${index}.value`, coach.family_name);
+        setValue(`input2.${index}.value`, coach.name);
+        append({ value: '' })
+      });
+      // setValue('sportType', selectedOptions)
+
+      // Add more fields as needed
+    } else {
+      reset();
+      setSelectedOptions([]);
+    }
+  }, [isEdit, sportsmanToEdit, reset, setValue]);
+
+
+
+
   const loadOptions = async (page: number) => {
     const newOptions = await getAllEventRegistrations(page);
     setOptions((prevOptions) => [...prevOptions, ...newOptions]);
   };
-  
+
   const handleScroll = (event: any) => {
     const bottom =
       event.target.scrollHeight - event.target.scrollTop ===
@@ -112,6 +138,21 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
         }
       ))
     }
+
+
+    // const url = isEdit ? `/api/sportsmens/${sportsmanToEdit.id}` : '/api/sportsmens';
+    // const method = isEdit ? 'put' : 'post';
+    // const res = await axios({ url, method, data: newData });
+
+    // if (res.status === 200) {
+    //   handleClose();
+    //   reset();
+    //   toast.success(`Спортсмен ${isEdit ? 'обновлен' : 'добавлен'}`);
+    //   setSelectedOptions([]);
+    //   router.refresh();
+    // } else {
+    //   toast.error(`Спортсмен не ${isEdit ? 'обновлен' : 'добавлен'}`);
+    // }
     const res = await axios.post('/api/sportsmens', newData)
 
     if (res.status === 200) {
@@ -135,7 +176,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
     >
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ textAlign: 'center', mb: 5 }}>
-          Добавление спортсмена
+          {isEdit ? 'Редактирование спортсмена' : 'Добавление спортсмена'}
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ display: 'flex', gap: 3 }}>
@@ -287,7 +328,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
               </Box>
             ))}
           </Box>
-          <Button sx={{ width: '100%', mt: 4 }} type='submit' variant='contained'>Создать</Button>
+          <Button sx={{ width: '100%', mt: 4 }} type='submit' variant='contained'>{isEdit ? 'Обновить' : 'Создать'}</Button>
         </form>
       </Box>
     </Modal>

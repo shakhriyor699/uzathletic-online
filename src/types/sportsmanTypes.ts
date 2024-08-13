@@ -37,6 +37,13 @@ export interface ISportsman {
   birth: string
   coaches: ISportsmanCoach[]
   sportsmen_disciplines: ISportsmanDesciplines[]
+  address: string
+  gender: {
+    id: number
+    name: string
+    type?: string
+    parent_id?: null
+  }
 }
 
 

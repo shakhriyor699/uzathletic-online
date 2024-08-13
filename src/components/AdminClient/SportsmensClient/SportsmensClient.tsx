@@ -48,8 +48,11 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens }) => {
     } else {
       toast.error('Произошла ошибка при удалении спортсмена')
     }
-
   }
+
+  const handleEdit = (sportsman: ISportsman) => {
+    useSportsmenModal.getState().handleOpen(sportsman);
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -69,7 +72,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens }) => {
                   <TableCell>Дата рождения</TableCell>
                   <TableCell>Номер</TableCell>
                   <TableCell>Тренер</TableCell>
-                  {/* <TableCell>Рекорд</TableCell> */}
+                  <TableCell>Рекорд</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
               </TableHead>
@@ -92,14 +95,15 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens }) => {
                         ))
                       }
                     </TableCell>
-                    {/* <TableCell >
+                    <TableCell >
                       {
                         row.sportsmen_disciplines.map((discipline) => (
-                          <Typography key={discipline.name}>PB: {discipline.pb}, SB: {discipline.sb}</Typography>
+                          <Typography key={discipline.name}>SB: {discipline.sb}</Typography>
                         ))
                       }
-                    </TableCell> */}
-                    <TableCell>
+                    </TableCell>
+                    <TableCell sx={{ display: 'flex', gap: 3 }}>
+                      <Pencil className='cursor-pointer' color='green' onClick={() => handleEdit(row)} />
                       <Trash2 className='cursor-pointer' color='red' onClick={() => handleDelete(row.id)} />
                     </TableCell>
                   </TableRow>
