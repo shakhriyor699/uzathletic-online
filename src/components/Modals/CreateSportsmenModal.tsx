@@ -39,7 +39,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   const { register, control, reset, formState: { errors }, handleSubmit, setValue } = useForm({
     mode: 'onChange',
   });
-  const [options, setOptions] = useState(eventRegistrationTypes.filter((option) => option.event.status === true));
+  const [options, setOptions] = useState(eventRegistrationTypes);
   const [page, setPage] = useState(1);
   const router = useRouter()
 
@@ -65,8 +65,6 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
         append({ value: '' })
       });
       // setValue('sportType', selectedOptions)
-
-      // Add more fields as needed
     } else {
       reset();
       setSelectedOptions([]);

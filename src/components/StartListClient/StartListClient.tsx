@@ -1,20 +1,15 @@
 'use client'
 import { IEventResponse } from '@/types/eventTypes'
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { ILang } from '@/types/langTypes'
+import TabContext from '@mui/lab/TabContext'
+import TabList from '@mui/lab/TabList'
+import TabPanel from '@mui/lab/TabPanel'
+import { Box, Button, Container, Divider, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { Eye, House } from 'lucide-react'
+import Link from 'next/link'
 import React, { FC } from 'react'
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-import { Eye, Pencil, Trash2 } from 'lucide-react';
-import { ILang } from '@/types/langTypes';
-import axios from 'axios';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import useEventRegistrationCreateModal from '@/hooks/useEventRegistrationCreateModal';
 
-interface EventRegistrationProps {
+interface StartListClientProps {
   event: IEventResponse
   days: {
     date: string
@@ -36,41 +31,36 @@ interface EventRegistrationProps {
   }[] | undefined
 }
 
-const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
+const StartListClient: FC<StartListClientProps> = ({ event, days }) => {
   const [value, setValue] = React.useState(`${days?.[0].date}`);
-  const router = useRouter()
-  const { handleOpen } = useEventRegistrationCreateModal()
-  
 
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
-  const handleDelete = async (id: string) => {
-    await axios.delete(`/api/eventRegistration/${id}`)
-    toast.success('Событие удаленно')
-    router.refresh()
-  }
-
   return (
-    <>
+    <Container maxWidth="xl">
       <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box>
-            <Typography variant="h5">{event.name.ru}</Typography>
-            <Typography sx={{ mb: 1, color: 'gray' }} variant='subtitle1' component={'p'}>{event.date_from.replace('2024-', ' ')} - {event.date_to.replace('2024-', ' ')}</Typography>
-          </Box>
-          <Button
-            type="button"
-            className="btn btn-outline-primary gap-1 flex items-center"
-            variant='contained'
-            onClick={handleOpen}
-          >
-            <Pencil size={17} />
-            Создать
+
+        <Box sx={{ my: 3 }}>
+          <Button>
+            <Link href='/' className='flex items-center gap-3'>
+              <House />
+              На главную
+            </Link>
           </Button>
         </Box>
+        <Box>
+          <Typography variant='h5' sx={{ textAlign: 'center', mb: 2 }}>UzAthletic Federation</Typography>
+          <Divider />
+        </Box>
+        <Box sx={{ my: 3 }}>
+          <Typography variant="h5">{event.name.ru}</Typography>
+          <Typography sx={{ mb: 1, color: 'gray' }} variant='subtitle1' component={'p'}>{event.date_from.replace('2024-', ' ')} - {event.date_to.replace('2024-', ' ')}</Typography>
+        </Box>
+
+
         <Box>
           <Box sx={{ width: '100%', typography: 'body1' }}>
             <TabContext value={value}>
@@ -106,10 +96,10 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
                                     <TableCell>{event.start_time.split(' ')[1]}</TableCell>
                                     <TableCell>{event.name.ru}</TableCell>
                                     <TableCell sx={{ display: 'flex', gap: 2 }}>
-                                      <Link href={`/admin/events/${event.event_id}/registration/${event.id}`}>
+                                      {/* <Link href={`/admin/events/${event.event_id}/registration/${event.id}`}>
                                         <Eye className='cursor-pointer' size={17} />
-                                      </Link>
-                                      <Trash2 size={17} onClick={() => handleDelete(event.id)} color='red' className='cursor-pointer' />
+                                      </Link> */}
+                                      {/* <Trash2 size={17} onClick={() => handleDelete(event.id)} color='red' className='cursor-pointer' /> */}
                                     </TableCell>
                                   </TableRow>
                                 ))
@@ -124,10 +114,9 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
             </TabContext>
           </Box>
         </Box>
-      </Box >
-
-    </>
+      </Box>
+    </Container>
   )
 }
 
-export default EventRegistration
+export default StartListClient

@@ -8,8 +8,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { IEvent } from '@/types/eventTypes';
-import { TablePagination } from '@mui/material';
+import { Button, TablePagination } from '@mui/material';
 import { getAllevents } from '@/app/actions/getAllevents';
+import Link from 'next/link';
 
 
 interface Column {
@@ -78,6 +79,7 @@ const EventTable: FC<EventTableProps> = ({ data }) => {
                   </TableCell>
 
                 ))}
+                <TableCell align="center">Результаты</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -95,6 +97,11 @@ const EventTable: FC<EventTableProps> = ({ data }) => {
                       </TableCell>
                       <TableCell align="center">
                         {row.country?.name && JSON.parse(row.country?.name).ru}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Link href={`/startlist/${row.id}`} className='text-blue-500'>
+                            <Button variant="contained">Result</Button>
+                        </Link>
                       </TableCell>
 
                     </TableRow>
