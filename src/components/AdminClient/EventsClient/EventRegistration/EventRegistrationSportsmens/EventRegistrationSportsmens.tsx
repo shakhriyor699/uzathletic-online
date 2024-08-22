@@ -15,13 +15,15 @@ import { saveAs } from "file-saver";
 import { Document, Packer, Paragraph, Table as DocxTable, TableCell as DocxTableCell, TableRow as DocxTableRow, WidthType, TextRun } from "docx";
 import { FaFileWord } from "react-icons/fa";
 import { BsFiletypeTxt } from "react-icons/bs";
+import { IUserData } from '@/types/authTypes'
 
 interface EventRegistrationSportsmens {
   eventRegistration: IEventRegistrationResponse
   startList: StartListSportsmen[]
+  currentUser?: IUserData | undefined
 }
 
-const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventRegistration, startList }) => {
+const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventRegistration, startList, currentUser }) => {
   const [value, setValue] = React.useState('1');
   const [open, setOpen] = React.useState(false)
   const [selectedAthletes, setSelectedAthletes] = useState<any[]>([]);
@@ -158,198 +160,198 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
     });
   };
 
-const downloadTxt = () => {
-  const rows: any = startList?.map((startListItem: any) => {
-    return Object.keys(startListItem.sportsmen).map((key) => {
-      return startListItem.sportsmen[key].map((athlete: any) => (
-        `A,${athlete.sportsman.name},${athlete.sportsman.family_name},${athlete.sportsman.birth},${athlete.sportsman.gender_id === 1 ? 'M' : 'F'},${athlete.sportsman.address},${athlete.sportsman.sportsmen_disciplines?.map((discipline: any) => discipline.sb).join(", ")},M\n`
-      )
-      ).join("\n")
+  const downloadTxt = () => {
+    const rows: any = startList?.map((startListItem: any) => {
+      return Object.keys(startListItem.sportsmen).map((key) => {
+        return startListItem.sportsmen[key].map((athlete: any) => (
+          `A,${athlete.sportsman.name},${athlete.sportsman.family_name},${athlete.sportsman.birth},${athlete.sportsman.gender_id === 1 ? 'M' : 'F'},${athlete.sportsman.address},${athlete.sportsman.sportsmen_disciplines?.map((discipline: any) => discipline.sb).join(", ")},M\n`
+        )
+        ).join("\n")
+      })
     })
-  })
-  const blob = new Blob(rows, { type: "text/plain;charset=utf-8" });
-  saveAs(blob, "Athletes.txt");
-};
+    const blob = new Blob(rows, { type: "text/plain;charset=utf-8" });
+    saveAs(blob, "Athletes.txt");
+  };
 
 
-return (
-  <Box sx={{ width: '100%', typography: 'body1' }}>
-    <TabContext value={value}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <TabList onChange={handleChange} aria-label="lab API tabs example">
-          <Tab label="Спортсмены" value="1" />
-          <Tab label="Стартлист" value="2" />
-          {/* <Tab label="Item Three" value="3" /> */}
-        </TabList>
-      </Box>
-      <TabPanel value="1">
-        <Paper sx={{ width: '100%' }}>
-          <TableContainer sx={{ maxHeight: 440 }}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>№</TableCell>
-                  <TableCell>Имя</TableCell>
-                  <TableCell>Фамилия</TableCell>
-                  <TableCell>Дата рождения</TableCell>
-                  <TableCell>Нагрудной номер</TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
+  return (
+    <Box sx={{ width: '100%', typography: 'body1' }}>
+      <TabContext value={value}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <TabList onChange={handleChange} aria-label="lab API tabs example">
+            <Tab label="Спортсмены" value="1" />
+            <Tab label="Стартлист" value="2" />
+            {/* <Tab label="Item Three" value="3" /> */}
+          </TabList>
+        </Box>
+        <TabPanel value="1">
+          <Paper sx={{ width: '100%' }}>
+            <TableContainer sx={{ maxHeight: 440 }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>№</TableCell>
+                    <TableCell>Имя</TableCell>
+                    <TableCell>Фамилия</TableCell>
+                    <TableCell>Дата рождения</TableCell>
+                    <TableCell>Нагрудной номер</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {
+                    eventRegistration?.sportsmen.map((sportsmen, index) => (
+                      <TableRow
+                        key={index}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell component="th" scope="row">
+                          {sportsmen.name}
+                        </TableCell>
+                        <TableCell>{sportsmen.family_name}</TableCell>
+                        <TableCell>{sportsmen.birth}</TableCell>
+                        <TableCell>{sportsmen.chest_number}</TableCell>
+                        <TableCell>
+                          <Trash2 color='red' className='cursor-pointer' />
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  }
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </TabPanel>
+        <TabPanel value="2">
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography variant='h4'>Стартлист</Typography>
+            {currentUser?.name === 'Admin' && <Button onClick={handleVisibleForm} type='button' variant='contained'>Создать стартлист</Button>}
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            {
+              startList && <Button onClick={downloadDoc} type='button' variant='contained' sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <FaFileWord />
+                Скачать стартлист</Button>
+            }
+            {
+              currentUser?.name === 'Admin' && startList && <Button onClick={downloadTxt} type='button' variant='contained' sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <BsFiletypeTxt />
+                Скачать TXT</Button>
+            }
+          </Box>
+          {
+            open &&
+            <Box>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <InputLabel sx={{ mb: 2 }} id="demo-simple-select-label">Создание группы</InputLabel>
+                <TextField
+                  label="Название группы"
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                  fullWidth
+                />
+                {currentUser?.name === 'Admin' && <Button disabled={!groupName} variant="contained" sx={{ my: 2 }} type="button" onClick={addGroup}>
+                  Создать группу
+                </Button>}
+                {groups.map((group, index) => (
+                  <div key={index}>
+                    <h3>{group.name}</h3>
+                    <Controller
+                      name={group.name}
+                      control={control}
+                      defaultValue={[]}
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          multiple
+                          options={eventRegistration.sportsmen.map((athletes) => ({ id: athletes.id, label: athletes.name }))}
+                          getOptionLabel={(option) => option.label}
+                          renderInput={(params) => <TextField {...params} label="Спортсмены" />}
+                          onChange={(event, value) => {
+                            const sportsmenWithPositions = value.map((sportsman, i) => ({
+                              ...sportsman,
+                              id: sportsman.id,
+                              position: i + 1,
+                            }));
+                            field.onChange(sportsmenWithPositions);
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+                ))}
                 {
-                  eventRegistration?.sportsmen.map((sportsmen, index) => (
-                    <TableRow
-                      key={index}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell component="th" scope="row">
-                        {sportsmen.name}
-                      </TableCell>
-                      <TableCell>{sportsmen.family_name}</TableCell>
-                      <TableCell>{sportsmen.birth}</TableCell>
-                      <TableCell>{sportsmen.chest_number}</TableCell>
-                      <TableCell>
-                        <Trash2 color='red' className='cursor-pointer' />
-                      </TableCell>
-                    </TableRow>
+                  currentUser?.name === 'Admin' && groups.length > 0 && <Button disabled={isSubmitDisabled()} sx={{ width: '100%', mt: 4 }} type='submit' variant='contained'>Добавить</Button>
+                }
+              </form>
+            </Box>
+          }
+          {
+            startList.map((startList, index) => (
+              <Box key={index}>
+                {
+                  Object.keys(startList.sportsmen).map((key, index) => (
+                    <Box sx={{ my: 5 }} key={index}>
+                      <Typography sx={{ mb: 2 }} variant='h4'>{key}</Typography>
+                      <Paper sx={{ width: '100%' }}>
+                        <TableContainer sx={{ maxHeight: 440 }}>
+                          <Table stickyHeader aria-label="sticky table">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>№</TableCell>
+                                <TableCell>Спортсмен</TableCell>
+                                <TableCell>Регион</TableCell>
+                                <TableCell>BIB</TableCell>
+                                <TableCell>Заявленый результат</TableCell>
+                                <TableCell></TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {
+                                startList.sportsmen[key].map((sportsmen: any, index: number) => (
+                                  <TableRow
+                                    key={index}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                  >
+                                    <TableCell>{index + 1}</TableCell>
+                                    <TableCell component="th" scope="row">
+                                      {sportsmen.sportsman.name} {sportsmen.sportsman.family_name}
+                                    </TableCell>
+                                    <TableCell>{sportsmen.sportsman.address}</TableCell>
+                                    <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
+                                    <TableCell>
+                                      {
+                                        sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => (
+                                          <Typography key={discipline.id} component={'span'}>
+                                            {discipline.sb}
+                                          </Typography>
+                                        ))
+                                      }
+                                    </TableCell>
+                                    <TableCell>
+                                      {currentUser?.name === 'Admin' && <Trash2 color='red' className='cursor-pointer' />}
+                                    </TableCell>
+                                  </TableRow>
+                                ))
+                              }
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </Paper>
+                    </Box>
                   ))
                 }
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
-      </TabPanel>
-      <TabPanel value="2">
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant='h4'>Стартлист</Typography>
-          <Button onClick={handleVisibleForm} type='button' variant='contained'>Создать стартлист</Button>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          {
-            startList && <Button onClick={downloadDoc} type='button' variant='contained' sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <FaFileWord />
-              Скачать стартлист</Button>
-          }
-          {
-            startList && <Button onClick={downloadTxt} type='button' variant='contained' sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <BsFiletypeTxt />
-              Скачать TXT</Button>
-          }
-        </Box>
-        {
-          open &&
-          <Box>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <InputLabel sx={{ mb: 2 }} id="demo-simple-select-label">Создание группы</InputLabel>
-              <TextField
-                label="Название группы"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-                fullWidth
-              />
-              <Button disabled={!groupName} variant="contained" sx={{ my: 2 }} type="button" onClick={addGroup}>
-                Создать группу
-              </Button>
-              {groups.map((group, index) => (
-                <div key={index}>
-                  <h3>{group.name}</h3>
-                  <Controller
-                    name={group.name}
-                    control={control}
-                    defaultValue={[]}
-                    render={({ field }) => (
-                      <Autocomplete
-                        {...field}
-                        multiple
-                        options={eventRegistration.sportsmen.map((athletes) => ({ id: athletes.id, label: athletes.name }))}
-                        getOptionLabel={(option) => option.label}
-                        renderInput={(params) => <TextField {...params} label="Спортсмены" />}
-                        onChange={(event, value) => {
-                          const sportsmenWithPositions = value.map((sportsman, i) => ({
-                            ...sportsman,
-                            id: sportsman.id,
-                            position: i + 1,
-                          }));
-                          field.onChange(sportsmenWithPositions);
-                        }}
-                      />
-                    )}
-                  />
-                </div>
-              ))}
-              {
-                groups.length > 0 && <Button disabled={isSubmitDisabled()} sx={{ width: '100%', mt: 4 }} type='submit' variant='contained'>Добавить</Button>
-              }
-            </form>
-          </Box>
-        }
-        {
-          startList.map((startList, index) => (
-            <Box key={index}>
-              {
-                Object.keys(startList.sportsmen).map((key, index) => (
-                  <Box sx={{ my: 5 }} key={index}>
-                    <Typography sx={{ mb: 2 }} variant='h4'>{key}</Typography>
-                    <Paper sx={{ width: '100%' }}>
-                      <TableContainer sx={{ maxHeight: 440 }}>
-                        <Table stickyHeader aria-label="sticky table">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>№</TableCell>
-                              <TableCell>Спортсмен</TableCell>
-                              <TableCell>Регион</TableCell>
-                              <TableCell>BIB</TableCell>
-                              <TableCell>Заявленый результат</TableCell>
-                              <TableCell></TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {
-                              startList.sportsmen[key].map((sportsmen: any, index: number) => (
-                                <TableRow
-                                  key={index}
-                                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                  <TableCell>{index + 1}</TableCell>
-                                  <TableCell component="th" scope="row">
-                                    {sportsmen.sportsman.name} {sportsmen.sportsman.family_name}
-                                  </TableCell>
-                                  <TableCell>{sportsmen.sportsman.address}</TableCell>
-                                  <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
-                                  <TableCell>
-                                    {
-                                      sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => (
-                                        <Typography key={discipline.id} component={'span'}>
-                                          {discipline.sb}
-                                        </Typography>
-                                      ))
-                                    }
-                                  </TableCell>
-                                  <TableCell>
-                                    <Trash2 color='red' className='cursor-pointer' />
-                                  </TableCell>
-                                </TableRow>
-                              ))
-                            }
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </Paper>
-                  </Box>
-                ))
-              }
-            </Box>
-          ))
+              </Box>
+            ))
 
-        }
+          }
 
-      </TabPanel>
-      {/* <TabPanel value="3">Item Three</TabPanel> */}
-    </TabContext>
-  </Box>
-)
+        </TabPanel>
+        {/* <TabPanel value="3">Item Three</TabPanel> */}
+      </TabContext>
+    </Box>
+  )
 }
 
 export default EventRegistrationSportsmens

@@ -48,28 +48,8 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   }, [page]);
 
 
+  console.log(options);
 
-
-  // console.log(sportsmanToEdit && JSON.parse(sportsmanToEdit.gender.name).ru);
-  useEffect(() => {
-    if (isEdit && sportsmanToEdit) {
-      setValue('name', sportsmanToEdit.name);
-      setValue('surname', sportsmanToEdit.family_name);
-      setValue('address', sportsmanToEdit.address);
-      // setValue('gender', gender?.ru);
-      setValue('birth', sportsmanToEdit.birth);
-      setValue('bib', sportsmanToEdit.chest_number);
-      sportsmanToEdit.coaches.forEach((coach: any, index: number) => {
-        setValue(`input1.${index}.value`, coach.family_name);
-        setValue(`input2.${index}.value`, coach.name);
-        append({ value: '' })
-      });
-      // setValue('sportType', selectedOptions)
-    } else {
-      reset();
-      setSelectedOptions([]);
-    }
-  }, [isEdit, sportsmanToEdit, reset, setValue]);
 
 
 
@@ -282,7 +262,11 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
                     onScroll: handleScroll
                   }}
                   id='sportType'
-                  options={options.map((option) => ({ id: option.id, label: `${option.event.name.ru}, ${option.name.ru}`, gender_id: option.gender_id }))}
+                  options={options.map((option) => ({
+                    id: option.id,
+                    label: `${option.event?.name?.ru ? option.event.name.ru : ''}, ${option.name.ru}`,
+                    gender_id: option.gender_id,
+                  }))}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   getOptionLabel={(option) => option.label}
                   onChange={(event, value) => {

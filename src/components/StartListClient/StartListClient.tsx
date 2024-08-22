@@ -95,10 +95,10 @@ const StartListClient: FC<StartListClientProps> = ({ event, days }) => {
                                   >
                                     <TableCell>{event.start_time.split(' ')[1]}</TableCell>
                                     <TableCell>{event.name.ru}</TableCell>
-                                    <TableCell sx={{ display: 'flex', gap: 2 }}>
-                                      {/* <Link href={`/admin/events/${event.event_id}/registration/${event.id}`}>
+                                    <TableCell>
+                                      <Link href={`/startlist/${event.event_id}/registration/${event.id}`}>
                                         <Eye className='cursor-pointer' size={17} />
-                                      </Link> */}
+                                      </Link>
                                       {/* <Trash2 size={17} onClick={() => handleDelete(event.id)} color='red' className='cursor-pointer' /> */}
                                     </TableCell>
                                   </TableRow>
