@@ -213,7 +213,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
                         <TableCell>{sportsmen.birth}</TableCell>
                         <TableCell>{sportsmen.chest_number}</TableCell>
                         <TableCell>
-                          <Trash2 color='red' className='cursor-pointer' />
+                          {currentUser?.name === 'Admin' && <Trash2 color='red' className='cursor-pointer' />}
                         </TableCell>
                       </TableRow>
                     ))
