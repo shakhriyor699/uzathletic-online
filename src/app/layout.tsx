@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "UzAthletics-online Platform",
-  description: "created by UzAthletics",
+  description: "created by Shakhriyor +998935447401",
   icons: {
     icon: "/assets/images/logo.png",
   }
