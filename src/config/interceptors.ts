@@ -2,7 +2,7 @@ import { getAccessToken } from "@/services/authToken";
 import axios, { type CreateAxiosDefaults } from "axios";
 
 const options: CreateAxiosDefaults = {
-  baseURL: 'https://feo.wellsoft.uz/api',
+  baseURL:  process.env.API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
