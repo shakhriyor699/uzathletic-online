@@ -191,7 +191,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                       <form action="">
                         {
                           eventRegistration.event_registration_setting.condition.status === 'true' ? (
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                               <TextField
                                 id="outlined-basic"
                                 label="Ветер"
@@ -199,6 +199,9 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                 size='small'
                                 sx={{ my: 2 }}
                               />
+                              <Button>
+                                Сохранить
+                              </Button>
                             </Box>
                           )
                             : null
@@ -256,13 +259,13 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                               <Box key={index} sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
                                                 <TextField inputProps={{
                                                   style: { height: '7px' }
-                                                }}  placeholder={`Попытка № ${index + 1}`} />
-                                               {
-                                                eventRegistration.event_registration_setting.condition.status === 'false' &&
-                                                <TextField inputProps={{
-                                                  style: { height: '7px' }
-                                                }}  placeholder={`Ветер`} />
-                                               }
+                                                }} placeholder={`Попытка № ${index + 1}`} />
+                                                {
+                                                  eventRegistration.event_registration_setting.condition.status === 'false' &&
+                                                  <TextField inputProps={{
+                                                    style: { height: '7px' }
+                                                  }} placeholder={`Ветер`} />
+                                                }
                                               </Box>
                                             ))
                                           }

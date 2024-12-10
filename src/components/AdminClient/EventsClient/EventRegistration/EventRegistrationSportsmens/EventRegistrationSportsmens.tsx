@@ -181,7 +181,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             <Tab label="Спортсмены" value="1" />
             <Tab label="Стартлист" value="2" />
-            {/* <Tab label="Item Three" value="3" /> */}
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -294,51 +293,95 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
                   Object.keys(startList.sportsmen).map((key, index) => (
                     <Box sx={{ my: 5 }} key={index}>
                       <Typography sx={{ mb: 2 }} variant='h4'>{key}</Typography>
-                      <Paper sx={{ width: '100%' }}>
-                        <TableContainer sx={{ maxHeight: 440 }}>
-                          <Table stickyHeader aria-label="sticky table">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell>№</TableCell>
-                                <TableCell>Спортсмен</TableCell>
-                                <TableCell>Регион</TableCell>
-                                <TableCell>BIB</TableCell>
-                                <TableCell>Заявленый результат</TableCell>
-                                <TableCell></TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {
-                                startList.sportsmen[key].map((sportsmen: any, index: number) => (
-                                  <TableRow
-                                    key={index}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                  >
-                                    <TableCell>{index + 1}</TableCell>
-                                    <TableCell component="th" scope="row">
-                                      {sportsmen.sportsman.name} {sportsmen.sportsman.family_name}
-                                    </TableCell>
-                                    <TableCell>{sportsmen.sportsman.address}</TableCell>
-                                    <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
-                                    <TableCell>
-                                      {
-                                        sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => (
-                                          <Typography key={discipline.id} component={'span'}>
-                                            {discipline.sb}
-                                          </Typography>
-                                        ))
+                      <form>
+                        {
+                          currentUser?.name === 'Admin' && eventRegistration.event_registration_setting.condition.status === 'true' ? (
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                              <TextField
+                                id="outlined-basic"
+                                label="Ветер"
+                                variant="outlined"
+                                size='small'
+                                sx={{ my: 2 }}
+                              />
+                              <Button type='submit' variant='contained'>
+                                Сохранить
+                              </Button>
+                            </Box>
+                          )
+                            : null
+                        }
+                        <Paper sx={{ width: '100%' }}>
+                          <TableContainer sx={{ maxHeight: 440 }}>
+                            <Table stickyHeader aria-label="sticky table">
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell>№</TableCell>
+                                  <TableCell>Спортсмен</TableCell>
+                                  <TableCell>Регион</TableCell>
+                                  <TableCell>BIB</TableCell>
+                                  <TableCell>Заявленый результат</TableCell>
+                                  {currentUser?.name === 'Admin' &&
+                                    <>
+                                      <TableCell>Результат</TableCell>
+                                      <TableCell>Занятое место</TableCell>
+                                      <TableCell></TableCell>
+                                      <TableCell></TableCell>
+                                    </>
+                                  }
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {
+                                  startList.sportsmen[key].map((sportsmen: any, index: number) => (
+                                    <TableRow
+                                      key={index}
+                                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                      <TableCell>{index + 1}</TableCell>
+                                      <TableCell component="th" scope="row">
+                                        {sportsmen.sportsman.name} {sportsmen.sportsman.family_name}
+                                      </TableCell>
+                                      <TableCell>{sportsmen.sportsman.address}</TableCell>
+                                      <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
+                                      <TableCell>
+                                        {
+                                          sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => (
+                                            <Typography key={discipline.id} component={'span'}>
+                                              {discipline.sb}
+                                            </Typography>
+                                          ))
+                                        }
+                                      </TableCell>
+                                      {currentUser?.name === 'Admin' &&
+                                        <>
+                                          <TableCell>
+                                            <TextField inputProps={{
+                                              style: { height: '7px' }
+                                            }} placeholder='Результат' />
+                                          </TableCell>
+                                          <TableCell>
+                                            <TextField inputProps={{
+                                              style: { height: '7px' }
+                                            }} placeholder='Место' />
+                                          </TableCell>
+                                          <TableCell>
+                                            <Button variant='contained'>Сохранить</Button>
+                                          </TableCell>
+                                        </>
                                       }
-                                    </TableCell>
-                                    <TableCell>
-                                      {currentUser?.name === 'Admin' && <Trash2 color='red' className='cursor-pointer' />}
-                                    </TableCell>
-                                  </TableRow>
-                                ))
-                              }
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </Paper>
+                                      {currentUser?.name === 'Admin' &&
+                                        <TableCell>
+                                          <Trash2 color='red' className='cursor-pointer' />
+                                        </TableCell>}
+                                    </TableRow>
+                                  ))
+                                }
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </Paper>
+                      </form>
                     </Box>
                   ))
                 }

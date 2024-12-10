@@ -48,12 +48,6 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   }, [page]);
 
 
-  console.log(options);
-
-
-
-
-
   const loadOptions = async (page: number) => {
     const newOptions = await getAllEventRegistrations(page);
     setOptions((prevOptions) => [...prevOptions, ...newOptions]);
