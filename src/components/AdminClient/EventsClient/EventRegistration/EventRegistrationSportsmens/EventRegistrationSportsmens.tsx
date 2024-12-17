@@ -345,12 +345,15 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
                                       <TableCell>{sportsmen.sportsman.address}</TableCell>
                                       <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
                                       <TableCell>
-                                        {
+                                        {/* {
                                           sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => (
                                             <Typography key={discipline.id} component={'span'}>
                                               {discipline.sb}
                                             </Typography>
                                           ))
+                                        } */
+                                      
+                                        
                                         }
                                       </TableCell>
                                       {currentUser?.name === 'Admin' &&

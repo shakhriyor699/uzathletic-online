@@ -60,25 +60,27 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
 
 
 
-
+  console.log(options);
+  
 
   useEffect(() => {
-    loadOptions(page + 1);
+    loadOptions(80);
   }, [page]);
 
   const loadOptions = async (page: number) => {
     const newOptions = await getAllSportTypes(page);
-    setOptions((prevOptions) => [...prevOptions, ...newOptions]);
+    // setOptions((prevOptions) => [...prevOptions, ...newOptions]);
+    setOptions(newOptions);
   };
 
-  const handleScroll = (event: any) => {
-    const bottom =
-      event.target.scrollHeight - event.target.scrollTop ===
-      event.target.clientHeight;
-    if (bottom) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
+  // const handleScroll = (event: any) => {
+  //   const bottom =
+  //     event.target.scrollHeight - event.target.scrollTop ===
+  //     event.target.clientHeight;
+  //   if (bottom) {
+  //     setPage((prevPage) => prevPage + 1);
+  //   }
+  // };
 
   const handleDelete = (optionToDelete: any) => {
     const updatedOptions = selectedOptions.filter(option => option.id !== optionToDelete.id);
@@ -123,6 +125,8 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
       )),
       sportsmen: []
     }
+    console.log(newData);
+    
     const res = await axios.post('/api/eventRegistration', newData)
     router.refresh()
     if (res.status === 200) {
@@ -173,9 +177,9 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
               render={({ field }) => (
                 <Autocomplete
                   {...field}
-                  ListboxProps={{
-                    onScroll: handleScroll
-                  }}
+                  // ListboxProps={{
+                  //   onScroll: handleScroll
+                  // }}
                   id='sportType'
                   options={options.map((option) => ({ id: option.id, label: option.sport_type_name.ru, gender_id: option.gender_id }))}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
