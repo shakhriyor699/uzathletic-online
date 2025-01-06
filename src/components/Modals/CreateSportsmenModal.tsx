@@ -1,7 +1,8 @@
 'use client'
 import { getAllEventRegistrations } from '@/app/actions/getAllEventRegistration';
-import { getAllSportTypes } from '@/app/actions/getAllSportTypes';
+import { getCitiesByCountryId } from '@/app/actions/getCitiesByCountry';
 import useSportsmenModal from '@/hooks/useSportsmenModal';
+import { ICountry } from '@/types/countryTypes';
 import { IEventRegistrationResponse } from '@/types/eventRegistrationTypes';
 import { IGender } from '@/types/genderTypes';
 import { ISportType } from '@/types/sportTypeTypes';
@@ -31,21 +32,31 @@ const style = {
 interface CreateSportsmenModalProps {
   genders: IGender[]
   eventRegistrationTypes: IEventRegistrationResponse[]
+  countries: ICountry[]
 }
 
-const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventRegistrationTypes }) => {
+const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
+  genders,
+  eventRegistrationTypes,
+  countries
+}) => {
   const { open, handleClose, isEdit, sportsmanToEdit } = useSportsmenModal()
   const [selectedOptions, setSelectedOptions] = useState<any[]>(sportsmanToEdit?.sportsmen_disciplines || []);
   const { register, control, reset, formState: { errors }, handleSubmit, setValue } = useForm({
     mode: 'onChange',
   });
   const [options, setOptions] = useState(eventRegistrationTypes);
+  const [cities, setCities] = useState([]);
   const [page, setPage] = useState(1);
   const router = useRouter()
 
   useEffect(() => {
     loadOptions(page + 1);
   }, [page]);
+
+
+  console.log(cities);
+
 
 
   const loadOptions = async (page: number) => {
@@ -82,6 +93,23 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
     setSelectedOptions(selectedOptions.filter(option => option !== optionToDelete));
   };
 
+  const countriesOptions = [
+    ...countries.map((option) => ({ id: option.id, label: option.name.ru })),
+    // { id: 'add-new', label: 'Добавить, если нет подходящего?' }
+  ];
+
+  const fetchCities = async (id: string) => {
+    try {
+      const res = await getCitiesByCountryId(id)
+      setCities(res.cities.map((item: { id: string; name: { ru: string } }) => ({
+        id: item.id,
+        label: item.name.ru,
+      })))
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+    }
+  }
+
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     const newData = {
       name: data.name,
@@ -89,7 +117,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
       gender_id: data.gender.id,
       chest_number: data.bib,
       birth: data.birth,
-      address: data.address,
+      address: data.address ? data.address.label : data.country.label,
       coaches: data.input1.map((item: any, index: number) => {
         return {
           gender_id: 2,
@@ -125,6 +153,11 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
     // } else {
     //   toast.error(`Спортсмен не ${isEdit ? 'обновлен' : 'добавлен'}`);
     // }
+
+    console.log(newData);
+    
+
+
     const res = await axios.post('/api/sportsmens', newData)
 
     if (res.status === 200) {
@@ -162,8 +195,56 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
             </Box>
           </Box>
           <Box sx={{ mt: 2 }}>
-            <InputLabel sx={{ mb: 2 }} htmlFor="address">Регион</InputLabel>
-            <TextField {...register('address', { required: true })} type="text" fullWidth name="address" id="address" placeholder='Регион (например: Ташкент)' />
+            <InputLabel sx={{ mb: 2 }} htmlFor="address">Страна</InputLabel>
+            {/* <TextField {...register('address', { required: true })} type="text" fullWidth name="address" id="address" placeholder='Регион (например: Ташкент)' /> */}
+
+            <Controller
+              name="country"
+              control={control}
+              defaultValue={null}
+              render={({ field }) => (
+                <Autocomplete
+                  {...field}
+                  options={countriesOptions}
+                  getOptionLabel={(option) => option.label}
+                  onChange={(event, value) => {
+                    field.onChange(value)
+                    if (value) fetchCities(value.id)
+                  }}
+                  renderInput={(params) => <TextField {...params} label="Страна" />}
+                  renderOption={(props, option) => (
+                    <li {...props} /* onClick={option.id === 'add-new' ? handleOpenAddCountries : props.onClick} */>
+                      {option.label}
+                    </li>
+                  )}
+                />
+              )}
+            />
+           {cities.length > 0 && <Box sx={{ mt: 2 }}>
+              <InputLabel sx={{ mb: 2 }} htmlFor="address">Регион</InputLabel>
+              <Controller
+                name="address"
+                control={control}
+                defaultValue={null}
+                render={({ field }) => (
+                  <Autocomplete
+                    {...field}
+                    options={cities}
+                    getOptionLabel={(option) => option.label}
+                    onChange={(event, value) => {
+                      field.onChange(value)
+
+                    }}
+                    renderInput={(params) => <TextField {...params} label="Регион" />}
+                    renderOption={(props, option) => (
+                      <li {...props} /* onClick={option.id === 'add-new' ? handleOpenAddCountries : props.onClick} */>
+                        {option.label}
+                      </li>
+                    )}
+                  />
+                )}
+              />
+            </Box>}
           </Box>
           <Box>
             <InputLabel sx={{ mb: 2, mt: 2 }} htmlFor="gender">Выберите пол</InputLabel>

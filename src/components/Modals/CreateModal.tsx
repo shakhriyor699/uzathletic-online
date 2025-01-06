@@ -11,7 +11,7 @@ import axios from 'axios';
 import { ICountry } from '@/types/countryTypes';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import {useAddCountriesModal} from '@/hooks/useAddCountriesModal';
+import { useAddCountriesModal } from '@/hooks/useAddCountriesModal';
 
 
 const style = {
