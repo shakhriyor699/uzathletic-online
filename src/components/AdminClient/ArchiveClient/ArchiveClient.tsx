@@ -92,7 +92,7 @@ const ArchiveClient: FC<EventsClientProps> = ({ data, currentUser }) => {
                           {`${row.date_from} - ${row.date_to} ${row.days.length} дней`}
                         </TableCell>
                         <TableCell align="center">
-                          {row.country?.name && JSON.parse(row.country?.name).ru}
+                          {row.country?.name.ru}
                         </TableCell>
                         <TableCell sx={{ display: 'flex', justifyContent: 'center', gap: 2 }} align="center">
                           {/* <Link href={currentUser?.role.name === 'admin' ? `/admin/events/${row.id}` : `/user/events/${row.id}`}><Eye color='gray' /></Link> */}
