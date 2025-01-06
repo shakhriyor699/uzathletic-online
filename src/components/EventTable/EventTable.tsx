@@ -96,7 +96,7 @@ const EventTable: FC<EventTableProps> = ({ data }) => {
                         {`${row.date_from} - ${row.date_to} ${row.days.length} дней`}
                       </TableCell>
                       <TableCell align="center">
-                        {row.country?.name && JSON.parse(row.country?.name).ru}
+                        {row.country?.name.ru}
                       </TableCell>
                       <TableCell align="center">
                         <Link href={`/startlist/${row.id}`} className='text-blue-500'>

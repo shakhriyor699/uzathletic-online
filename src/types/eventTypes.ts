@@ -32,7 +32,9 @@ export interface IEvent {
   end_registration_data: string
   country?: {
     id: number
-    name: string
+    name: {
+      [key: string]: string
+    }
   }
   status?: boolean
 }
