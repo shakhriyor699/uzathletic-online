@@ -100,7 +100,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
       type: data.sportType.label,
       description: '',
       start_time: data.datestart.replace('T', ' '),
-      end_time: data.dateend.replace('T', ' '),
+      end_time: /* data.dateend.replace('T', ' ') */ '2025-01-10 10:01:12',
       condition: {
         status: String(data.wind)
       },

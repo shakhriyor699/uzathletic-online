@@ -380,11 +380,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
               return (
                 <Box sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }} key={index}>
                   <Typography sx={{ mb: 1 }} component='p'>{option.label.toUpperCase()}:</Typography>
-                  <Typography component='p' variant='subtitle1' color='red' fontWeight={900} sx={{ mb: 1 }}>
-                    Внимание! Время должно быть в формате: {isTimeFormat ? `Секунды: «00.00» (12.03)
-Минуты: «00:00.00» (12:03.01)
-Часы: «00:00:00» (12:03:01)` : '00.00'}
-                  </Typography>
+                  
                   <Box sx={{ display: 'flex', gap: 0.7, alignItems: 'center' }}>
                     <InputLabel sx={{ mb: 2 }} htmlFor="pb">PB</InputLabel>
                     <TextField

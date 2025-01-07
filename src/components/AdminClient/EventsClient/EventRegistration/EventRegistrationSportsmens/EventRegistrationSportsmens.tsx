@@ -160,7 +160,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
     });
   };
 
-  console.log(startList);
+  
   
 
   const downloadTxt = () => {
