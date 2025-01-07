@@ -57,10 +57,6 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
   })
   const params = useParams()
   const router = useRouter()
-
-
-
-  console.log(options);
   
 
   useEffect(() => {
@@ -125,7 +121,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
       )),
       sportsmen: []
     }
-    console.log(newData);
+    
     
     const res = await axios.post('/api/eventRegistration', newData)
     router.refresh()
@@ -196,14 +192,14 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
               <Input sx={{ cursor: 'pointer' }} id='wind' type="checkbox" {...register('wind')} />
             </Box>
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Box sx={{ width: '50%' }}>
+              <Box sx={{ width: '100%' }}>
                 <InputLabel sx={{ mb: 2 }} htmlFor='datestart'>Дата начала</InputLabel>
                 <TextField {...register('datestart', { required: true })} name="datestart" id="datestart" type="datetime-local" variant="outlined" sx={{ width: '100%' }} />
               </Box>
-              <Box sx={{ width: '50%' }}>
+              {/* <Box sx={{ width: '50%' }}>
                 <InputLabel sx={{ mb: 2 }} htmlFor='dateend'>Дата конца</InputLabel>
                 <TextField {...register('dateend', { required: true })} name="dateend" id="dateend" type="datetime-local" variant="outlined" sx={{ width: '100%' }} />
-              </Box>
+              </Box> */}
             </Box>
             <Box>
               <InputLabel sx={{ mb: 2 }} id="demo-simple-select-label" htmlFor='country'>Страна</InputLabel>

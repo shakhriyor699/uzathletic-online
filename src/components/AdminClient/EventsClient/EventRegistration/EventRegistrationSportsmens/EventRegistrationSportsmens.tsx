@@ -160,11 +160,14 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
     });
   };
 
+  console.log(startList);
+  
+
   const downloadTxt = () => {
     const rows: any = startList?.map((startListItem: any) => {
       return Object.keys(startListItem.sportsmen).map((key) => {
         return startListItem.sportsmen[key].map((athlete: any) => (
-          `A,${athlete.sportsman.name},${athlete.sportsman.family_name},${athlete.sportsman.birth},${athlete.sportsman.gender_id === 1 ? 'M' : 'F'},${athlete.sportsman.address},${athlete.sportsman.sportsmen_disciplines?.map((discipline: any) => discipline.sb).join(", ")},M\n`
+          `A,${athlete.sportsman.name},${athlete.sportsman.family_name},${athlete.sportsman.birth},${athlete.sportsman.gender_id === 1 ? 'M' : 'F'},${athlete.sportsman.address},${athlete.sportsman.sport_type_number},${athlete.sportsman.sportsmen_disciplines?.map((discipline: any) => discipline.sb)},M\n`
         )
         ).join("\n")
       })

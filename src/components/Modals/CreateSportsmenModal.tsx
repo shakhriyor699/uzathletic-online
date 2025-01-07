@@ -50,15 +50,16 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
   const [page, setPage] = useState(1);
   const router = useRouter()
 
-  console.log(eventRegistrationTypes);
-  
+
+
 
   useEffect(() => {
     loadOptions(page + 1);
   }, [page]);
 
 
-  console.log(cities);
+  console.log(selectedOptions);
+
 
 
 
@@ -82,6 +83,20 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
         option.id === id ? { ...option, [type]: value } : option
       )
     );
+
+  };
+
+
+
+
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', ':', '.'];
+    const isNumber = /^[0-9]$/.test(event.key);
+
+    if (!isNumber && !allowedKeys.includes(event.key)) {
+      event.preventDefault(); // Блокируем ввод неподходящих символов
+    }
   };
 
 
@@ -158,7 +173,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
     // }
 
     console.log(newData);
-    
+
 
 
     const res = await axios.post('/api/sportsmens', newData)
@@ -223,7 +238,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
                 />
               )}
             />
-           {cities.length > 0 && <Box sx={{ mt: 2 }}>
+            {cities.length > 0 && <Box sx={{ mt: 2 }}>
               <InputLabel sx={{ mb: 2 }} htmlFor="address">Регион</InputLabel>
               <Controller
                 name="address"
@@ -344,13 +359,14 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
                     id: option.id,
                     label: `${option.event?.name?.ru ? option.event.name.ru : ''}, ${option.name.ru}`,
                     gender_id: option.gender_id,
+                    sport_type_id: option.sport_type_id
                   }))}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   getOptionLabel={(option) => option.label}
                   onChange={(event, value) => {
                     field.onChange(value)
                     if (value && !selectedOptions.includes(value)) {
-                      if (value && !selectedOptions.some(selectedOption => selectedOption.id === value.id)) {
+                      if (value && !selectedOptions.some(selectedOption => selectedOption.id === value.id) && selectedOptions.length < 4) {
                         setSelectedOptions([...selectedOptions, { ...value, sb: '', pb: '' }]);
                       }
                     }
@@ -359,34 +375,45 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
                 />
               )}
             />
-            {selectedOptions.map((option, index) => (
-              <Box sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }} key={index}>
-                <Typography sx={{ mb: 1 }} component='p'>{option.label.toUpperCase()}:</Typography>
-                <Box sx={{ display: 'flex', gap: 0.7, alignItems: 'center' }}>
-                  <InputLabel sx={{ mb: 2 }} htmlFor="pb">PB</InputLabel>
-                  <TextField
-                    id='pb'
-                    label={`PB`}
-                    value={option.pb}
-                    onChange={(e) => handleInputChange(option.id, 'pb', e.target.value)}
-
-                  />
-                  <InputLabel sx={{ mb: 2 }} htmlFor="sb">SB</InputLabel>
-                  <TextField
-                    id='sb'
-                    label={`SB`}
-                    value={option.sb}
-                    onChange={(e) => handleInputChange(option.id, 'sb', e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(option)}
-                  >
-                    <CircleX />
-                  </button>
+            {selectedOptions.map((option, index) => {
+              const isTimeFormat = option.sport_type_id >= 1 && option.sport_type_id <= 49;
+              return (
+                <Box sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }} key={index}>
+                  <Typography sx={{ mb: 1 }} component='p'>{option.label.toUpperCase()}:</Typography>
+                  <Typography component='p' variant='subtitle1' color='red' fontWeight={900} sx={{ mb: 1 }}>
+                    Внимание! Время должно быть в формате: {isTimeFormat ? `Секунды: «00.00» (12.03)
+Минуты: «00:00.00» (12:03.01)
+Часы: «00:00:00» (12:03:01)` : '00.00'}
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 0.7, alignItems: 'center' }}>
+                    <InputLabel sx={{ mb: 2 }} htmlFor="pb">PB</InputLabel>
+                    <TextField
+                      id='pb'
+                      label={`PB`}
+                      value={option.pb}
+                      onChange={(e) => handleInputChange(option.id, 'pb', e.target.value)}
+                      placeholder={isTimeFormat ? '00:00:00' : '00.00'}
+                      onKeyDown={handleKeyDown}
+                    />
+                    <InputLabel sx={{ mb: 2 }} htmlFor="sb">SB</InputLabel>
+                    <TextField
+                      id='sb'
+                      label={`SB`}
+                      value={option.sb}
+                      onChange={(e) => handleInputChange(option.id, 'sb', e.target.value)}
+                      placeholder={isTimeFormat ? '00:00:00' : '00.00'}
+                      onKeyDown={handleKeyDown}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(option)}
+                    >
+                      <CircleX />
+                    </button>
+                  </Box>
                 </Box>
-              </Box>
-            ))}
+              )
+            })}
           </Box>
           <Button sx={{ width: '100%', mt: 4 }} type='submit' variant='contained'>{isEdit ? 'Обновить' : 'Создать'}</Button>
         </form>
