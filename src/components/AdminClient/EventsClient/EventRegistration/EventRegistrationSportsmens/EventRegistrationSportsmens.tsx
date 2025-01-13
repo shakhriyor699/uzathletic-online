@@ -29,12 +29,14 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
   const [selectedAthletes, setSelectedAthletes] = useState<any[]>([]);
   const { register, handleSubmit, reset, control, resetField, getValues } = useForm<FieldValues>({
     mode: 'onChange',
+    defaultValues: {
+      position: '',
+    }
   })
   const [groups, setGroups] = useState<any[]>([]);
   const [groupName, setGroupName] = useState<string>('');
   const router = useRouter()
 
-  console.log(startList);
 
 
   const addGroup = () => {
@@ -79,6 +81,9 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
     resetField('sportsmen')
     router.refresh()
   }
+
+
+
 
   const selectedSportsmen = useWatch({
     control,
@@ -160,8 +165,15 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
     });
   };
 
-  
-  
+
+
+  const onSubmitSportsmans: SubmitHandler<FieldValues> = async (data) => {
+    console.log(data);
+
+  }
+
+
+
 
   const downloadTxt = () => {
     const rows: any = startList?.map((startListItem: any) => {
@@ -306,10 +318,11 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
                                 variant="outlined"
                                 size='small'
                                 sx={{ my: 2 }}
+                                {...register(`condition`)}
                               />
-                              <Button type='submit' variant='contained'>
+                              {/* <Button type='submit' variant='contained'>
                                 Сохранить
-                              </Button>
+                              </Button> */}
                             </Box>
                           )
                             : null
@@ -342,11 +355,11 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
                                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
                                       <TableCell>{index + 1}</TableCell>
-                                      <TableCell component="th" scope="row">
-                                        {sportsmen.sportsman.name} {sportsmen.sportsman.family_name}
+                                      {/* <TableCell component="th" scope="row">
+                                        {sportsmen.sportsmen.name} {sportsmen.sportsmen.family_name}
                                       </TableCell>
-                                      <TableCell>{sportsmen.sportsman.address}</TableCell>
-                                      <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
+                                      <TableCell>{sportsmen.sportsmen.address}</TableCell>
+                                      <TableCell>{sportsmen.sportsmen.chest_number}</TableCell> */}
                                       <TableCell>
                                         {/* {
                                           sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => (
@@ -355,24 +368,44 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
                                             </Typography>
                                           ))
                                         } */
-                                      
-                                        
+
+
                                         }
                                       </TableCell>
                                       {currentUser?.name === 'Admin' &&
                                         <>
                                           <TableCell>
-                                            <TextField inputProps={{
-                                              style: { height: '7px' }
-                                            }} placeholder='Результат' />
+                                            <Controller
+                                              name={`result`}
+                                              control={control}
+                                              render={({ field }) => (
+                                                <TextField inputProps={{
+                                                  style: { height: '7px' }
+                                                }}
+                                                  placeholder='Результат'
+                                                  {...field}
+                                                  // {...register(`result`)}
+                                                />
+                                              )}
+                                            />
                                           </TableCell>
                                           <TableCell>
-                                            <TextField inputProps={{
-                                              style: { height: '7px' }
-                                            }} placeholder='Место' />
+                                            <Controller
+                                              name={`position`}
+                                              control={control}
+                                              render={({ field }) => (
+                                                <TextField inputProps={{
+                                                  style: { height: '7px' }
+                                                }}
+                                                  placeholder='Место'
+                                                  {...field}
+                                                // {...register(`position`)}
+                                                />
+                                              )}
+                                            />
                                           </TableCell>
                                           <TableCell>
-                                            <Button variant='contained'>Сохранить</Button>
+                                            <Button onClick={handleSubmit(onSubmitSportsmans)} variant='contained'>Сохранить</Button>
                                           </TableCell>
                                         </>
                                       }
