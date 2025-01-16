@@ -15,4 +15,5 @@ export interface IEventSportsmen {
   result: string
   position: string
   status?: boolean | null
+  condition: string
 }

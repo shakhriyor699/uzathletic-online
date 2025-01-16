@@ -39,7 +39,23 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
 
 
 
+
+
+
+  // const addGroup = () => {
+  //   setGroups([...groups, { name: groupName, sportsmen: [] }]);
+  //   setGroupName('');
+  // };
+
   const addGroup = () => {
+    if (!groupName.trim()) {
+      toast.error('Название группы не может быть пустым');
+      return;
+    }
+    if (groups.some(group => group.name === groupName)) {
+      toast.error('Группа с таким названием уже существует');
+      return;
+    }
     setGroups([...groups, { name: groupName, sportsmen: [] }]);
     setGroupName('');
   };
@@ -58,28 +74,73 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
   };
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    const processedData = {} as any;
-    for (const groupName in data) {
-      processedData[groupName] = data[groupName].map((sportsman: any) => ({
-        sportsman_id: sportsman.id,
-        position: sportsman.position,
-      }));
+    // const processedData = {} as any;
+
+    // for (const groupName in data) {
+    //   if (Array.isArray(data[groupName])) {
+    //     processedData[groupName] = data[groupName].map((sportsman: any) => ({
+    //       sportsman_id: sportsman.id,
+    //       position: sportsman.position,
+    //     }));
+    //   } else {
+    //     console.error(`data[${groupName}] не является массивом:`, data[groupName]);
+    //   }
+
+    //   // processedData[groupName] = data[groupName].map((sportsman: any) => ({
+    //   //   sportsman_id: sportsman.id,
+    //   //   position: sportsman.position,
+    //   // }));
+    // }
+
+
+    // const payload = {
+    //   event_registration_id: Number(eventRegistration.id),
+    //   sportsmen: processedData,
+    // };
+    // const res = await axios.post('/api/startList', payload)
+    // if (res.status === 200) {
+    //   toast.success('Спортсмен добавлен в стартлист')
+    // } else {
+    //   toast.error('Произошла ошибка при добавлении спортсмена в стартлист')
+    // }
+    // setOpen(false)
+    // reset()
+    // setGroups([])
+    // resetField('sportsmen')
+    // router.refresh()
+
+    try {
+      const processedData = {} as Record<string, any>;
+      for (const groupName in data) {
+        if (Array.isArray(data[groupName])) {
+          processedData[groupName] = data[groupName].map((sportsman: any) => ({
+            sportsman_id: sportsman.id,
+            position: sportsman.position,
+          }));
+        } else {
+          console.error(`Invalid data for group: ${groupName}`, data[groupName]);
+        }
+      }
+
+      const payload = {
+        event_registration_id: Number(eventRegistration.id),
+        sportsmen: processedData,
+      };
+
+      const res = await axios.post('/api/startList', payload);
+      if (res.status === 200) {
+        toast.success('Спортсмен добавлен в стартлист');
+        reset();
+        setGroups([]);
+        resetField('sportsmen');
+        router.refresh();
+      } else {
+        throw new Error('Failed to add sportsman');
+      }
+    } catch (error) {
+      console.error('Error submitting start list:', error);
+      toast.error('Произошла ошибка при добавлении спортсмена в стартлист');
     }
-    const payload = {
-      event_registration_id: Number(eventRegistration.id),
-      sportsmen: processedData,
-    };
-    const res = await axios.post('/api/startList', payload)
-    if (res.status === 200) {
-      toast.success('Спортсмен добавлен в стартлист')
-    } else {
-      toast.error('Произошла ошибка при добавлении спортсмена в стартлист')
-    }
-    setOpen(false)
-    reset()
-    setGroups([])
-    resetField('sportsmen')
-    router.refresh()
   }
 
 
@@ -167,10 +228,36 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
 
 
 
-  const onSubmitSportsmans: SubmitHandler<FieldValues> = async (data) => {
-    console.log(data);
+  const onSubmitSportsmans = async (data: FieldValues, id: number) => {
+    // console.log(data, id);
 
+
+    const payload = {
+      event_registration_id: Number(eventRegistration.id),
+      sportsman_id: id,
+      attempts: data.attempts ? data.attempts : '',
+      result: data.result,
+      position: data.position,
+      condition: data.condition
+    };
+
+    try {
+      const res = await axios.post('/api/eventSportsmen', payload);
+      if (res.status === 200) {
+        toast.success('Сохранено');
+        router.refresh();
+      }
+    } catch (error) {
+      console.error('Error submitting start list:', error);
+      toast.error('Произошла ошибка');
+    }
+
+    console.log('Payload для отправки:', payload);
   }
+
+  const handleSubmitWithId = (id: number) => {
+    handleSubmit((data) => onSubmitSportsmans(data, id))();
+  };
 
 
 
@@ -312,14 +399,21 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
                         {
                           currentUser?.name === 'Admin' && eventRegistration.event_registration_setting.condition.status === 'true' ? (
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                              <TextField
-                                id="outlined-basic"
-                                label="Ветер"
-                                variant="outlined"
-                                size='small'
-                                sx={{ my: 2 }}
-                                {...register(`condition`)}
+                              <Controller
+                                name={`condition`}
+                                control={control}
+                                render={({ field }) => (
+                                  <TextField
+                                    {...field}
+                                    id="outlined-basic"
+                                    label="Ветер"
+                                    variant="outlined"
+                                    size='small'
+                                    sx={{ my: 2 }}
+                                  />
+                                )}
                               />
+
                               {/* <Button type='submit' variant='contained'>
                                 Сохранить
                               </Button> */}
@@ -349,72 +443,75 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
                               </TableHead>
                               <TableBody>
                                 {
-                                  startList.sportsmen[key].map((sportsmen: any, index: number) => (
-                                    <TableRow
-                                      key={index}
-                                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
-                                      <TableCell>{index + 1}</TableCell>
-                                      {/* <TableCell component="th" scope="row">
-                                        {sportsmen.sportsmen.name} {sportsmen.sportsmen.family_name}
-                                      </TableCell>
-                                      <TableCell>{sportsmen.sportsmen.address}</TableCell>
-                                      <TableCell>{sportsmen.sportsmen.chest_number}</TableCell> */}
-                                      <TableCell>
-                                        {/* {
-                                          sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => (
-                                            <Typography key={discipline.id} component={'span'}>
-                                              {discipline.sb}
-                                            </Typography>
-                                          ))
-                                        } */
+                                  startList.sportsmen[key].map((sportsmen: any, index: number) => {
 
 
-                                        }
-                                      </TableCell>
-                                      {currentUser?.name === 'Admin' &&
-                                        <>
+                                    return (
+                                      (
+                                        <TableRow
+                                          key={index}
+                                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                          <TableCell>{index + 1}</TableCell>
+                                          <TableCell component="th" scope="row">
+                                            {sportsmen.sportsman.name} {sportsmen.sportsman.name}
+                                          </TableCell>
+                                          <TableCell>{sportsmen.sportsman.address}</TableCell>
+                                          <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
                                           <TableCell>
-                                            <Controller
-                                              name={`result`}
-                                              control={control}
-                                              render={({ field }) => (
-                                                <TextField inputProps={{
-                                                  style: { height: '7px' }
-                                                }}
-                                                  placeholder='Результат'
-                                                  {...field}
-                                                  // {...register(`result`)}
+                                            {
+                                              sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => (
+                                                <Typography key={discipline.id} component={'span'}>
+                                                  {discipline.sb}
+                                                </Typography>
+                                              ))
+                                            }
+                                          </TableCell>
+                                          {currentUser?.name === 'Admin' &&
+                                            <>
+                                              <TableCell>
+                                                <Controller
+                                                  name={`result`}
+                                                  control={control}
+                                                  render={({ field }) => (
+                                                    <TextField inputProps={{
+                                                      style: { height: '7px' }
+                                                    }}
+                                                      placeholder='Результат'
+                                                      {...field}
+                                                    // {...register(`result`)}
+                                                    />
+                                                  )}
                                                 />
-                                              )}
-                                            />
-                                          </TableCell>
-                                          <TableCell>
-                                            <Controller
-                                              name={`position`}
-                                              control={control}
-                                              render={({ field }) => (
-                                                <TextField inputProps={{
-                                                  style: { height: '7px' }
-                                                }}
-                                                  placeholder='Место'
-                                                  {...field}
-                                                // {...register(`position`)}
+                                              </TableCell>
+                                              <TableCell>
+                                                <Controller
+                                                  name={`position`}
+                                                  control={control}
+                                                  render={({ field }) => (
+                                                    <TextField inputProps={{
+                                                      style: { height: '7px' }
+                                                    }}
+                                                      placeholder='Место'
+                                                      {...field}
+                                                    // {...register(`position`)}
+                                                    />
+                                                  )}
                                                 />
-                                              )}
-                                            />
-                                          </TableCell>
-                                          <TableCell>
-                                            <Button onClick={handleSubmit(onSubmitSportsmans)} variant='contained'>Сохранить</Button>
-                                          </TableCell>
-                                        </>
-                                      }
-                                      {currentUser?.name === 'Admin' &&
-                                        <TableCell>
-                                          <Trash2 color='red' className='cursor-pointer' />
-                                        </TableCell>}
-                                    </TableRow>
-                                  ))
+                                              </TableCell>
+                                              <TableCell>
+                                                <Button onClick={() => handleSubmitWithId(sportsmen.sportsman.id)} variant='contained'>Сохранить</Button>
+                                              </TableCell>
+                                            </>
+                                          }
+                                          {currentUser?.name === 'Admin' &&
+                                            <TableCell>
+                                              <Trash2 color='red' className='cursor-pointer' />
+                                            </TableCell>}
+                                        </TableRow>
+                                      )
+                                    )
+                                  })
                                 }
                               </TableBody>
                             </Table>
