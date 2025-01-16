@@ -21,9 +21,15 @@ interface EventRegistrationSportsmens {
   eventRegistration: IEventRegistrationResponse
   startList: StartListSportsmen[]
   currentUser?: IUserData | undefined
+  eventSportsmen: any
 }
 
-const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventRegistration, startList, currentUser }) => {
+const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
+  eventRegistration,
+  startList,
+  currentUser,
+  eventSportsmen
+}) => {
   const [value, setValue] = React.useState('1');
   const [open, setOpen] = React.useState(false)
   const [selectedAthletes, setSelectedAthletes] = useState<any[]>([]);
@@ -38,6 +44,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
   const router = useRouter()
 
 
+console.log(eventSportsmen);
 
 
 
@@ -283,6 +290,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             <Tab label="Спортсмены" value="1" />
             <Tab label="Стартлист" value="2" />
+            <Tab label="Результаты" value="3" />
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -527,7 +535,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({ eventReg
           }
 
         </TabPanel>
-        {/* <TabPanel value="3">Item Three</TabPanel> */}
+        <TabPanel value="3">Item Three</TabPanel>
       </TabContext>
     </Box>
   )

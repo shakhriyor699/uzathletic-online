@@ -8,8 +8,8 @@ export const createOrUpdate = async (data: IEventSportsmen) => {
   return res
 }
 
-export const getAll = async () => {
-  const { data } = await axiosWithAuth.get('/event-sportsmen/all')
+export const getAll = async (page = 1) => {
+  const { data } = await axiosWithAuth.get(`/event-sportsmen/all?page=${page}`)
   return data
 }
 
