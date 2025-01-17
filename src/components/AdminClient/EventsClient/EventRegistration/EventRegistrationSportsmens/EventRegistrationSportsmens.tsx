@@ -46,9 +46,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
 
 
-
-
-
   // const addGroup = () => {
   //   setGroups([...groups, { name: groupName, sportsmen: [] }]);
   //   setGroupName('');
@@ -535,7 +532,29 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
           }
 
         </TabPanel>
-        <TabPanel value="3">Item Three</TabPanel>
+        <TabPanel value="3">
+          <Box>
+            <Typography variant='h4'>Результаты</Typography>
+          </Box>
+          <Paper sx={{ width: '100%' }}>
+            <TableContainer sx={{ maxHeight: 440 }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>№</TableCell>
+                    <TableCell>Спортсмен</TableCell>
+                    <TableCell>Регион</TableCell>
+                    <TableCell>BIB</TableCell>
+                    <TableCell>Заявленый результат</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                 
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </TabPanel>
       </TabContext>
     </Box>
   )
