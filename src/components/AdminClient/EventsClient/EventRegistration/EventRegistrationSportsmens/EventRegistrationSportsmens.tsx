@@ -21,7 +21,7 @@ interface EventRegistrationSportsmens {
   eventRegistration: IEventRegistrationResponse
   startList: StartListSportsmen[]
   currentUser?: IUserData | undefined
-  eventSportsmen?: any[]
+  eventSportsmen?: any
 }
 
 const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
@@ -44,6 +44,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   const router = useRouter()
 
 
+  console.log(eventSportsmen);
 
 
   // const addGroup = () => {
@@ -535,7 +536,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
           }
 
         </TabPanel>
-        {(eventSportsmen?.length ?? 0) > 0 && <TabPanel value="3">
+        {<TabPanel value="3">
           <Box>
             <Typography variant='h4' mb={5}>Результаты</Typography>
           </Box>
@@ -548,7 +549,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                     <TableCell>Спортсмен</TableCell>
                     <TableCell>Вид</TableCell>
                     <TableCell>
-                      {
+                      {/* {
                         eventSportsmen?.map(item => {
                           const filteredAttempts = item.event_registration.attempts.filter((item: any) => {
                             return Object.values(item).some((value: any) => value.trim() !== "");
@@ -557,7 +558,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                             filteredAttempts.length > 0 && 'Попытки'
                           )
                         })
-                      }
+                      } */}
                     </TableCell>
                     <TableCell>Результат</TableCell>
                     <TableCell>Занятое место</TableCell>
@@ -565,45 +566,52 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {
-                    eventSportsmen?.length && eventSportsmen.map(item => (
-                      <TableRow key={item.id}>
-                        <TableCell>{item.id}</TableCell>
-                        <TableCell>
-                          {item.sportsman && item.sportsman.name} {item.sportsman && item.sportsman.family_name}
+
+
+                  <TableRow key={eventSportsmen.id}>
+                    <TableCell>{eventSportsmen.id}</TableCell>
+                    {
+                      eventSportsmen.event_registration.sportsmen.map((item: any, index: number) => (
+                        <TableCell key={index} component="th" scope="row">
+                          {item.name} {item.family_name}
                         </TableCell>
-                        <TableCell>
-                          {item.event_registration.name.ru}
-                        </TableCell>
-                        <TableCell>
-                          {
-                            eventSportsmen?.map(item => {
-                              const filteredAttempts = item.event_registration.attempts.filter((item: any) => {
-                                return Object.values(item).some((value: any) => value.trim() !== "");
-                              });
-                              return (
-                                filteredAttempts.length > 0 && filteredAttempts.map((attempt: any, index: number) => (
-                                  <Typography key={index} component={'span'}>
-                                    {attempt}
-                                  </Typography>
-                                ))
-                              )
-                            })
-                          }
-                        </TableCell>
-                        <TableCell>
-                          {item.result}
-                        </TableCell>
-                        <TableCell>
-                          {item.position}
-                        </TableCell>
-                        {currentUser?.name === 'Admin' &&
-                          <TableCell>
-                            <Trash2 color='red' className='cursor-pointer' />
-                          </TableCell>}
-                      </TableRow>
-                    ))
-                  }
+                      ))
+                    }
+                    {/* <TableCell>
+                      {eventSportsmen.sportsmen && eventSportsmen.event_registration
+                        .sportsmen.name} {eventSportsmen.sportsmen && eventSportsmen.sportsmen.family_name}
+                    </TableCell> */}
+                    <TableCell>
+                      {eventSportsmen.event_registration.name.ru}
+                    </TableCell>
+                    <TableCell>
+                      {/* {
+                        eventSportsmen?.map(item => {
+                          const filteredAttempts = item.event_registration.attempts.filter((item: any) => {
+                            return Object.values(item).some((value: any) => value.trim() !== "");
+                          });
+                          return (
+                            filteredAttempts.length > 0 && filteredAttempts.map((attempt: any, index: number) => (
+                              <Typography key={index} component={'span'}>
+                                {attempt}
+                              </Typography>
+                            ))
+                          )
+                        })
+                      } */}
+                    </TableCell>
+                    <TableCell>
+                      {eventSportsmen.result}
+                    </TableCell>
+                    <TableCell>
+                      {eventSportsmen.position}
+                    </TableCell>
+                    {currentUser?.name === 'Admin' &&
+                      <TableCell>
+                        <Trash2 color='red' className='cursor-pointer' />
+                      </TableCell>}
+                  </TableRow>
+
                 </TableBody>
               </Table>
             </TableContainer>

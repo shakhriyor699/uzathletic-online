@@ -18,7 +18,7 @@ export const deleteEvent = async (id: number) => {
   return res
 }
 
-export const getOne = async (id: number) => {
+export const getOne = async (id: string) => {
   const { data } = await axiosWithAuth.get(`/event-sportsmen/show/${id}`)
   return data
 }
