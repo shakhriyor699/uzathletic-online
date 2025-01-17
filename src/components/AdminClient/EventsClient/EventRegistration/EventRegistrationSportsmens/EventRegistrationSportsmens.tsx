@@ -44,7 +44,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   const router = useRouter()
 
 
-console.log(eventSportsmen);
+
 
 
 
