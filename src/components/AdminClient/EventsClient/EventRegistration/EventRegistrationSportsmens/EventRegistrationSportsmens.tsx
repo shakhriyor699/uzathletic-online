@@ -21,7 +21,7 @@ interface EventRegistrationSportsmens {
   eventRegistration: IEventRegistrationResponse
   startList: StartListSportsmen[]
   currentUser?: IUserData | undefined
-  eventSportsmen: any
+  eventSportsmen?: any[]
 }
 
 const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
