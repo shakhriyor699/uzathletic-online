@@ -41,6 +41,7 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
   const router = useRouter()
   const { handleOpen } = useEventRegistrationCreateModal()
 
+  console.log(event);
 
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {

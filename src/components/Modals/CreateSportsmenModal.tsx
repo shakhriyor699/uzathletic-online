@@ -373,12 +373,14 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
                     onScroll: handleScroll
                   }}
                   id='sportType'
-                  options={options.map((option) => ({
-                    id: option.id,
-                    label: `${option.event?.name?.ru ? option.event.name.ru : ''}, ${option.name.ru}`,
-                    gender_id: option.gender_id,
-                    sport_type_id: option.sport_type_id
-                  }))}
+                  options={options
+                    .filter(option => option.event !== null)
+                    .map(option => ({
+                      id: option.id,
+                      label: `${option.event.name?.ru ? option.event.name.ru : ''}, ${option.name.ru}`,
+                      gender_id: option.gender_id,
+                      sport_type_id: option.sport_type_id,
+                    }))}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   getOptionLabel={(option) => option.label}
                   onChange={(event, value) => {
