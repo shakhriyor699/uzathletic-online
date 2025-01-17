@@ -270,7 +270,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     const rows: any = startList?.map((startListItem: any) => {
       return Object.keys(startListItem.sportsmen).map((key) => {
         return startListItem.sportsmen[key].map((athlete: any) => (
-          `A,${athlete.sportsman.name},${athlete.sportsman.family_name},${athlete.sportsman.birth},${athlete.sportsman.gender_id === 1 ? 'M' : 'F'},${athlete.sportsman.address},${athlete.sportsman.sport_type_number},${athlete.sportsman.sportsmen_disciplines?.map((discipline: any) => discipline.sb)},M\n`
+          `A,${athlete.sportsman.name},${athlete.sportsman.family_name},${athlete.sportsman.birth},${athlete.sportsman.gender_id === 1 ? 'M' : 'F'},${athlete.sportsman.address},${athlete.sport_type_number},${athlete.sportsman.sportsmen_disciplines?.map((discipline: any) => discipline.sb)},M\n`
         )
         ).join("\n")
       })
@@ -534,7 +534,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
         </TabPanel>
         <TabPanel value="3">
           <Box>
-            <Typography variant='h4'>Результаты</Typography>
+            <Typography variant='h4' mb={5}>Результаты</Typography>
           </Box>
           <Paper sx={{ width: '100%' }}>
             <TableContainer sx={{ maxHeight: 440 }}>
@@ -543,20 +543,66 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                   <TableRow>
                     <TableCell>№</TableCell>
                     <TableCell>Спортсмен</TableCell>
-                    <TableCell>Регион</TableCell>
-                    <TableCell>BIB</TableCell>
-                    <TableCell>Заявленый результат</TableCell>
+                    <TableCell>Вид</TableCell>
+                    <TableCell>
+                      {
+                        eventSportsmen?.map(item => {
+                          const filteredAttempts = item.event_registration.attempts.filter((item: any) => {
+                            return Object.values(item).some((value: any) => value.trim() !== "");
+                          });
+                          return (
+                            filteredAttempts.length > 0 && 'Попытки'
+                          )
+                        })
+                      }
+                    </TableCell>
+                    <TableCell>Результат</TableCell>
+                    <TableCell>Занятое место</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                 
+                  {
+                    eventSportsmen && eventSportsmen.map(item => (
+                      <TableRow key={item.id}>
+                        <TableCell>{item.id}</TableCell>
+                        <TableCell>
+                          {item.sportsman.name} {item.sportsman.family_name}
+                        </TableCell>
+                        <TableCell>
+                          {item.event_registration.name.ru}
+                        </TableCell>
+                        <TableCell>
+                          {
+                            eventSportsmen?.map(item => {
+                              const filteredAttempts = item.event_registration.attempts.filter((item: any) => {
+                                return Object.values(item).some((value: any) => value.trim() !== "");
+                              });
+                              return (
+                                filteredAttempts.length > 0 && filteredAttempts.map((attempt: any, index: number) => (
+                                  <Typography key={index} component={'span'}>
+                                    {attempt}
+                                  </Typography>
+                                ))
+                              )
+                            })
+                          }
+                        </TableCell>
+                        <TableCell>
+                          {item.result}
+                        </TableCell>
+                        <TableCell>
+                          {item.position}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  }
                 </TableBody>
               </Table>
             </TableContainer>
           </Paper>
         </TabPanel>
       </TabContext>
-    </Box>
+    </Box >
   )
 }
 
