@@ -4,7 +4,7 @@ import { create } from "zustand";
 
 interface IUseSportsmenModal {
   open: boolean;
-  isEdit: boolean;
+  id: number | null;
   sportsmanToEdit: ISportsman | null;
   handleOpen: (sportsman?: any) => void;
   handleClose: () => void;
@@ -13,10 +13,10 @@ interface IUseSportsmenModal {
 
 const useSportsmenModal = create<IUseSportsmenModal>((set) => ({
   open: false,
-  isEdit: false,
+  id: null,
   sportsmanToEdit: null,
-  handleOpen: (sportsman = null) => set({ open: true, isEdit: !!sportsman, sportsmanToEdit: sportsman }),
-  handleClose: () => set({ open: false, isEdit: false, sportsmanToEdit: null }),
+  handleOpen: (sportsman = null) => set({ open: true, id: sportsman?.id, sportsmanToEdit: sportsman }),
+  handleClose: () => set({ open: false, sportsmanToEdit: null }),
 }))
 
 export default useSportsmenModal

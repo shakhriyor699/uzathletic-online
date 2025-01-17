@@ -40,7 +40,7 @@ export interface ISportsman {
   address: string
   gender: {
     id: number
-    name: string
+    name: string | any
     type?: string
     parent_id?: null
   }

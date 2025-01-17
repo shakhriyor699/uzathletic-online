@@ -19,7 +19,8 @@ const Page: FC<Params> = async ({ params }) => {
   const currentUser = await getCurrentUser()
   const eventSportsmen = await getAllEventSportsmen()
 
-
+  console.log(eventSportsmen);
+  
 
   return (
     <>

@@ -280,6 +280,9 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   };
 
 
+  console.log(eventSportsmen);
+
+
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
       <TabContext value={value}>
@@ -532,7 +535,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
           }
 
         </TabPanel>
-        <TabPanel value="3">
+        {(eventSportsmen?.length ?? 0) > 0 && <TabPanel value="3">
           <Box>
             <Typography variant='h4' mb={5}>Результаты</Typography>
           </Box>
@@ -558,15 +561,16 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                     </TableCell>
                     <TableCell>Результат</TableCell>
                     <TableCell>Занятое место</TableCell>
+                    <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {
-                    eventSportsmen && eventSportsmen.map(item => (
+                    eventSportsmen?.length && eventSportsmen.map(item => (
                       <TableRow key={item.id}>
                         <TableCell>{item.id}</TableCell>
                         <TableCell>
-                          {item.sportsman.name} {item.sportsman.family_name}
+                          {item.sportsman && item.sportsman.name} {item.sportsman && item.sportsman.family_name}
                         </TableCell>
                         <TableCell>
                           {item.event_registration.name.ru}
@@ -593,6 +597,10 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                         <TableCell>
                           {item.position}
                         </TableCell>
+                        {currentUser?.name === 'Admin' &&
+                          <TableCell>
+                            <Trash2 color='red' className='cursor-pointer' />
+                          </TableCell>}
                       </TableRow>
                     ))
                   }
@@ -600,7 +608,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
               </Table>
             </TableContainer>
           </Paper>
-        </TabPanel>
+        </TabPanel>}
       </TabContext>
     </Box >
   )

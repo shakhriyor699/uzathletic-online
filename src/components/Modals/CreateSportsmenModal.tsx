@@ -40,7 +40,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
   eventRegistrationTypes,
   countries
 }) => {
-  const { open, handleClose, isEdit, sportsmanToEdit } = useSportsmenModal()
+  const { open, handleClose, id, sportsmanToEdit } = useSportsmenModal()
   const [selectedOptions, setSelectedOptions] = useState<any[]>(sportsmanToEdit?.sportsmen_disciplines || []);
   const { register, control, reset, formState: { errors }, handleSubmit, setValue } = useForm({
     mode: 'onChange',
@@ -50,6 +50,24 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
   const [page, setPage] = useState(1);
   const router = useRouter()
 
+  console.log(sportsmanToEdit);
+
+  useEffect(() => {
+    if (id) {
+      setValue('name', sportsmanToEdit?.name)
+      setValue('surname', sportsmanToEdit?.family_name)
+      // { id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` }
+      // const selectedOptions = sportsmanToEdit?.coaches.map((coach: any) => ({ id: coach.id, label: `${coach.name}/${coach.family_name}` }));
+      // setValue('input1', selectedOptions);
+      setValue('gender', { id: sportsmanToEdit?.gender.id, label: `${sportsmanToEdit?.gender.name.ru}/${sportsmanToEdit?.gender.name.uz}/${sportsmanToEdit?.gender.name.en}` })
+      setValue('birth', sportsmanToEdit?.birth)
+      setValue('bib', sportsmanToEdit?.chest_number)
+      console.log('asd');
+
+    }
+  }, [id, sportsmanToEdit]);
+
+
 
 
 
@@ -58,9 +76,12 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
   }, [page]);
 
 
-  console.log(selectedOptions);
 
 
+  const handleModalClose = () => {
+    handleClose()
+    reset()
+  }
 
 
   const loadOptions = async (page: number) => {
@@ -95,7 +116,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
     const isNumber = /^[0-9]$/.test(event.key);
 
     if (!isNumber && !allowedKeys.includes(event.key)) {
-      event.preventDefault(); // Блокируем ввод неподходящих символов
+      event.preventDefault();
     }
   };
 
@@ -172,9 +193,6 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
     //   toast.error(`Спортсмен не ${isEdit ? 'обновлен' : 'добавлен'}`);
     // }
 
-    console.log(newData);
-
-
 
     const res = await axios.post('/api/sportsmens', newData)
 
@@ -193,13 +211,13 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      onClose={handleModalClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ textAlign: 'center', mb: 5 }}>
-          {isEdit ? 'Редактирование спортсмена' : 'Добавление спортсмена'}
+          {id ? 'Редактирование спортсмена' : 'Добавление спортсмена'}
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ display: 'flex', gap: 3 }}>
@@ -212,7 +230,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
               <TextField {...register('surname', { required: true })} type="text" fullWidth name="surname" id="surname" placeholder='Фамилия' />
             </Box>
           </Box>
-          <Box sx={{ mt: 2 }}>
+          {!id && <Box sx={{ mt: 2 }}>
             <InputLabel sx={{ mb: 2 }} htmlFor="address">Страна</InputLabel>
             {/* <TextField {...register('address', { required: true })} type="text" fullWidth name="address" id="address" placeholder='Регион (например: Ташкент)' /> */}
 
@@ -251,7 +269,6 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
                     getOptionLabel={(option) => option.label}
                     onChange={(event, value) => {
                       field.onChange(value)
-
                     }}
                     renderInput={(params) => <TextField {...params} label="Регион" />}
                     renderOption={(props, option) => (
@@ -263,7 +280,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
                 )}
               />
             </Box>}
-          </Box>
+          </Box>}
           <Box>
             <InputLabel sx={{ mb: 2, mt: 2 }} htmlFor="gender">Выберите пол</InputLabel>
             <Controller
@@ -275,6 +292,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
                   {...field}
                   id='gender'
                   options={genders.map((option) => ({ id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` }))}
+                  value={genders.map((option) => ({ id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` })).find((option) => option.id === field.value?.id) || null}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   getOptionLabel={(option) => option.label}
                   onChange={(event, value) => field.onChange(value)}
@@ -380,7 +398,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
               return (
                 <Box sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }} key={index}>
                   <Typography sx={{ mb: 1 }} component='p'>{option.label.toUpperCase()}:</Typography>
-                  
+
                   <Box sx={{ display: 'flex', gap: 0.7, alignItems: 'center' }}>
                     <InputLabel sx={{ mb: 2 }} htmlFor="pb">PB</InputLabel>
                     <TextField
@@ -411,7 +429,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
               )
             })}
           </Box>
-          <Button sx={{ width: '100%', mt: 4 }} type='submit' variant='contained'>{isEdit ? 'Обновить' : 'Создать'}</Button>
+          <Button sx={{ width: '100%', mt: 4 }} type='submit' variant='contained'>{id ? 'Обновить' : 'Создать'}</Button>
         </form>
       </Box>
     </Modal>
