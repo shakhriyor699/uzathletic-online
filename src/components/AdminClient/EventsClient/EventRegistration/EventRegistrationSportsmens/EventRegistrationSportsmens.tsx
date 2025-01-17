@@ -282,7 +282,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   };
 
 
-  console.log(eventSportsmen);
+
 
 
   return (
@@ -376,7 +376,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                         <Autocomplete
                           {...field}
                           multiple
-                          options={eventRegistration.sportsmen.map((athletes) => ({ id: athletes.id, label: athletes.name }))}
+                          options={eventRegistration.sportsmen.map((athletes) => ({ id: athletes.id, label: `${athletes.name} ${athletes.family_name}` }))}
                           getOptionLabel={(option) => option.label}
                           renderInput={(params) => <TextField {...params} label="Спортсмены" />}
                           onChange={(event, value) => {
@@ -454,8 +454,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                               <TableBody>
                                 {
                                   startList.sportsmen[key].map((sportsmen: any, index: number) => {
-
-
                                     return (
                                       (
                                         <TableRow
@@ -464,7 +462,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                                         >
                                           <TableCell>{index + 1}</TableCell>
                                           <TableCell component="th" scope="row">
-                                            {sportsmen.sportsman.name} {sportsmen.sportsman.name}
+                                            {sportsmen.sportsman.name} {sportsmen.sportsman.family_name}
                                           </TableCell>
                                           <TableCell>{sportsmen.sportsman.address}</TableCell>
                                           <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
