@@ -178,6 +178,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.chest_number)] }),
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.name || "")] }),
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.family_name || "")] }),
+              new DocxTableCell({ children: [new Paragraph(athlete.sportsman.birth || "")] }),
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.address || "")] }),
               new DocxTableCell({
                 children: [new Paragraph(
@@ -197,6 +198,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                 new DocxTableCell({ children: [new Paragraph("Имя")] }),
                 new DocxTableCell({ children: [new Paragraph("Фамилия")] }),
                 new DocxTableCell({ children: [new Paragraph("Год рождения")] }),
+                new DocxTableCell({ children: [new Paragraph("Регион")] }),
                 new DocxTableCell({ children: [new Paragraph("Заявленый результат")] }),
               ],
             }),
