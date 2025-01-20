@@ -293,7 +293,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             <Tab label="Спортсмены" value="1" />
             <Tab label="Стартлист" value="2" />
-            <Tab label="Результаты" value="3" />
+            {eventSportsmen && !Array.isArray(eventSportsmen) && <Tab label="Результаты" value="3" />}
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -536,7 +536,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
           }
 
         </TabPanel>
-        {<TabPanel value="3">
+        {eventSportsmen && !Array.isArray(eventSportsmen) && <TabPanel value="3">
           <Box>
             <Typography variant='h4' mb={5}>Результаты</Typography>
           </Box>
