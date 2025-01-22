@@ -1,5 +1,5 @@
 'use client'
-import { Box, Button, Card, CardContent, Checkbox, FormControlLabel, TextField, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, Checkbox, CircularProgress, FormControlLabel, TextField, Typography } from '@mui/material'
 import axios from 'axios'
 import { LogIn } from 'lucide-react'
 import React, { FC, useEffect, useState } from 'react'
@@ -13,19 +13,28 @@ const LoginClient: FC = () => {
     mode: 'onChange',
   })
   const { setUser }: any = useUser();
+  const [loginining, setLoginining] = useState(false)
   const router = useRouter()
 
 
   const onSubmit = async (data: any) => {
-    const { data: res } = await axios.post('/api/login', data)
-    const role = res['user-data'].role.name
-    setUser(res['user-data'])
-    if (role === 'admin') {
-      router.replace('/admin')
+    setLoginining(true)
+    try {
+      const { data: res } = await axios.post('/api/login', data)
+      const role = res['user-data'].role.name
+      setUser(res['user-data'])
+      if (role === 'admin') {
+        router.replace('/admin')
+      }
+      if (role === 'judge' || role === 'operator') {
+        router.replace('/user')
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoginining(false)
     }
-    if (role === 'judge' || role === 'operator') {
-      router.replace('/user')
-    }
+
   }
 
   return (
@@ -73,7 +82,7 @@ const LoginClient: FC = () => {
               color="primary"
               className='mt-5'
             >
-              Войти
+              {loginining ? <CircularProgress color="secondary" /> : 'Войти'}
             </Button>
           </form>
         </CardContent>

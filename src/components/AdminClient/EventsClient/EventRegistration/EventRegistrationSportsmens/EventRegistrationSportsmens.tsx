@@ -238,7 +238,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   const onSubmitSportsmans = async (data: FieldValues, id: number) => {
     // console.log(data, id);
 
-
     const payload = {
       event_registration_id: Number(eventRegistration.id),
       sportsman_id: id,
@@ -259,14 +258,11 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       toast.error('Произошла ошибка');
     }
 
-    console.log('Payload для отправки:', payload);
   }
 
   const handleSubmitWithId = (id: number) => {
     handleSubmit((data) => onSubmitSportsmans(data, id))();
   };
-
-
 
 
   const downloadTxt = () => {
@@ -282,10 +278,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     saveAs(blob, "Athletes.txt");
   };
 
-
-
-
-
+  
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
       <TabContext value={value}>
