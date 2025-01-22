@@ -8,17 +8,22 @@ import axios from 'axios'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { getAllSportsmens } from '@/app/actions/getAllSportsmens'
+import { IUserData } from '@/types/authTypes'
 
 interface SportsmentsClientProps {
   sportsmens: ISportsman[]
+  currentUser?: IUserData | undefined
 }
 
-const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens }) => {
+const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser }) => {
   const { handleOpen } = useSportsmenModal()
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
   const router = useRouter()
+
+  console.log(currentUser);
+
 
   useEffect(() => {
     loadEvents(page + 1)
@@ -58,10 +63,10 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens }) => {
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Box sx={{ height: 400, width: '70%' }}>
         <Typography variant='h4' sx={{ mb: 3 }}>Спортсмены</Typography>
-        <Button onClick={handleOpen} sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1, marginLeft: 'auto' }} variant='contained'>
+        {(currentUser?.role.name === 'admin' || currentUser?.role.name === 'operator') && <Button onClick={handleOpen} sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1, marginLeft: 'auto' }} variant='contained'>
           <Pen size={15} />
           Создать
-        </Button>
+        </Button>}
         <Paper sx={{ width: '100%' }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
