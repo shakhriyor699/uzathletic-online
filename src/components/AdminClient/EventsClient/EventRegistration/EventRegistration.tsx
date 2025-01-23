@@ -41,7 +41,6 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
   const router = useRouter()
   const { handleOpen } = useEventRegistrationCreateModal()
 
-  console.log(event);
 
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -66,7 +65,7 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
             type="button"
             className="btn btn-outline-primary gap-1 flex items-center"
             variant='contained'
-            onClick={handleOpen}
+            onClick={() => handleOpen(null)}
           >
             <Pencil size={17} />
             Создать
@@ -107,11 +106,18 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
                                     <TableCell>{event.start_time.split(' ')[1]}</TableCell>
                                     <TableCell>{event.name.ru}</TableCell>
                                     <TableCell >
-                                      <Box sx={{ display: 'flex', gap: 2 }}>
-                                        <Link href={`/admin/events/${event.event_id}/registration/${event.id}`}>
-                                          <Eye className='cursor-pointer' size={17} />
-                                        </Link>
-                                        <Trash2 size={17} onClick={() => handleDelete(event.id)} color='red' className='cursor-pointer' />
+                                      <Box sx={{ display: 'flex' }}>
+                                        <Button>
+                                          <Link href={`/admin/events/${event.event_id}/registration/${event.id}`}>
+                                            <Eye className='cursor-pointer' size={17} />
+                                          </Link>
+                                        </Button>
+                                        <Button onClick={() => handleOpen(event.id)}>
+                                          <Pencil size={17} />
+                                        </Button>
+                                        <Button>
+                                          <Trash2 size={17} onClick={() => handleDelete(event.id)} color='red' className='cursor-pointer' />
+                                        </Button>
                                       </Box>
                                     </TableCell>
                                   </TableRow>

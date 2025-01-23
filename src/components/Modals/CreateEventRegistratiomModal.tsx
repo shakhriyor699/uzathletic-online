@@ -1,5 +1,6 @@
 'use client'
 import { getAllSportTypes } from '@/app/actions/getAllSportTypes';
+import { getEventRegistrationById } from '@/app/actions/getEventRegistrationById';
 import { useAddCitiesModal } from '@/hooks/useAddCountriesModal';
 import useEventProceduresModal from '@/hooks/useAddEventProceduresModal';
 import useEventRegistrationCreateModal from '@/hooks/useEventRegistrationCreateModal'
@@ -46,18 +47,45 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
   event,
   cityByCountry
 }) => {
-  const { open, handleClose } = useEventRegistrationCreateModal()
+  const { open, handleClose, id } = useEventRegistrationCreateModal()
   const { handleOpen } = useEventProceduresModal()
   const { handleOpen: handleOpenAddCity } = useAddCitiesModal()
   const [options, setOptions] = useState(sportTypes);
   const [selectedOptions, setSelectedOptions] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const { register, handleSubmit, reset, control, setValue } = useForm({
-    mode: 'onChange'
+    mode: 'onChange',
+    // defaultValues: {
+    //   sportType: '',
+    //   datestart: '',
+    //   dateend: '',
+    //   country: cityByCountry.name.ru,
+    //   city: '',
+    //   judge: '',
+    //   procedures: [],
+    //   attempts: 0,
+    //   wind: false
+    // }
   })
   const params = useParams()
   const router = useRouter()
-  
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (id) {
+        const data = await getEventRegistrationById(id)
+        console.log(data);
+        setValue('sportType', { id: data.sport_type_id, label: data.name.ru, gender_id: data.gender_id });
+        console.log({ id: data.sport_type_id, label: data.name.ru, gender_id: data.gender_id });
+
+      }
+    }
+    fetchData()
+  }, [id, setValue, reset, open, router])
+
+
 
   useEffect(() => {
     loadOptions(80);
@@ -121,8 +149,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
       )),
       sportsmen: []
     }
-    
-    
+
     const res = await axios.post('/api/eventRegistration', newData)
     router.refresh()
     if (res.status === 200) {
@@ -162,7 +189,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
     >
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ textAlign: 'center' }}>
-          Создание типа соревнования
+          {id ? 'Редактирование типа соревнования' : 'Создание типа соревнования'}
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

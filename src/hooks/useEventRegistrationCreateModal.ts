@@ -3,7 +3,8 @@ import { create } from "zustand";
 
 interface IUseEventRegistrationCreateModal {
   open: boolean
-  handleOpen: () => void
+  id: string | null
+  handleOpen: (id: string | null) => void
   handleClose: () => void
 }
 
@@ -11,7 +12,8 @@ interface IUseEventRegistrationCreateModal {
 
 const useEventRegistrationCreateModal = create<IUseEventRegistrationCreateModal>((set) => ({
   open: false,
-  handleOpen: () => set({ open: true }),
+  id: null,
+  handleOpen: (id: string | null = null) => set({ open: true, id }),
   handleClose: () => set({ open: false }),
 }))
 
