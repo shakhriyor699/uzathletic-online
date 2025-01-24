@@ -80,19 +80,17 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
         setValue('sportType', { id: data.sport_type_id, label: data.name.ru, gender_id: data.gender_id });
         setValue("datestart", data.start_time.replace(" ", "T"))
         setValue("wind", data.event_registration_setting.condition.status === 'true' ? true : false)
-        setValue("city", {  id: data.city.id, label: data.city.name.ru })
-        setValue("judge", { id: data.user.id, label: data.user.name })
+        setValue("city", { id: data.city.id, label: data.city.name.ru })
+        data.user && setValue("judge", { id: data.user.id, label: data.user.name })
         setValue("attempts", data.attempts.length)
-        console.log(data.attempts.length);
-        
-        // if (data.procedure && data.procedure.length > 0) {
-        //   const proceduresData = data.procedure.map((proc: any) => ({
-        //     id: proc.id,
-        //     label: proc.name.ru,
-        //   }))
-        //   setSelectedOptions(proceduresData)
-        //   setValue("procedures", proceduresData)
-        // }
+        if (data.event_procedures && data.event_procedures.length > 0) {
+          const proceduresData = data.event_procedures.map((proc: any) => ({
+            id: proc.id,
+            label: proc.name.ru,
+          }))
+          setSelectedOptions(proceduresData)
+          // setValue("procedures", proceduresData)
+        }
 
       } else {
         reset()
@@ -166,15 +164,20 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
       sportsmen: []
     }
 
-    const res = await axios.post('/api/eventRegistration', newData)
-    router.refresh()
-    if (res.status === 200) {
-      toast.success('Событие создано')
-    } else {
+
+    try {
+      const res = id ? await axios.put(`/api/eventRegistration/${id}`, newData) : await axios.post('/api/eventRegistration', newData)
+      if (res.status === 200) {
+        toast.success('Событие создано')
+      }
+    } catch (error) {
       toast.error('Событие не создано')
+    } finally {
+      reset()
+      handleClose()
+      router.refresh()
     }
-    reset()
-    handleClose()
+
   }
 
   const proceduresOptions = [
@@ -311,6 +314,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
                     id='procedures'
                     options={proceduresOptions}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
+                    value={field.value || null}
                     getOptionLabel={(option) => option.label}
                     onChange={(event, value) => {
                       field.onChange(value)

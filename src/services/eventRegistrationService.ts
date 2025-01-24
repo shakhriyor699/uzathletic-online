@@ -23,7 +23,7 @@ export const getOne = async (id: string) => {
   return data
 }
 
-export const update = async (data: IEventRegistration, id: number) => {
+export const update = async (data: IEventRegistration, id: number | string) => {
   const res = await axiosWithAuth.put<IEventRegistrationResponse>(`/event-registration/update/${id}`, data)
   return res
 }

@@ -38,7 +38,7 @@ const AddEventProceduresModal: FC<AddEventProceduresModalProps> = ({ eventProced
 
   const handleCloseModal = () => {
     handleClose()
-    handleOpen()
+    handleOpen(null)
   }
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {

@@ -66,7 +66,7 @@ const AddCitiesModal: FC<IAddCitiesModalProps> = ({ cityByCountry }) => {
   }
   const handleCloseModal = () => {
     handleClose()
-    handleOpen()
+    handleOpen(null)
   }
 
 
