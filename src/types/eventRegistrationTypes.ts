@@ -26,6 +26,9 @@ export interface IEventRegistrationSportsmenResponse {
 }
 
 export interface IEventRegistrationResponse {
+  [x: string]: any
+  city_name: any
+  condition: any
   id: string,
   user_id: number,
   event_id: string,

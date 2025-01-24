@@ -56,7 +56,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
   const { register, handleSubmit, reset, control, setValue } = useForm({
     mode: 'onChange',
     // defaultValues: {
-    //   sportType: '',
+    //   sportType: ,
     //   datestart: '',
     //   dateend: '',
     //   country: cityByCountry.name.ru,
@@ -78,8 +78,24 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
         const data = await getEventRegistrationById(id)
         console.log(data);
         setValue('sportType', { id: data.sport_type_id, label: data.name.ru, gender_id: data.gender_id });
-        console.log({ id: data.sport_type_id, label: data.name.ru, gender_id: data.gender_id });
+        setValue("datestart", data.start_time.replace(" ", "T"))
+        setValue("wind", data.event_registration_setting.condition.status === 'true' ? true : false)
+        setValue("city", {  id: data.city.id, label: data.city.name.ru })
+        setValue("judge", { id: data.user.id, label: data.user.name })
+        setValue("attempts", data.attempts.length)
+        console.log(data.attempts.length);
+        
+        // if (data.procedure && data.procedure.length > 0) {
+        //   const proceduresData = data.procedure.map((proc: any) => ({
+        //     id: proc.id,
+        //     label: proc.name.ru,
+        //   }))
+        //   setSelectedOptions(proceduresData)
+        //   setValue("procedures", proceduresData)
+        // }
 
+      } else {
+        reset()
       }
     }
     fetchData()
@@ -203,10 +219,15 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
                   // ListboxProps={{
                   //   onScroll: handleScroll
                   // }}
-                  id='sportType'
-                  options={options.map((option) => ({ id: option.id, label: option.sport_type_name.ru, gender_id: option.gender_id }))}
-                  isOptionEqualToValue={(option, value) => option.id === value.id}
-                  getOptionLabel={(option) => option.label}
+                  id="sportType"
+                  options={options.map((option) => ({
+                    id: option.id,
+                    label: option.sport_type_name.ru,
+                    gender_id: option.gender_id,
+                  }))}
+                  value={field.value || null}
+                  isOptionEqualToValue={(option, value) => option.id === value?.id}
+                  getOptionLabel={(option) => option.label || ""}
                   onChange={(event, value) => {
                     field.onChange(value)
                   }}
@@ -242,6 +263,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
                     {...field}
                     id='city'
                     options={cytiesOptions}
+                    value={field.value || null}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
                     getOptionLabel={(option) => option.label}
                     onChange={(event, value) => {
