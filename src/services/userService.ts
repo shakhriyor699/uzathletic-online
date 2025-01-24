@@ -7,6 +7,11 @@ export const getAllUsers = async () => {
   return data
 }
 
+export const getUser = async (id: number) => {
+  const { data } = await axiosWithAuth.get<IGetUser>(`/users/show/${id}`)
+  return data
+}
+
 export const registerUser = async (data: IRegisterUpdateUser) => {
   const res = await axiosWithAuth.post<IRegisterUpdateUser>('/users/register', data)
   return res

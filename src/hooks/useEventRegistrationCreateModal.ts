@@ -9,7 +9,6 @@ interface IUseEventRegistrationCreateModal {
 }
 
 
-
 const useEventRegistrationCreateModal = create<IUseEventRegistrationCreateModal>((set) => ({
   open: false,
   id: null,

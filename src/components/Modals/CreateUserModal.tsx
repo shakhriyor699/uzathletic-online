@@ -30,9 +30,11 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ roles }) => {
   const { register, handleSubmit, reset, control, formState: { errors }, watch } = useForm({
     mode: 'onChange',
   })
-  const { open, handleClose } = useEventCreateModal()
+  const { open, handleClose, id } = useEventCreateModal()
   const password = watch('password', '');
   const router = useRouter()
+
+
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     const { confirmPassword, ...restData } = data;
@@ -59,7 +61,7 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ roles }) => {
     >
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ textAlign: 'center', mb: 5 }}>
-          Добавление пользователя
+          {id ? 'Редактирование пользователя' : 'Добавление пользователя'}
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)} className='w-full flex flex-col gap-5'>
           <TextField {...register('name', { required: true })} id="1" label="Имя" variant="outlined" sx={{ width: '100%' }} />

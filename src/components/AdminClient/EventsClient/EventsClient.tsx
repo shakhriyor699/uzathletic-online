@@ -89,7 +89,7 @@ const EventsClient: FC<EventsClientProps> = ({ data, currentUser }) => {
       <div style={{ height: 400, width: '70%' }}>
         <Typography variant='h4' sx={{ mb: 3 }}>Соревнования</Typography>
         {
-          currentUser?.role.name === 'admin' && <Button onClick={handleOpen} sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1, marginLeft: 'auto' }} variant='contained'>
+          currentUser?.role.name === 'admin' && <Button onClick={() => handleOpen(null)} sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1, marginLeft: 'auto' }} variant='contained'>
             <Pen size={15} />
             Создать
           </Button>
