@@ -22,7 +22,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser 
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
   const router = useRouter()
 
-  console.log(data);
+  
 
 
 
@@ -32,7 +32,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser 
 
 
   const loadEvents = async (page: number) => {
-    const res = await getAllSportsmens(page)
+    const res = await getAllSportsmens(page + 1)
     setData(res)
   }
 
@@ -59,7 +59,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser 
   const handleEdit = (sportsman: ISportsman) => {
     useSportsmenModal.getState().handleOpen(sportsman);
   };
-  console.log(currentUser);
+
 
 
   return (

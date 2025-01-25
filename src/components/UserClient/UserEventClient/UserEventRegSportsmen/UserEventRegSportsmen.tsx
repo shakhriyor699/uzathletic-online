@@ -174,11 +174,11 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                 <FaFileWord />
                 Скачать стартлист</Button>
             }
-            {
+            {/* {
               startList && <Button onClick={downloadTxt} type='button' variant='contained' sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
                 <BsFiletypeTxt />
                 Скачать TXT</Button>
-            }
+            } */}
           </Box>
 
           {
