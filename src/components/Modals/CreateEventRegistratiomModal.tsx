@@ -164,6 +164,9 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
       sportsmen: []
     }
 
+    console.log(newData);
+    
+
 
     try {
       const res = id ? await axios.put(`/api/eventRegistration/${id}`, newData) : await axios.post('/api/eventRegistration', newData)

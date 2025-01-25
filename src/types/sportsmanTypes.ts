@@ -37,6 +37,7 @@ export interface ISportsman {
   birth: string
   coaches: ISportsmanCoach[]
   sportsmen_disciplines: ISportsmanDesciplines[]
+  event_registrations: any
   address: string
   gender: {
     id: number

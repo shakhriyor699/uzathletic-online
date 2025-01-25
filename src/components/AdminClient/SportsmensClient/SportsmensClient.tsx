@@ -22,7 +22,8 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser 
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
   const router = useRouter()
 
-  console.log(currentUser);
+  console.log(data);
+
 
 
   useEffect(() => {
@@ -58,6 +59,8 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser 
   const handleEdit = (sportsman: ISportsman) => {
     useSportsmenModal.getState().handleOpen(sportsman);
   };
+  console.log(currentUser);
+
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -77,6 +80,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser 
                   <TableCell>Дата рождения</TableCell>
                   <TableCell>Номер</TableCell>
                   <TableCell>Тренер</TableCell>
+                  <TableCell>Вид</TableCell>
                   <TableCell>Рекорд</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
@@ -100,6 +104,13 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser 
                         ))
                       }
                     </TableCell>
+                    <TableCell>
+                      {
+                        row.sportsmen_disciplines.map((event: any) => (
+                          <Typography component={'p'} key={event.id}>{event.name}</Typography>
+                        ))
+                      }
+                    </TableCell>
                     <TableCell >
                       {
                         row.sportsmen_disciplines.map((discipline) => (
@@ -107,9 +118,13 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser 
                         ))
                       }
                     </TableCell>
-                    <TableCell sx={{ display: 'flex', gap: 3 }}>
-                      <Pencil className='cursor-pointer' color='green' onClick={() => handleEdit(row)} />
-                      <Trash2 className='cursor-pointer' color='red' onClick={() => handleDelete(row.id)} />
+                    <TableCell>
+                      <Button onClick={() => handleEdit(row)}>
+                        <Pencil className='cursor-pointer' color='green' />
+                      </Button>
+                      <Button onClick={() => handleDelete(row.id)}>
+                        <Trash2 className='cursor-pointer' color='red' />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
