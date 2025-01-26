@@ -164,7 +164,6 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
       sportsmen: []
     }
 
-    console.log(newData);
     
 
 

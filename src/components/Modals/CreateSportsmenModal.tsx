@@ -62,8 +62,32 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
       setValue('gender', { id: sportsmanToEdit?.gender.id, label: `${sportsmanToEdit?.gender.name.ru}/${sportsmanToEdit?.gender.name.uz}/${sportsmanToEdit?.gender.name.en}` })
       setValue('birth', sportsmanToEdit?.birth)
       setValue('bib', sportsmanToEdit?.chest_number)
-      console.log('asd');
+      setValue('address', { id: sportsmanToEdit?.address, label: sportsmanToEdit?.address })
+      if (sportsmanToEdit?.coaches) {
+        const coachesData = sportsmanToEdit.coaches.map((coach: any) => ({
+          value: coach.family_name,
+        }))
+        setValue("input1", coachesData)
 
+        const coachesNames = sportsmanToEdit.coaches.map((coach: any) => ({
+          value: coach.name,
+        }))
+        setValue("input2", coachesNames)
+        sportsmanToEdit.coaches.forEach((_, index) => {
+          append({ value: '' });
+        });
+
+        if (sportsmanToEdit.sportsmen_disciplines && sportsmanToEdit.sportsmen_disciplines.length > 0) {
+          const disciplinesData = sportsmanToEdit.sportsmen_disciplines.map((discipline: any) => ({
+            id: discipline.id,
+            label: discipline.name,
+            pb: discipline.pb || '',
+            sb: discipline.sb || '',
+            sport_type_id: discipline.sport_type_id,
+          }));
+          setSelectedOptions(disciplinesData);
+        }
+      }
     }
   }, [id, sportsmanToEdit]);
 
@@ -178,33 +202,37 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
       ))
     }
 
+   
+    
 
-    // const url = isEdit ? `/api/sportsmens/${sportsmanToEdit.id}` : '/api/sportsmens';
-    // const method = isEdit ? 'put' : 'post';
-    // const res = await axios({ url, method, data: newData });
+ 
+
+    try {
+      const res = id ? await axios.put(`/api/sportsmens/${id}`, newData) : await axios.post('/api/sportsmens', newData)
+      if (res.status === 200) {
+        toast.success('Спортсмен добавлен')
+      }
+    } catch (error) {
+      toast.error('Спортсмен не добавлен')
+    } finally {
+      setSelectedOptions([]);
+      reset()
+      handleClose()
+      router.refresh()
+    }
+
+
+    // const res = await axios.post('/api/sportsmens', newData)
 
     // if (res.status === 200) {
-    //   handleClose();
-    //   reset();
-    //   toast.success(`Спортсмен ${isEdit ? 'обновлен' : 'добавлен'}`);
+    //   handleClose()
+    //   reset()
+    //   toast.success('Спортсмен добавлен')
     //   setSelectedOptions([]);
-    //   router.refresh();
+    //   router.refresh()
     // } else {
-    //   toast.error(`Спортсмен не ${isEdit ? 'обновлен' : 'добавлен'}`);
+    //   toast.error('Спортсмен не добавлен')
     // }
-
-
-    const res = await axios.post('/api/sportsmens', newData)
-
-    if (res.status === 200) {
-      handleClose()
-      reset()
-      toast.success('Спортсмен добавлен')
-      setSelectedOptions([]);
-      router.refresh()
-    } else {
-      toast.error('Спортсмен не добавлен')
-    }
 
   }
 

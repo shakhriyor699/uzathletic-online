@@ -22,17 +22,17 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser 
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
   const router = useRouter()
 
+  console.log(data);
   
 
-
-
+  
   useEffect(() => {
     loadEvents(page + 1)
   }, [page]);
 
 
   const loadEvents = async (page: number) => {
-    const res = await getAllSportsmens(page + 1)
+    const res = await getAllSportsmens(page)
     setData(res)
   }
 
