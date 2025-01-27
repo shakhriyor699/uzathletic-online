@@ -124,9 +124,9 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser,
                       }
                     </TableCell>
                     <TableCell>
-                      <Button onClick={() => handleEdit(row)}>
+                      {/* <Button onClick={() => handleEdit(row)}>
                         <Pencil className='cursor-pointer' color='green' />
-                      </Button>
+                      </Button> */}
                       <Button onClick={() => handleDelete(row.id)}>
                         <Trash2 className='cursor-pointer' color='red' />
                       </Button>
