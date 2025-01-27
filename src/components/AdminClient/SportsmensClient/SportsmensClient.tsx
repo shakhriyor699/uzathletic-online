@@ -24,6 +24,8 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser,
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
   const router = useRouter()
 
+  console.log(data);
+  
 
 
   useEffect(() => {
@@ -80,6 +82,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser,
                   <TableCell>Фамилия</TableCell>
                   <TableCell>Дата рождения</TableCell>
                   <TableCell>Номер</TableCell>
+                  <TableCell>Регион</TableCell>
                   <TableCell>Тренер</TableCell>
                   <TableCell>Вид</TableCell>
                   <TableCell>Рекорд</TableCell>
@@ -98,6 +101,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser,
                     <TableCell >{row.family_name}</TableCell>
                     <TableCell>{row.birth}</TableCell>
                     <TableCell>{row.chest_number}</TableCell>
+                    <TableCell>{row.address}</TableCell>
                     <TableCell>
                       {
                         row.coaches.map((coach) => (
@@ -120,9 +124,9 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser,
                       }
                     </TableCell>
                     <TableCell>
-                      {/* <Button onClick={() => handleEdit(row)}>
+                      <Button onClick={() => handleEdit(row)}>
                         <Pencil className='cursor-pointer' color='green' />
-                      </Button> */}
+                      </Button>
                       <Button onClick={() => handleDelete(row.id)}>
                         <Trash2 className='cursor-pointer' color='red' />
                       </Button>

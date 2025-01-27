@@ -20,7 +20,8 @@ const SportsmensPage = async () => {
   return (
     <>
       <SportsmensClient
-        sportsmens={sportsmens}
+        sportsmens={sportsmens.data}
+        totalPage={sportsmens.total}
         currentUser={currentUser['user-data']}
       />
       <CreateSportsmenModal
