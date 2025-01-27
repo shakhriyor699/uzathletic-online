@@ -52,6 +52,9 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
 
   console.log(sportsmanToEdit);
 
+  console.log(selectedOptions);
+
+
   useEffect(() => {
     if (id) {
       setValue('name', sportsmanToEdit?.name)
@@ -63,29 +66,47 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
       setValue('birth', sportsmanToEdit?.birth)
       setValue('bib', sportsmanToEdit?.chest_number)
       setValue('address', { id: sportsmanToEdit?.address, label: sportsmanToEdit?.address })
-      if (sportsmanToEdit?.coaches) {
-        const coachesData = sportsmanToEdit.coaches.map((coach: any) => ({
-          value: coach.family_name,
-        }))
-        setValue("input1", coachesData)
 
-        const coachesNames = sportsmanToEdit.coaches.map((coach: any) => ({
-          value: coach.name,
+
+      if (sportsmanToEdit?.coaches) {
+        // const coachesData = sportsmanToEdit.coaches.map((coach: any) => ({
+        //   value: coach.family_name,
+        // }))
+        // setValue("input1", coachesData)
+
+        // const coachesNames = sportsmanToEdit.coaches.map((coach: any) => ({
+        //   value: coach.name,
+        // }))
+        // setValue("input2", coachesNames)
+        const coachesData = sportsmanToEdit.coaches.map((coach: any) => ({
+          id: coach.id,
+          name: coach.name,
+          family_name: coach.family_name,
         }))
-        setValue("input2", coachesNames)
-        sportsmanToEdit.coaches.forEach((_, index) => {
-          append({ value: '' });
-        });
+        setValue("coaches", coachesData)
+        // sportsmanToEdit.coaches.forEach((_, index) => {
+        //   append({ value: '' });
+        // });
 
         if (sportsmanToEdit.sportsmen_disciplines && sportsmanToEdit.sportsmen_disciplines.length > 0) {
-          const disciplinesData = sportsmanToEdit.sportsmen_disciplines.map((discipline: any) => ({
-            id: discipline.id,
-            label: discipline.name,
-            pb: discipline.pb || '',
-            sb: discipline.sb || '',
-            sport_type_id: discipline.sport_type_id,
-          }));
+
+          const disciplinesData = sportsmanToEdit.event_registrations.map((discipline: any) => {
+            const matchingEvent = sportsmanToEdit.sportsmen_disciplines.find(
+              (event: any) => event.name === discipline.name.ru
+            );
+
+
+            return {
+              id: discipline.id,
+              label: discipline.name.ru,
+              pb: matchingEvent?.pb || '',
+              sb: matchingEvent?.sb || '',
+              // sport_type_id: discipline.sport_type_id,
+            }
+          });
           setSelectedOptions(disciplinesData);
+          console.log(selectedOptions);
+          
         }
       }
     }
@@ -148,7 +169,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'inputs'
+    name: 'coaches'
   });
 
 
@@ -181,20 +202,32 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
       chest_number: data.bib,
       birth: data.birth,
       address: data.address ? data.address.label : data.country.label,
-      coaches: data.input1.map((item: any, index: number) => {
-        return {
-          gender_id: 2,
-          name: item.value,
-          family_name: data.input2[index].value
-        };
-      }),
-      sportsmen_disciplines: selectedOptions.map((option: any) => (
-        {
-          name: option.label.replace(/^[^,]+, /, ""),
-          pb: option.pb,
-          sb: option.sb
-        }
-      )),
+      // coaches: data.input1.map((item: any, index: number) => {
+      //   return {
+      //     gender_id: 2,
+      //     name: item.value,
+      //     family_name: data.input2[index].value
+      //   };
+      // }),
+      coaches: data.coaches.map((coach: any) => ({
+        id: id ? coach.id : null,
+        gender_id: 2,
+        name: coach.name,
+        family_name: coach.family_name,
+      })),
+      // sportsmen_disciplines: selectedOptions.map((option: any) => (
+      //   {
+      //     name: option.label.replace(/^[^,]+, /, ""),
+      //     pb: option.pb,
+      //     sb: option.sb
+      //   }
+      // )),
+      sportsmen_disciplines: selectedOptions.map((option: any) => ({
+        id: id ? option.id : null,
+        name: option.label.replace(/^[^,]+, /, ""),
+        pb: option.pb,
+        sb: option.sb,
+      })),
       event_registration: selectedOptions.map((option: any) => (
         {
           id: option.id
@@ -202,10 +235,8 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
       ))
     }
 
-   
-    
+    console.log(newData);
 
- 
 
     try {
       const res = id ? await axios.put(`/api/sportsmens/${id}`, newData) : await axios.post('/api/sportsmens', newData)
@@ -361,7 +392,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
                       key={field.id}
                       type="text"
                       placeholder="Фамилия"
-                      {...register(`input1.${index}.value` as const, { required: true })}
+                      {...register(`coaches.${index}.family_name` as const, { required: true })}
                     />
                     <TextField
                       id='coachName'
@@ -369,7 +400,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
                       key={field.id}
                       type="text"
                       placeholder="Имя"
-                      {...register(`input2.${index}.value` as const, { required: true })}
+                      {...register(`coaches.${index}.name` as const, { required: true })}
                     />
                     <button type="button" onClick={() => remove(index)}>
                       <CircleX />

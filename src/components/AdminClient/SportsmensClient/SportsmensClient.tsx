@@ -13,19 +13,19 @@ import { IUserData } from '@/types/authTypes'
 interface SportsmentsClientProps {
   sportsmens: ISportsman[]
   currentUser?: IUserData | undefined
+  totalPage: number
 }
 
-const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser }) => {
+const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser, totalPage }) => {
   const { handleOpen } = useSportsmenModal()
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [page, setPage] = React.useState(0);
+  const [totalCount, setTotalCount] = React.useState(totalPage);
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
   const router = useRouter()
 
-  console.log(data);
-  
 
-  
+
   useEffect(() => {
     loadEvents(page + 1)
   }, [page]);
@@ -33,7 +33,8 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser 
 
   const loadEvents = async (page: number) => {
     const res = await getAllSportsmens(page)
-    setData(res)
+    setData(res.data)
+    setTotalCount(res.total);
   }
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -119,9 +120,9 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser 
                       }
                     </TableCell>
                     <TableCell>
-                      <Button onClick={() => handleEdit(row)}>
+                      {/* <Button onClick={() => handleEdit(row)}>
                         <Pencil className='cursor-pointer' color='green' />
-                      </Button>
+                      </Button> */}
                       <Button onClick={() => handleDelete(row.id)}>
                         <Trash2 className='cursor-pointer' color='red' />
                       </Button>
@@ -134,7 +135,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser 
           <TablePagination
             rowsPerPageOptions={[15]}
             component="div"
-            count={data.length}
+            count={totalCount}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

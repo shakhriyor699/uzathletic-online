@@ -278,7 +278,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     saveAs(blob, "Athletes.txt");
   };
 
-  
+
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
       <TabContext value={value}>
@@ -541,9 +541,9 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                     <TableCell>№</TableCell>
                     <TableCell>Спортсмен</TableCell>
                     <TableCell>Вид</TableCell>
-                    <TableCell>
-                      {/* {
-                        eventSportsmen?.map(item => {
+                    {eventSportsmen?.attempts.length > 0 && <TableCell>
+                      {
+                        eventSportsmen?.attempts.map((item: any) => {
                           const filteredAttempts = item.event_registration.attempts.filter((item: any) => {
                             return Object.values(item).some((value: any) => value.trim() !== "");
                           });
@@ -551,60 +551,30 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                             filteredAttempts.length > 0 && 'Попытки'
                           )
                         })
-                      } */}
-                    </TableCell>
+                      }
+                    </TableCell>}
                     <TableCell>Результат</TableCell>
                     <TableCell>Занятое место</TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>Действия</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
+                  {
+                    eventSportsmen.sportsmen.map((sportsmen: any, index: number) => (
+                      <TableRow key={eventSportsmen.id}>
+                        <TableCell>{sportsmen.id}</TableCell>
+                        <TableCell>{sportsmen.name} {sportsmen.family_name}</TableCell>
+                        <TableCell>{eventSportsmen.name.ru}</TableCell>
+                        <TableCell>{sportsmen.pivot.result || 'нет результата'}</TableCell>
+                        <TableCell>{sportsmen.pivot.position || 'нет результата'}</TableCell>
 
-
-                  <TableRow key={eventSportsmen.id}>
-                    <TableCell>{eventSportsmen.id}</TableCell>
-                    {
-                      eventSportsmen.event_registration.sportsmen.map((item: any, index: number) => (
-                        <TableCell key={index} component="th" scope="row">
-                          {item.name} {item.family_name}
-                        </TableCell>
-                      ))
-                    }
-                    {/* <TableCell>
-                      {eventSportsmen.sportsmen && eventSportsmen.event_registration
-                        .sportsmen.name} {eventSportsmen.sportsmen && eventSportsmen.sportsmen.family_name}
-                    </TableCell> */}
-                    <TableCell>
-                      {eventSportsmen.event_registration.name.ru}
-                    </TableCell>
-                    <TableCell>
-                      {/* {
-                        eventSportsmen?.map(item => {
-                          const filteredAttempts = item.event_registration.attempts.filter((item: any) => {
-                            return Object.values(item).some((value: any) => value.trim() !== "");
-                          });
-                          return (
-                            filteredAttempts.length > 0 && filteredAttempts.map((attempt: any, index: number) => (
-                              <Typography key={index} component={'span'}>
-                                {attempt}
-                              </Typography>
-                            ))
-                          )
-                        })
-                      } */}
-                    </TableCell>
-                    <TableCell>
-                      {eventSportsmen.result}
-                    </TableCell>
-                    <TableCell>
-                      {eventSportsmen.position}
-                    </TableCell>
-                    {currentUser?.name === 'Admin' &&
-                      <TableCell>
-                        <Trash2 color='red' className='cursor-pointer' />
-                      </TableCell>}
-                  </TableRow>
-
+                        {currentUser?.name === 'Admin' &&
+                          <TableCell>
+                            <Trash2 color='red' className='cursor-pointer' />
+                          </TableCell>}
+                      </TableRow>
+                    ))
+                  }
                 </TableBody>
               </Table>
             </TableContainer>
