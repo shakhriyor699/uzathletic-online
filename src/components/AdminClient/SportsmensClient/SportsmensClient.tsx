@@ -25,7 +25,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser,
   const router = useRouter()
 
   console.log(data);
-  
+
 
 
   useEffect(() => {
@@ -78,6 +78,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser,
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
+                  <TableCell>№</TableCell>
                   <TableCell>Имя</TableCell>
                   <TableCell>Фамилия</TableCell>
                   <TableCell>Дата рождения</TableCell>
@@ -90,11 +91,14 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser,
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.map((row) => (
+                {data.map((row, i) => (
                   <TableRow
                     key={row.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
+                    <TableCell component="th" scope="row">
+                      {i + 1}
+                    </TableCell>
                     <TableCell component="th" scope="row">
                       {row.name}
                     </TableCell>
