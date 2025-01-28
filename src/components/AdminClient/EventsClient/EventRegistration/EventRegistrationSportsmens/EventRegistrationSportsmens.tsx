@@ -44,7 +44,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   const router = useRouter()
 
 
-  console.log(eventSportsmen);
+  console.log(startList, 'startList');
 
 
   // const addGroup = () => {
@@ -281,6 +281,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
+      <Typography variant='h4' mb={5}>{eventSportsmen.name.ru}</Typography>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
@@ -433,6 +434,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                                   <TableCell>№</TableCell>
                                   <TableCell>Спортсмен</TableCell>
                                   <TableCell>Регион</TableCell>
+                                  <TableCell>Год рождения</TableCell>
                                   <TableCell>BIB</TableCell>
                                   <TableCell>Заявленый результат</TableCell>
                                   {currentUser?.name === 'Admin' &&
@@ -459,6 +461,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                                             {sportsmen.sportsman.name} {sportsmen.sportsman.family_name}
                                           </TableCell>
                                           <TableCell>{sportsmen.sportsman.address}</TableCell>
+                                          <TableCell>{sportsmen.sportsman.birth}</TableCell>
                                           <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
                                           <TableCell>
                                             {
@@ -544,11 +547,11 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                     {eventSportsmen?.attempts.length > 0 && <TableCell>
                       {
                         eventSportsmen?.attempts.map((item: any) => {
-                          const filteredAttempts = item.event_registration.attempts.filter((item: any) => {
-                            return Object.values(item).some((value: any) => value.trim() !== "");
-                          });
+                          // const filteredAttempts = item.event_registration.attempts.filter((item: any) => {
+                          //   return Object.values(item).some((value: any) => value.trim() !== "");
+                          // });
                           return (
-                            filteredAttempts.length > 0 && 'Попытки'
+                            item.length > 0 && 'Попытки'
                           )
                         })
                       }
