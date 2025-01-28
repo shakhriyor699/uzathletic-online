@@ -106,7 +106,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
           });
           setSelectedOptions(disciplinesData);
           console.log(selectedOptions);
-          
+
         }
       }
     }
@@ -223,19 +223,14 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
       //   }
       // )),
       sportsmen_disciplines: selectedOptions.map((option: any) => ({
-        id: id ? option.id : null,
+        // id: id ? option.id : null,
         name: option.label.replace(/^[^,]+, /, ""),
         pb: option.pb,
         sb: option.sb,
+        event_registration_id: option.id
       })),
-      event_registration: selectedOptions.map((option: any) => (
-        {
-          id: option.id
-        }
-      ))
     }
 
-    console.log(newData);
 
 
     try {

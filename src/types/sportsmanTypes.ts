@@ -12,6 +12,7 @@ export interface ISportsmanDesciplines {
   name: string
   pb: string
   sb: string
+  event_registration_id: number
 }
 
 export interface ICreateSportsman {
@@ -23,9 +24,9 @@ export interface ICreateSportsman {
   chest_number: string
   coaches: ISportsmanCoach[]
   sportsmen_disciplines: ISportsmanDesciplines[]
-  event_registration: {
-    id: number
-  }[]
+  // event_registration: {
+  //   id: number
+  // }[]
 }
 
 export interface ISportsman {
