@@ -11,6 +11,7 @@ import { saveAs } from "file-saver";
 import { Document, Packer, Paragraph, Table as DocxTable, TableCell as DocxTableCell, TableRow as DocxTableRow, WidthType, TextRun } from "docx";
 import { FaFileWord } from "react-icons/fa";
 import { BsFiletypeTxt } from "react-icons/bs";
+import { Controller, FieldValues, useForm } from 'react-hook-form'
 
 interface UserEventRegSportsmenProps {
   eventRegistration: IEventRegistrationResponse
@@ -24,8 +25,14 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
   currentUser
 }) => {
   const [value, setValue] = React.useState('1');
+  const { register, handleSubmit, reset, control, resetField, getValues } = useForm<FieldValues>({
+    mode: 'onChange',
+    defaultValues: {
+      position: '',
+    }
+  })
   const attempts = eventRegistration.attempts
-  console.log(eventRegistration, currentUser);
+
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -192,16 +199,24 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                         {
                           eventRegistration.event_registration_setting.condition.status === 'true' ? (
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                              <TextField
-                                id="outlined-basic"
-                                label="Ветер"
-                                variant="outlined"
-                                size='small'
-                                sx={{ my: 2 }}
+                              <Controller
+                                name={`condition`}
+                                control={control}
+                                render={({ field }) => (
+                                  <TextField
+                                    {...field}
+                                    id="outlined-basic"
+                                    label="Ветер"
+                                    variant="outlined"
+                                    size='small'
+                                    sx={{ my: 2 }}
+                                  />
+                                )}
                               />
-                              <Button>
-                                Сохранить
-                              </Button>
+
+                              {/* <Button type='submit' variant='contained'>
+                              Сохранить
+                            </Button> */}
                             </Box>
                           )
                             : null

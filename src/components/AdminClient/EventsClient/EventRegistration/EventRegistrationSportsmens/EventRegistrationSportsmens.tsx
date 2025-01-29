@@ -247,6 +247,8 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       condition: data.condition
     };
 
+    console.log(payload);
+
     try {
       const res = await axios.post('/api/eventSportsmen', payload);
       if (res.status === 200) {
@@ -260,9 +262,27 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
   }
 
+  // const handleSubmitWithId = (id: number) => {
+  //   handleSubmit((data) => onSubmitSportsmans(data, id))();
+  // };
+
+
   const handleSubmitWithId = (id: number) => {
-    handleSubmit((data) => onSubmitSportsmans(data, id))();
-  };
+    handleSubmit((data) => {
+      const sportsman = eventSportsmen.sportsmen.find((s: any) => s.id === id)
+      if (sportsman) {
+        onSubmitSportsmans(
+          {
+            result: data.result[id],
+            position: data.position[id],
+            attempts: data.attempts ? data.attempts[id] : "",
+            condition: data.condition,
+          },
+          id,
+        )
+      }
+    })()
+  }
 
 
   const downloadTxt = () => {
@@ -476,7 +496,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                                             <>
                                               <TableCell>
                                                 <Controller
-                                                  name={`result`}
+                                                  name={`result.${sportsmen.sportsman.id}`}
                                                   control={control}
                                                   render={({ field }) => (
                                                     <TextField inputProps={{
@@ -491,7 +511,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                                               </TableCell>
                                               <TableCell>
                                                 <Controller
-                                                  name={`position`}
+                                                  name={`position.${sportsmen.sportsman.id}`}
                                                   control={control}
                                                   render={({ field }) => (
                                                     <TextField inputProps={{
