@@ -13,7 +13,8 @@ export interface ICountryCreate {
 export interface ICity {
   id: number
   country_id: number
-  name: ILang
+  name: ILang,
+  country: ICountry
 }
 
 export interface ICityByCountry {

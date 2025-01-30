@@ -1,6 +1,6 @@
 'use client'
 import React, { FC, useEffect, useState } from 'react'
-import { Box, Button, debounce, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material'
+import { Autocomplete, Box, Button, debounce, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material'
 import { Pen, Pencil, Trash2 } from 'lucide-react'
 import { ISportsman } from '@/types/sportsmanTypes'
 import useSportsmenModal from '@/hooks/useSportsmenModal'
@@ -9,14 +9,25 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { getAllSportsmens } from '@/app/actions/getAllSportsmens'
 import { IUserData } from '@/types/authTypes'
+import { IGender } from '@/types/genderTypes'
+import { Controller, FieldValues, useForm } from 'react-hook-form'
+import { ICity } from '@/types/countryTypes'
 
 interface SportsmentsClientProps {
   sportsmens: ISportsman[]
   currentUser?: IUserData | undefined
   totalPage: number
+  genders: IGender[]
+  cities: ICity[]
 }
 
-const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser, totalPage }) => {
+const SportsmensClient: FC<SportsmentsClientProps> = ({
+  sportsmens,
+  currentUser,
+  totalPage,
+  genders,
+  cities
+}) => {
   const { handleOpen } = useSportsmenModal()
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [page, setPage] = React.useState(0);
@@ -24,10 +35,16 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser,
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('');
+  const { register, control, reset, formState: { errors }, handleSubmit, setValue } = useForm<FieldValues>({
+    mode: 'onChange',
+  });
 
   useEffect(() => {
     loadEvents(page + 1, searchQuery)
   }, [page, searchQuery]);
+
+  console.log(cities);
+
 
 
   const loadEvents = async (page: number, name?: string) => {
@@ -77,14 +94,58 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser,
           <Pen size={15} />
           Создать
         </Button>}
-        <TextField
-          label={'Поиск'}
-          variant="outlined"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          size="small"
-          sx={{ width: '300px', mb: 2 }}
-        />
+        <Box className='flex gap-3 items-center mb-3'>
+          <TextField
+            label={'Поиск'}
+            variant="outlined"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            size="small"
+            sx={{ width: '300px' }}
+          />
+          <Controller
+            rules={{ required: true }}
+            name="gender"
+            control={control}
+            render={({ field }) => (
+              <Autocomplete
+                {...field}
+                sx={{
+                  width: 300,
+                }}
+                id='gender'
+                options={genders.map((option) => ({ id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` }))}
+                value={genders.map((option) => ({ id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` })).find((option) => option.id === field.value?.id) || null}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                getOptionLabel={(option) => option.label}
+                onChange={(event, value) => field.onChange(value)}
+                renderInput={(params) => <TextField  {...params} label="Пол" />}
+              />
+            )}
+          />
+          <Controller
+            rules={{ required: true }}
+            name="cities"
+            control={control}
+            render={({ field }) => (
+              <Autocomplete
+                {...field}
+                sx={{
+                  width: 300,
+                }}
+                id='cities'
+                options={cities.map((option) => ({ id: option.id, label: `${option.name.ru}` }))}
+                value={cities.map((option) => ({ id: option.id, label: `${option.name.ru}` })).find((option) => option.id === field.value?.id) || null}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                getOptionLabel={(option) => option.label}
+                onChange={(event, value) => field.onChange(value)}
+                renderInput={(params) => <TextField  {...params} label="Регион" />}
+              />
+            )}
+          />
+          <Button variant='contained'>Фильтр</Button>
+          <Button variant='contained'>Сбросить</Button>
+        </Box>
         <Paper sx={{ width: '100%' }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">

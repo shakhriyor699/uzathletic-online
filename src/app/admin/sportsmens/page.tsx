@@ -1,3 +1,4 @@
+import { getAllCities } from '@/app/actions/getAllCities'
 import { getAllCountry } from '@/app/actions/getAllCountries'
 import { getAllEventRegistrations } from '@/app/actions/getAllEventRegistration'
 import { getAllGender } from '@/app/actions/getAllGenders'
@@ -16,10 +17,17 @@ const SportsmensPage = async () => {
   const eventRegistrationTypes = await getAllEventRegistrations(1)
   const countries = await getAllCountry()
   const currentUser = await getCurrentUser()
+  const cities = await getAllCities()
 
   return (
     <>
-      <SportsmensClient totalPage={sportsmens.total} sportsmens={sportsmens.data} currentUser={currentUser['user-data']} />
+      <SportsmensClient
+        totalPage={sportsmens.total}
+        sportsmens={sportsmens.data}
+        currentUser={currentUser['user-data']}
+        genders={genders}
+        cities={cities.data}
+      />
       <CreateSportsmenModal
         genders={genders}
         eventRegistrationTypes={eventRegistrationTypes}

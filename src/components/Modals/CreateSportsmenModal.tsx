@@ -50,9 +50,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
   const [page, setPage] = useState(1);
   const router = useRouter()
 
-  console.log(sportsmanToEdit);
-
-  console.log(selectedOptions);
+  
 
 
   useEffect(() => {
@@ -105,7 +103,6 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
             }
           });
           setSelectedOptions(disciplinesData);
-          console.log(selectedOptions);
 
         }
       }
