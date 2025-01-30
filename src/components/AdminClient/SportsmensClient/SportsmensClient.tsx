@@ -1,6 +1,6 @@
 'use client'
-import React, { FC, useEffect } from 'react'
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from '@mui/material'
+import React, { FC, useEffect, useState } from 'react'
+import { Box, Button, debounce, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material'
 import { Pen, Pencil, Trash2 } from 'lucide-react'
 import { ISportsman } from '@/types/sportsmanTypes'
 import useSportsmenModal from '@/hooks/useSportsmenModal'
@@ -23,20 +23,24 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser,
   const [totalCount, setTotalCount] = React.useState(totalPage);
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
   const router = useRouter()
-
-  console.log(data);
-
-
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    loadEvents(page + 1)
-  }, [page]);
+    loadEvents(page + 1, searchQuery)
+  }, [page, searchQuery]);
 
 
-  const loadEvents = async (page: number) => {
-    const res = await getAllSportsmens(page)
+  const loadEvents = async (page: number, name?: string) => {
+    const res = await getAllSportsmens(page, name)
     setData(res.data)
     setTotalCount(res.total);
+  }
+
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    debounce(() => loadEvents(page, event.target.value), 500)
+    setSearchQuery(event.target.value);
+    setPage(0);
   }
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -73,6 +77,14 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({ sportsmens, currentUser,
           <Pen size={15} />
           Создать
         </Button>}
+        <TextField
+          label={'Поиск'}
+          variant="outlined"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          size="small"
+          sx={{ width: '300px', mb: 2 }}
+        />
         <Paper sx={{ width: '100%' }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">

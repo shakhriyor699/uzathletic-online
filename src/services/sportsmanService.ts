@@ -7,8 +7,10 @@ export const create = async (data: ICreateSportsman) => {
   return res
 }
 
-export const getAll = async (page = 1) => {
-  const { data } = await axiosWithAuth.get(`/sportsmen/all?page=${page}`)
+export const getAll = async (page = 1, name?: string) => {
+  const { data } = await axiosWithAuth.get(`/sportsmen/all?page=${page}${name && `&name=${name}`}`)
+  console.log(name);
+  
   return data
 }
 
