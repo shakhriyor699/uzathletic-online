@@ -1,6 +1,6 @@
 'use client'
 import React, { FC, useEffect, useState } from 'react'
-import { Autocomplete, Box, Button, debounce, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material'
+import { Autocomplete, Box, Button, CircularProgress, debounce, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material'
 import { Pen, Pencil, Trash2 } from 'lucide-react'
 import { ISportsman } from '@/types/sportsmanTypes'
 import useSportsmenModal from '@/hooks/useSportsmenModal'
@@ -35,6 +35,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const { register, control, reset, formState: { errors }, handleSubmit, setValue } = useForm<FieldValues>({
     mode: 'onChange',
   });
@@ -43,7 +44,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
     loadEvents(page + 1, searchQuery)
   }, [page, searchQuery]);
 
-  console.log(cities);
+
 
 
 
@@ -85,6 +86,25 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   };
 
 
+  const onSubmit = async (data: FieldValues) => {
+    setSubmitting(true)
+
+    try {
+      const res = await getAllSportsmens(page, '', data.gender.id, data.cities.label)
+      setData(res.data)
+    } catch (error) {
+      throw error
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleResetFitlers = () => {
+    reset()
+    router.refresh();
+    setData(sportsmens)
+  }
+
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -104,7 +124,6 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
             sx={{ width: '300px' }}
           />
           <Controller
-            rules={{ required: true }}
             name="gender"
             control={control}
             render={({ field }) => (
@@ -124,7 +143,6 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
             )}
           />
           <Controller
-            rules={{ required: true }}
             name="cities"
             control={control}
             render={({ field }) => (
@@ -143,8 +161,10 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
               />
             )}
           />
-          <Button variant='contained'>Фильтр</Button>
-          <Button variant='contained'>Сбросить</Button>
+          <Button variant='contained' onClick={handleSubmit(onSubmit)}>
+            {submitting ? <CircularProgress size={24} color='warning' /> : 'Фильтр'}
+          </Button>
+          <Button variant='contained' onClick={handleResetFitlers}>Сбросить</Button>
         </Box>
         <Paper sx={{ width: '100%' }}>
           <TableContainer sx={{ maxHeight: 440 }}>
