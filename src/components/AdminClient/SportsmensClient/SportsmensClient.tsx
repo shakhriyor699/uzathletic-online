@@ -17,8 +17,8 @@ interface SportsmentsClientProps {
   sportsmens: ISportsman[]
   currentUser?: IUserData | undefined
   totalPage: number
-  genders: IGender[]
-  cities: ICity[]
+  genders?: IGender[]
+  cities?: ICity[]
 }
 
 const SportsmensClient: FC<SportsmentsClientProps> = ({
@@ -51,6 +51,8 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const loadEvents = async (page: number, name?: string) => {
     const res = await getAllSportsmens(page, name)
     setData(res.data)
+    console.log(name);
+    
     setTotalCount(res.total);
   }
 
@@ -133,8 +135,8 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
                   width: 300,
                 }}
                 id='gender'
-                options={genders.map((option) => ({ id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` }))}
-                value={genders.map((option) => ({ id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` })).find((option) => option.id === field.value?.id) || null}
+                options={genders?.map((option) => ({ id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` })) || []}
+                value={genders?.map((option) => ({ id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` })).find((option) => option.id === field.value?.id) || null}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 getOptionLabel={(option) => option.label}
                 onChange={(event, value) => field.onChange(value)}
@@ -152,8 +154,8 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
                   width: 300,
                 }}
                 id='cities'
-                options={cities.map((option) => ({ id: option.id, label: `${option.name.ru}` }))}
-                value={cities.map((option) => ({ id: option.id, label: `${option.name.ru}` })).find((option) => option.id === field.value?.id) || null}
+                options={cities?.map((option) => ({ id: option.id, label: `${option.name.ru}` })) || []}
+                value={cities?.map((option) => ({ id: option.id, label: `${option.name.ru}` })).find((option) => option.id === field.value?.id) || null}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 getOptionLabel={(option) => option.label}
                 onChange={(event, value) => field.onChange(value)}
