@@ -8,7 +8,12 @@ export const create = async (data: ICreateSportsman) => {
 }
 
 export const getAll = async (page = 1, name?: string, gender?: number, address?: string) => {
-  const { data } = await axiosWithAuth.get(`/sportsmen/all?page=${page}${name && `&name=${name}`}${gender && `&gender=${gender}`}${address && `&address=${address}`}`)
+  const { data } = await axiosWithAuth.get(`/sportsmen/all?page=${page}${gender && `&gender=${gender}`}${address && `&address=${address}`}`, {
+    params: {
+      name,
+      limit: 10
+    }
+  })
   return data
 }
 

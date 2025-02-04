@@ -44,15 +44,10 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
     loadEvents(page + 1, searchQuery)
   }, [page, searchQuery]);
 
-
-
-
-
+  
   const loadEvents = async (page: number, name?: string) => {
     const res = await getAllSportsmens(page, name)
     setData(res.data)
-    console.log(name);
-    
     setTotalCount(res.total);
   }
 
@@ -91,8 +86,10 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const onSubmit = async (data: FieldValues) => {
     setSubmitting(true)
 
+
+
     try {
-      const res = await getAllSportsmens(page, '', data.gender.id, data.cities.label)
+      const res = await getAllSportsmens(page, '', data.gender ? data.gender.id : '', data.cities ? data.cities.label : '')
       setData(res.data)
     } catch (error) {
       throw error
