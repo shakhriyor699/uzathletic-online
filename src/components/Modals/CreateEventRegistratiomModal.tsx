@@ -227,7 +227,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
                   id="sportType"
                   options={options.map((option) => ({
                     id: option.id,
-                    label: option.sport_type_name.ru,
+                    label: option.sport_type_name.en,
                     gender_id: option.gender_id,
                   }))}
                   value={field.value || null}

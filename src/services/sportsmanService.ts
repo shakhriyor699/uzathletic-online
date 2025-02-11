@@ -7,8 +7,8 @@ export const create = async (data: ICreateSportsman) => {
   return res
 }
 
-export const getAll = async (page = 1, name?: string, gender?: number, address?: string) => {
-  const { data } = await axiosWithAuth.get(`/sportsmen/all?page=${page}${gender && `&gender=${gender}`}${address && `&address=${address}`}`, {
+export const getAll = async (page = 1, name?: string, gender?: number, address?: string, eventType?: number) => {
+  const { data } = await axiosWithAuth.get(`/sportsman/all?page=${page}${gender ? `&gender=${gender}` : ''}${address ? `&address=${address}` : ''}${eventType ? `&event-type=${eventType}` : ''}`, {
     params: {
       name,
       limit: 10
@@ -28,6 +28,6 @@ export const deleteSportsman = async (id: number) => {
 }
 
 export const getOne = async (id: number) => {
-  const { data } = await axiosWithAuth.get<ISportsman>(`/sportsmen/${id}`)
+  const { data } = await axiosWithAuth.get<ISportsman>(`/sportsman/show/${id}`)
   return data
 }

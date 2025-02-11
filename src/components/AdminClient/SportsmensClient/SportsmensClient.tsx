@@ -12,6 +12,8 @@ import { IUserData } from '@/types/authTypes'
 import { IGender } from '@/types/genderTypes'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
 import { ICity } from '@/types/countryTypes'
+import { IEventRegistrationResponse } from '@/types/eventRegistrationTypes'
+import { ISportType } from '@/types/sportTypeTypes'
 
 interface SportsmentsClientProps {
   sportsmens: ISportsman[]
@@ -19,6 +21,7 @@ interface SportsmentsClientProps {
   totalPage: number
   genders?: IGender[]
   cities?: ICity[]
+  sportTypes: ISportType[]
 }
 
 const SportsmensClient: FC<SportsmentsClientProps> = ({
@@ -26,7 +29,8 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   currentUser,
   totalPage,
   genders,
-  cities
+  cities,
+  sportTypes
 }) => {
   const { handleOpen } = useSportsmenModal()
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
@@ -44,7 +48,11 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
     loadEvents(page + 1, searchQuery)
   }, [page, searchQuery]);
 
-  
+
+  console.log(sportTypes);
+
+
+
   const loadEvents = async (page: number, name?: string) => {
     const res = await getAllSportsmens(page, name)
     setData(res.data)
@@ -86,10 +94,8 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const onSubmit = async (data: FieldValues) => {
     setSubmitting(true)
 
-
-
     try {
-      const res = await getAllSportsmens(page, '', data.gender ? data.gender.id : '', data.cities ? data.cities.label : '')
+      const res = await getAllSportsmens(page, '', data.gender ? data.gender.id : '', data.cities ? data.cities.label : '', data['event-type'] ? data['event-type'].id : '')
       setData(res.data)
     } catch (error) {
       throw error
@@ -113,135 +119,167 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
           <Pen size={15} />
           Создать
         </Button>}
-        <Box className='flex gap-3 items-center mb-3'>
-          <TextField
-            label={'Поиск'}
-            variant="outlined"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            size="small"
-            sx={{ width: '300px' }}
-          />
-          <Controller
-            name="gender"
-            control={control}
-            render={({ field }) => (
-              <Autocomplete
-                {...field}
-                sx={{
-                  width: 300,
-                }}
-                id='gender'
-                options={genders?.map((option) => ({ id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` })) || []}
-                value={genders?.map((option) => ({ id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` })).find((option) => option.id === field.value?.id) || null}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                getOptionLabel={(option) => option.label}
-                onChange={(event, value) => field.onChange(value)}
-                renderInput={(params) => <TextField  {...params} label="Пол" />}
-              />
-            )}
-          />
-          <Controller
-            name="cities"
-            control={control}
-            render={({ field }) => (
-              <Autocomplete
-                {...field}
-                sx={{
-                  width: 300,
-                }}
-                id='cities'
-                options={cities?.map((option) => ({ id: option.id, label: `${option.name.ru}` })) || []}
-                value={cities?.map((option) => ({ id: option.id, label: `${option.name.ru}` })).find((option) => option.id === field.value?.id) || null}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                getOptionLabel={(option) => option.label}
-                onChange={(event, value) => field.onChange(value)}
-                renderInput={(params) => <TextField  {...params} label="Регион" />}
-              />
-            )}
-          />
-          <Button variant='contained' onClick={handleSubmit(onSubmit)}>
-            {submitting ? <CircularProgress size={24} color='warning' /> : 'Фильтр'}
-          </Button>
-          <Button variant='contained' onClick={handleResetFitlers}>Сбросить</Button>
-        </Box>
-        <Paper sx={{ width: '100%' }}>
-          <TableContainer sx={{ maxHeight: 440 }}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>№</TableCell>
-                  <TableCell>Имя</TableCell>
-                  <TableCell>Фамилия</TableCell>
-                  <TableCell>Дата рождения</TableCell>
-                  <TableCell>Номер</TableCell>
-                  <TableCell>Регион</TableCell>
-                  <TableCell>Тренер</TableCell>
-                  <TableCell>Вид</TableCell>
-                  <TableCell>Рекорд</TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data.map((row, i) => (
-                  <TableRow
-                    key={row.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {i + 1}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell >{row.family_name}</TableCell>
-                    <TableCell>{row.birth}</TableCell>
-                    <TableCell>{row.chest_number}</TableCell>
-                    <TableCell>{row.address}</TableCell>
-                    <TableCell>
-                      {
-                        row.coaches.map((coach) => (
-                          <Typography component={'p'} key={coach.id}>{coach.name}</Typography>
-                        ))
-                      }
-                    </TableCell>
-                    <TableCell>
-                      {
-                        row.sportsmen_disciplines.map((event: any) => (
-                          <Typography component={'p'} key={event.id}>{event.name}</Typography>
-                        ))
-                      }
-                    </TableCell>
-                    <TableCell >
-                      {
-                        row.sportsmen_disciplines.map((discipline) => (
-                          <Typography key={discipline.name}>SB: {discipline.sb}</Typography>
-                        ))
-                      }
-                    </TableCell>
-                    <TableCell>
-                      {/* <Button onClick={() => handleEdit(row)}>
-                        <Pencil className='cursor-pointer' color='green' />
-                      </Button> */}
-                      <Button onClick={() => handleDelete(row.id)}>
-                        <Trash2 className='cursor-pointer' color='red' />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[15]}
-            component="div"
-            count={totalCount}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
+        {
+          data.filter((item) => item.status).length > 0 && <Box className='flex gap-3 items-center mb-3'>
+            <TextField
+              label={'Поиск'}
+              variant="outlined"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              size="small"
+              sx={{ width: '300px' }}
+            />
+            <Controller
+              name="gender"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  {...field}
+                  sx={{
+                    width: 300,
+                  }}
+                  id='gender'
+                  options={genders?.map((option) => ({ id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` })) || []}
+                  value={genders?.map((option) => ({ id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` })).find((option) => option.id === field.value?.id) || null}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => option.label}
+                  onChange={(event, value) => field.onChange(value)}
+                  renderInput={(params) => <TextField  {...params} label="Пол" />}
+                />
+              )}
+            />
+            <Controller
+              name="cities"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  {...field}
+                  sx={{
+                    width: 300,
+                  }}
+                  id='cities'
+                  options={cities?.map((option) => ({ id: option.id, label: `${option.name.ru}` })) || []}
+                  value={cities?.map((option) => ({ id: option.id, label: `${option.name.ru}` })).find((option) => option.id === field.value?.id) || null}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => option.label}
+                  onChange={(event, value) => field.onChange(value)}
+                  renderInput={(params) => <TextField  {...params} label="Регион" />}
+                />
+              )}
+            />
+            <Controller
+              name="event-type"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  {...field}
+                  sx={{
+                    width: 300,
+                  }}
+                  id='event-type'
+                  options={sportTypes?.map((option) => ({ id: option.id, label: `${option.sport_type_name.en}` })) || []}
+                  value={sportTypes?.map((option) => ({ id: option.id, label: `${option.sport_type_name.en}` })).find((option) => option.id === field.value?.id) || null}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => option.label}
+                  onChange={(event, value) => field.onChange(value)}
+                  renderInput={(params) => <TextField  {...params} label="Вид" />}
+                />
+              )}
+            />
+            <Button variant='contained' onClick={handleSubmit(onSubmit)}>
+              {submitting ? <CircularProgress size={24} color='warning' /> : 'Фильтр'}
+            </Button>
+            <Button variant='contained' onClick={handleResetFitlers}>Сбросить</Button>
+          </Box>
+        }
+
+        {
+          data.filter((item) => item.status).length === 0 ?
+            <Typography variant='h6' className='text-center'>Нет данных</Typography>
+            :
+            (
+              <Paper sx={{ width: '100%' }}>
+                <TableContainer sx={{ maxHeight: 440 }}>
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>№</TableCell>
+                        <TableCell>Имя</TableCell>
+                        <TableCell>Фамилия</TableCell>
+                        <TableCell>Дата рождения</TableCell>
+                        <TableCell>Номер</TableCell>
+                        <TableCell>Регион</TableCell>
+                        <TableCell>Тренер</TableCell>
+                        <TableCell>Вид</TableCell>
+                        <TableCell>Рекорд</TableCell>
+                        <TableCell></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {data.filter((item) => item.status).map((row, i) => {
+                        return (
+                          <TableRow
+                            key={row.id}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            <TableCell component="th" scope="row">
+                              {i + 1}
+                            </TableCell>
+                            <TableCell component="th" scope="row">
+                              {row.name}
+                            </TableCell>
+                            <TableCell >{row.family_name}</TableCell>
+                            <TableCell>{row.birth}</TableCell>
+                            <TableCell>{row.chest_number}</TableCell>
+                            <TableCell>{row.address}</TableCell>
+                            <TableCell>
+                              {
+                                row.coaches.map((coach) => (
+                                  <Typography component={'p'} key={coach.id}>{coach.name}</Typography>
+                                ))
+                              }
+                            </TableCell>
+                            <TableCell>
+                              {
+                                row.sportsmen_disciplines.map((event: any) => (
+                                  <Typography component={'p'} key={event.id}>{event.name}</Typography>
+                                ))
+                              }
+                            </TableCell>
+                            <TableCell >
+                              {
+                                row.sportsmen_disciplines.map((discipline) => (
+                                  <Typography key={discipline.name}>SB: {discipline.sb}</Typography>
+                                ))
+                              }
+                            </TableCell>
+                            <TableCell>
+                              {/* <Button onClick={() => handleEdit(row)}>
+                          <Pencil className='cursor-pointer' color='green' />
+                        </Button> */}
+                              <Button onClick={() => handleDelete(row.id)}>
+                                <Trash2 className='cursor-pointer' color='red' />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[15]}
+                  component="div"
+                  count={totalCount}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Paper>
+            )
+        }
+
       </Box>
     </Box>
   )

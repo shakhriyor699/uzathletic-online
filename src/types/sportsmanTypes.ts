@@ -40,6 +40,7 @@ export interface ISportsman {
   sportsmen_disciplines: ISportsmanDesciplines[]
   event_registrations: any
   address: string
+  status: boolean
   gender: {
     id: number
     name: string | any

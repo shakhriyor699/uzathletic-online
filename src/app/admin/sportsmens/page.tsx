@@ -15,6 +15,7 @@ const SportsmensPage = async () => {
   const sportsmens = await getAllSportsmens()
   const genders = await getAllGender()
   const eventRegistrationTypes = await getAllEventRegistrations(1)
+  const sportTypes = await getAllSportTypes(80)
   const countries = await getAllCountry()
   const currentUser = await getCurrentUser()
   const cities = await getAllCities()
@@ -27,6 +28,7 @@ const SportsmensPage = async () => {
         currentUser={currentUser['user-data']}
         genders={genders}
         cities={cities.data}
+        sportTypes={sportTypes}
       />
       <CreateSportsmenModal
         genders={genders}
