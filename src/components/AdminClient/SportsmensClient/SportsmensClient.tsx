@@ -21,7 +21,7 @@ interface SportsmentsClientProps {
   totalPage: number
   genders?: IGender[]
   cities?: ICity[]
-  sportTypes: ISportType[]
+  sportTypes?: ISportType[]
 }
 
 const SportsmensClient: FC<SportsmentsClientProps> = ({
