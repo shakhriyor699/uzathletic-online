@@ -54,7 +54,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
 
 
   const loadEvents = async (page: number, name?: string) => {
-    const res = await getAllSportsmens(page, name)
+    const res = await getAllSportsmens(page, name, null, '', null, true)
     setData(res.data)
     setTotalCount(res.total);
   }
@@ -120,7 +120,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
           Создать
         </Button>}
         {
-          data.filter((item) => item.status).length > 0 && <Box className='flex gap-3 items-center mb-3'>
+           <Box className='flex gap-3 items-center mb-3'>
             <TextField
               label={'Поиск'}
               variant="outlined"
@@ -216,7 +216,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {data.filter((item) => item.status).map((row, i) => {
+                      {data.map((row, i) => {
                         return (
                           <TableRow
                             key={row.id}

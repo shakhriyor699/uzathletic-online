@@ -7,8 +7,8 @@ export const create = async (data: ICreateSportsman) => {
   return res
 }
 
-export const getAll = async (page = 1, name?: string, gender?: number, address?: string, eventType?: number) => {
-  const { data } = await axiosWithAuth.get(`/sportsman/all?page=${page}${gender ? `&gender=${gender}` : ''}${address ? `&address=${address}` : ''}${eventType ? `&event-type=${eventType}` : ''}`, {
+export const getAll = async (page = 1, name?: string, gender?: number | null, address?: string, eventType?: number | null, is_archive?: boolean) => {
+  const { data } = await axiosWithAuth.get(`/sportsman/all?page=${page}${gender ? `&gender=${gender}` : ''}${address ? `&address=${address}` : ''}${eventType ? `&event-type=${eventType}` : ''}${is_archive ? `&is_archive=${is_archive}` : ''}`, {
     params: {
       name,
       limit: 10

@@ -3,6 +3,8 @@ import { getAllevents } from '@/app/actions/getAllevents';
 import { IUserData } from '@/types/authTypes';
 import { IEvent } from '@/types/eventTypes';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from '@mui/material';
+import { Eye } from 'lucide-react';
+import Link from 'next/link';
 import React, { FC, useEffect } from 'react'
 
 
@@ -59,7 +61,7 @@ const ArchiveClient: FC<EventsClientProps> = ({ data, currentUser }) => {
   return (
     <div className='flex flex-col items-center'>
       <div style={{ height: 400, width: '70%' }}>
-        <Typography variant='h4' sx={{ mb: 3 }}>Соревнования</Typography>
+        <Typography variant='h4' sx={{ mb: 3 }}>Архив соревнований</Typography>
         <Paper sx={{ width: '100%' }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
@@ -73,7 +75,6 @@ const ArchiveClient: FC<EventsClientProps> = ({ data, currentUser }) => {
                     >
                       {column.label}
                     </TableCell>
-
                   ))}
                   <TableCell></TableCell>
                 </TableRow>
@@ -95,7 +96,7 @@ const ArchiveClient: FC<EventsClientProps> = ({ data, currentUser }) => {
                           {row.country?.name.ru}
                         </TableCell>
                         <TableCell sx={{ display: 'flex', justifyContent: 'center', gap: 2 }} align="center">
-                          {/* <Link href={currentUser?.role.name === 'admin' ? `/admin/events/${row.id}` : `/user/events/${row.id}`}><Eye color='gray' /></Link> */}
+                          <Link href={currentUser?.role.name === 'admin' ? `/admin/events/${row.id}` : `/user/events/${row.id}`}><Eye color='gray' /></Link>
                         </TableCell>
                       </TableRow>
                     );
