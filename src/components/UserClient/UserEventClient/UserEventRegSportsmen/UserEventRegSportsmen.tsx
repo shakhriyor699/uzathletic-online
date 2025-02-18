@@ -33,6 +33,9 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
   })
   const attempts = eventRegistration.attempts
 
+  const isSpecialSportType = [51, 52, 54].includes(eventRegistration.sport_type_id);
+
+
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -270,20 +273,46 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                           null
                                         ) : <TableCell sx={{ display: 'flex', gap: 1 }} align='center'>
                                           {
-                                            attempts.map((attempt, index) => (
+                                            attempts.slice(0, 3).map((attempt, index) => (
                                               <Box key={index} sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
                                                 <TextField inputProps={{
                                                   style: { height: '7px' }
                                                 }} placeholder={`Попытка № ${index + 1}`} />
-                                                {
+                                                {/* {
                                                   eventRegistration.event_registration_setting.condition.status === 'false' &&
                                                   <TextField inputProps={{
                                                     style: { height: '7px' }
                                                   }} placeholder={`Ветер`} />
-                                                }
+                                                } */}
                                               </Box>
-                                            ))
-                                          }
+                                            ))}
+                                         
+                                            {isSpecialSportType && (
+                                              <TextField
+                                              
+                                                inputProps={{ style: { height: '7px' } }}
+                                                placeholder="Результат после 3 попыток"
+                                                // sx={{ mt:  }}
+                                              />
+                                            )}
+                                          
+
+                                          {isSpecialSportType &&
+                                            attempts.slice(3, 6).map((attempt, index) => (
+                                              <Box key={index + 3} sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
+                                                <TextField
+                                                  inputProps={{ style: { height: '7px' } }}
+                                                  placeholder={`Попытка № ${index + 4}`}
+                                                />
+                                                {eventRegistration.event_registration_setting.condition.status === 'false' && (
+                                                  <TextField
+                                                    inputProps={{ style: { height: '7px' } }}
+                                                    placeholder="Ветер"
+                                                  />
+                                                )}
+                                              </Box>
+                                            ))}
+
 
                                         </TableCell>
                                       }
