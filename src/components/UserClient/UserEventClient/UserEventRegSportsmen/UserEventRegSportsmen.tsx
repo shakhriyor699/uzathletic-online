@@ -33,7 +33,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
   })
   const attempts = eventRegistration.attempts
 
-  const isSpecialSportType = [51, 52, 54].includes(eventRegistration.sport_type_id);
+  const isSpecialSportType = [51, 52, 54, 55, 56, 57, 65, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id);
 
 
 
@@ -286,16 +286,16 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                                 } */}
                                               </Box>
                                             ))}
-                                         
-                                            {isSpecialSportType && (
-                                              <TextField
-                                              
-                                                inputProps={{ style: { height: '7px' } }}
-                                                placeholder="Результат после 3 попыток"
-                                                // sx={{ mt:  }}
-                                              />
-                                            )}
-                                          
+
+                                          {isSpecialSportType && (
+                                            <TextField
+
+                                              inputProps={{ style: { height: '7px' } }}
+                                              placeholder="Результат после 3 попыток"
+                                            // sx={{ mt:  }}
+                                            />
+                                          )}
+
 
                                           {isSpecialSportType &&
                                             attempts.slice(3, 6).map((attempt, index) => (
