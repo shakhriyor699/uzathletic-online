@@ -164,7 +164,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
       sportsmen: []
     }
 
-    
+
 
 
     try {
@@ -241,7 +241,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
               )}
             />
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-              <InputLabel sx={{ cursor: 'pointer', userSelect: 'none' }} htmlFor='wind'>Имеется ли ветер?</InputLabel>
+              <InputLabel sx={{ cursor: 'pointer', userSelect: 'none' }} htmlFor='wind'>Имеется ли общий ветер?</InputLabel>
               <Input sx={{ cursor: 'pointer' }} id='wind' type="checkbox" {...register('wind')} />
             </Box>
             <Box sx={{ display: 'flex', gap: 2 }}>

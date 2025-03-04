@@ -12,6 +12,8 @@ import { Document, Packer, Paragraph, Table as DocxTable, TableCell as DocxTable
 import { FaFileWord } from "react-icons/fa";
 import { BsFiletypeTxt } from "react-icons/bs";
 import { Controller, FieldValues, useForm } from 'react-hook-form'
+import { ArrowLeftFromLine } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface UserEventRegSportsmenProps {
   eventRegistration: IEventRegistrationResponse
@@ -31,9 +33,14 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
       position: '',
     }
   })
+  const router = useRouter()
   const attempts = eventRegistration.attempts
 
   const isSpecialSportType = [51, 52, 54, 55, 56, 57, 65, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id);
+
+  console.log(currentUser, 'currentUser');
+  console.log(eventRegistration, 'eventRegistration');
+
 
 
 
@@ -129,6 +136,8 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
 
   return (
     <Box>
+      <Button variant="outlined" startIcon={<ArrowLeftFromLine />} onClick={() => router.back()}>
+      </Button>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
@@ -165,7 +174,6 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                         <TableCell>{sportsmen.family_name}</TableCell>
                         <TableCell>{sportsmen.birth}</TableCell>
                         <TableCell>{sportsmen.chest_number}</TableCell>
-
                       </TableRow>
                     ))
                   }
@@ -234,16 +242,31 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                   <TableCell>Регион</TableCell>
                                   <TableCell>BIB</TableCell>
                                   <TableCell>Заявленый результат</TableCell>
+
                                   {
-                                    eventRegistration.user_id === currentUser.id && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49 ? (
-                                      null
-                                    ) : <TableCell align="center">
-                                      Попытки
-                                    </TableCell>
+                                    eventRegistration.user_id === currentUser.id
+                                      // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49 
+                                      ? (
+                                        <TableCell align="center">
+                                          Попытки
+                                        </TableCell>
+                                      ) : null
                                   }
-                                  <TableCell>Результат</TableCell>
-                                  <TableCell>Место</TableCell>
-                                  <TableCell></TableCell>
+                                  {
+                                    eventRegistration.user_id === currentUser.id
+                                      // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49 
+                                      ? (
+                                        <TableCell>Результат</TableCell>
+                                      ) : null
+                                  }
+                                  {
+                                    eventRegistration.user_id === currentUser.id
+                                      // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49 
+                                      ? (
+                                        <TableCell>Место</TableCell>
+                                      ) : null
+                                  }
+                                  {/* <TableCell></TableCell> */}
                                 </TableRow>
                               </TableHead>
                               <TableBody>
@@ -269,65 +292,96 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                         }
                                       </TableCell>
                                       {
-                                        eventRegistration.user_id === currentUser.id && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49 ? (
-                                          null
-                                        ) : <TableCell sx={{ display: 'flex', gap: 1 }} align='center'>
-                                          {
-                                            attempts.slice(0, 3).map((attempt, index) => (
-                                              <Box key={index} sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
-                                                <TextField inputProps={{
-                                                  style: { height: '7px' }
-                                                }} placeholder={`Попытка № ${index + 1}`} />
-                                                {/* {
+                                        eventRegistration.user_id === currentUser.id
+                                          // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49 
+                                          ? (
+                                            <TableCell sx={{ display: 'flex', gap: 1, alignItems: 'center' }} align='center'>
+                                              {
+                                                attempts.slice(0, 3).map((attempt, index) => (
+                                                  <Box key={index} sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
+                                                    <TextField
+                                                      inputProps={{ style: { height: '7px' } }}
+                                                      placeholder={`Ветер`}
+                                                    />
+                                                    <TextField inputProps={{
+                                                      style: { height: '7px' }
+                                                    }} placeholder={`Попытка № ${index + 1}`} />
+                                                    {/* {
                                                   eventRegistration.event_registration_setting.condition.status === 'false' &&
                                                   <TextField inputProps={{
                                                     style: { height: '7px' }
                                                   }} placeholder={`Ветер`} />
                                                 } */}
-                                              </Box>
-                                            ))}
+                                                  </Box>
+                                                ))}
 
-                                          {isSpecialSportType && (
-                                            <TextField
-
-                                              inputProps={{ style: { height: '7px' } }}
-                                              placeholder="Результат после 3 попыток"
-                                            // sx={{ mt:  }}
-                                            />
-                                          )}
-
-
-                                          {isSpecialSportType &&
-                                            attempts.slice(3, 6).map((attempt, index) => (
-                                              <Box key={index + 3} sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
+                                              {isSpecialSportType && (
                                                 <TextField
+
                                                   inputProps={{ style: { height: '7px' } }}
-                                                  placeholder={`Попытка № ${index + 4}`}
+                                                  placeholder="Результат после 3 попыток"
+                                                // sx={{ mt:  }}
                                                 />
-                                                {eventRegistration.event_registration_setting.condition.status === 'false' && (
-                                                  <TextField
-                                                    inputProps={{ style: { height: '7px' } }}
-                                                    placeholder="Ветер"
-                                                  />
-                                                )}
-                                              </Box>
-                                            ))}
+                                              )}
 
 
-                                        </TableCell>
+                                              {isSpecialSportType &&
+                                                attempts.slice(3, 6).map((attempt, index) => (
+                                                  <Box key={index + 3} sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
+                                                    <TextField
+                                                      inputProps={{ style: { height: '7px' } }}
+                                                      placeholder={`Ветер`}
+                                                    />
+                                                    <TextField
+                                                      inputProps={{ style: { height: '7px' } }}
+                                                      placeholder={`Попытка № ${index + 4}`}
+                                                    />
+                                                    {eventRegistration.event_registration_setting.condition.status === 'false' && (
+                                                      <TextField
+                                                        inputProps={{ style: { height: '7px' } }}
+                                                        placeholder="Ветер"
+                                                      />
+                                                    )}
+                                                  </Box>
+                                                ))}
+
+
+                                            </TableCell>
+
+                                          ) :
+                                          null
                                       }
                                       <TableCell>
-                                        <TextField inputProps={{
-                                          style: { height: '7px' }
-                                        }} placeholder='Результат' />
+                                        {
+                                          eventRegistration.user_id === currentUser.id
+                                            // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49 
+                                            ? (
+                                              <TextField inputProps={{
+                                                style: { height: '7px' }
+                                              }} placeholder='Результат' />
+                                            ) : null
+                                        }
+
                                       </TableCell>
                                       <TableCell>
-                                        <TextField inputProps={{
-                                          style: { height: '7px' }
-                                        }} placeholder='Место' />
+                                        {
+                                          eventRegistration.user_id === currentUser.id
+                                            // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49 
+                                            ? (
+                                              <TextField inputProps={{
+                                                style: { height: '7px' }
+                                              }} placeholder='Место' />
+                                            ) : null
+                                        }
                                       </TableCell>
                                       <TableCell>
-                                        <Button variant='contained'>Сохранить</Button>
+                                        {
+                                          eventRegistration.user_id === currentUser.id
+                                            // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49 
+                                            ? (
+                                              <Button variant='contained'>Сохранить</Button>
+                                            ) : null
+                                        }
                                       </TableCell>
                                     </TableRow>
                                   ))
