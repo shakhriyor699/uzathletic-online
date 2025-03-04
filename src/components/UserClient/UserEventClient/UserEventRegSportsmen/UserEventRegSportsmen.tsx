@@ -299,13 +299,31 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                               {
                                                 attempts.slice(0, 3).map((attempt, index) => (
                                                   <Box key={index} sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
-                                                    <TextField
-                                                      inputProps={{ style: { height: '7px' } }}
-                                                      placeholder={`Ветер`}
+                                                    <Controller
+                                                      name={`wind.${sportsmen.sportsman.id}`}
+                                                      control={control}
+                                                      render={({ field }) => (
+                                                        <TextField
+                                                          inputProps={{ style: { height: '7px' } }}
+                                                          placeholder={`Ветер`}
+                                                          {...field}
+                                                        />
+                                                      )}
                                                     />
-                                                    <TextField inputProps={{
-                                                      style: { height: '7px' }
-                                                    }} placeholder={`Попытка № ${index + 1}`} />
+                                                    <Controller
+                                                      name={`attempt.${index + 1}`}
+                                                      control={control}
+                                                      render={({ field }) => (
+                                                        <TextField inputProps={{
+                                                          style: { height: '7px' }
+                                                        }} placeholder={`Попытка № ${index + 1}`}
+                                                          {...field}
+                                                        />
+
+                                                      )}
+                                                    />
+
+
                                                     {/* {
                                                   eventRegistration.event_registration_setting.condition.status === 'false' &&
                                                   <TextField inputProps={{
