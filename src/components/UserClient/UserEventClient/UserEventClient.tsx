@@ -83,7 +83,7 @@ const UserEventClient: FC<UserEventClientProps> = ({ event, days }) => {
                                   >
                                     <TableCell>{event.start_time.split(' ')[1]}</TableCell>
                                     <TableCell>{event.name.ru}</TableCell>
-                                    <TableCell sx={{ display: 'flex', gap: 2 }}>
+                                    <TableCell>
                                       <Link href={`/user/events/${event.event_id}/event-registration/${event.id}`}>
                                         <Eye className='cursor-pointer' size={17} />
                                       </Link>
