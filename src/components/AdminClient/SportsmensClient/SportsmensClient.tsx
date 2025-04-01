@@ -37,6 +37,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const [page, setPage] = React.useState(0);
   const [totalCount, setTotalCount] = React.useState(totalPage);
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
+  const filteredData = data.filter((item) => item.status);
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -49,7 +50,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   }, [page, searchQuery]);
 
 
-  console.log(sportTypes);
+
 
 
 
@@ -111,6 +112,9 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   }
 
 
+
+
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Box sx={{ height: 400, width: '70%' }}>
@@ -120,7 +124,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
           Создать
         </Button>}
         {
-           <Box className='flex gap-3 items-center mb-3'>
+          <Box className='flex gap-3 items-center mb-3'>
             <TextField
               label={'Поиск'}
               variant="outlined"
@@ -194,9 +198,8 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
         }
 
         {
-          data.filter((item) => item.status).length === 0 ?
-            <Typography variant='h6' className='text-center'>Нет данных</Typography>
-            :
+          filteredData.length > 0 ?
+
             (
               <Paper sx={{ width: '100%' }}>
                 <TableContainer sx={{ maxHeight: 440 }}>
@@ -216,7 +219,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {data.map((row, i) => {
+                      {filteredData.map((row, i) => {
                         return (
                           <TableRow
                             key={row.id}
@@ -277,7 +280,8 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
                   onRowsPerPageChange={handleChangeRowsPerPage}
                 />
               </Paper>
-            )
+            ) : <Typography variant='h6' className='text-center'>Нет данных</Typography>
+            
         }
 
       </Box>

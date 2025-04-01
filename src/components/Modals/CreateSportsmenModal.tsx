@@ -50,6 +50,9 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
   const [page, setPage] = useState(1);
   const router = useRouter()
 
+  
+  
+
 
 
   useEffect(() => {
@@ -150,7 +153,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
 
 
 
-  console.log(options);
+
 
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -425,7 +428,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({
                   }}
                   id='sportType'
                   options={options
-                    .filter(option => option.event !== null && option.status === true)
+                    .filter(option => option.event !== null /* && option.status === true */)
                     .map(option => ({
                       id: option.id,
                       label: `${option.event.name?.ru ? option.event.name.ru : ''}, ${option.name.ru}`,

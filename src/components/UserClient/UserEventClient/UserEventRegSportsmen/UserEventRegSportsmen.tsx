@@ -19,7 +19,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import React, { type FC } from "react"
+import React, { useMemo, type FC } from "react"
 import { saveAs } from "file-saver"
 import {
   Document,
@@ -32,9 +32,11 @@ import {
   TextRun,
 } from "docx"
 import { FaFileWord } from "react-icons/fa"
-import { Controller, type FieldValues, useForm } from "react-hook-form"
+import { Controller, type FieldValues, useFieldArray, useForm } from "react-hook-form"
 import { ArrowLeftFromLine } from "lucide-react"
 import { useRouter } from "next/navigation"
+import axios from "axios"
+import { toast } from "sonner"
 
 interface UserEventRegSportsmenProps {
   eventRegistration: IEventRegistrationResponse
@@ -59,7 +61,16 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
   const router = useRouter()
   const attempts = eventRegistration.attempts
 
-  const isSpecialSportType = [51, 52, 54, 55, 56, 57, 65, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id)
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "points"
+  });
+
+
+  const isSpecialSportType = useMemo(() => [51, 52, 54, 55, 56, 57, 65, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id), [
+    eventRegistration.sport_type_id])
+  const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, 64, 67].includes(eventRegistration.sport_type_id), [eventRegistration.sport_type_id])
+
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue)
@@ -159,9 +170,19 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
 
     if (data.attempts && typeof data.attempts === "object") {
       formattedAttempts = Object.entries(data.attempts).map(([key, value]) => ({
+
         key,
         value,
       }))
+    }
+
+    if (isSpecialSportType) {
+
+      formattedAttempts.push({ key: "resultAfterThreeAttempts", value: data.resultAfterThreeAttempts || "" })
+
+
+      // payload.resultAfterThreeAttempts = data.resultAfterThreeAttempts || ""
+      // payload.wind = data.wind || ""
     }
 
     const payload: any = {
@@ -170,32 +191,28 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
       attempts: formattedAttempts,
       result: data.result,
       position: data.position,
-      condition: data.condition,
+      condition: data.wind,
     }
 
-    if (isSpecialSportType) {
 
-      payload.resultAfterThreeAttempts = data.resultAfterThreeAttempts || ""
-      payload.wind = data.wind || ""
-    }
+
 
     console.log("Sending payload:", payload)
 
-    // try {
-    //   const res = await axios.post('/api/eventSportsmen', payload);
-    //   if (res.status === 200) {
-    //     toast.success('Сохранено');
-    //     router.refresh();
-    //   }
-    // } catch (error) {
-    //   console.error('Error submitting start list:', error);
-    //   toast.error('Произошла ошибка');
-    // }
+    try {
+      const res = await axios.post('/api/eventSportsmen', payload);
+      if (res.status === 200) {
+        toast.success('Сохранено');
+        router.refresh();
+      }
+    } catch (error) {
+      console.error('Error submitting start list:', error);
+      toast.error('Произошла ошибка');
+    }
   }
 
   const handleSubmitWithId = (id: number) => {
     handleSubmit((data) => {
-      console.log(data)
 
       const sportsman = eventSportsmen.sportsmen.find((s: any) => s.id === id)
       if (sportsman) {
