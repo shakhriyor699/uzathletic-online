@@ -33,7 +33,7 @@ import {
 } from "docx"
 import { FaFileWord } from "react-icons/fa"
 import { Controller, type FieldValues, useFieldArray, useForm } from "react-hook-form"
-import { ArrowLeftFromLine } from "lucide-react"
+import { ArrowLeftFromLine, CircleMinus, CirclePlus } from "lucide-react"
 import { useRouter } from "next/navigation"
 import axios from "axios"
 import { toast } from "sonner"
@@ -52,11 +52,17 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
   eventSportsmen,
 }) => {
   const [value, setValue] = React.useState("1")
+  const isSpecialSportType = useMemo(() => [51, 52, 54, 55, 56, 57, 65, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id), [
+    eventRegistration.sport_type_id])
+  const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, 64, 67].includes(eventRegistration.sport_type_id), [eventRegistration.sport_type_id])
+  const defaultValues = useMemo(() => ({
+    position: "",
+    result: "",
+    ...(isSpecialSportTypeWithPoints ? { points: [{ point: "" }] } : {})
+  }), [isSpecialSportTypeWithPoints]);
   const { register, handleSubmit, reset, control, resetField, getValues } = useForm<FieldValues>({
     mode: "onChange",
-    defaultValues: {
-      position: "",
-    },
+    defaultValues
   })
   const router = useRouter()
   const attempts = eventRegistration.attempts
@@ -66,10 +72,17 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
     name: "points"
   });
 
+  const handleAddPoint = () => {
+    append({ point: "" });
+  }
 
-  const isSpecialSportType = useMemo(() => [51, 52, 54, 55, 56, 57, 65, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id), [
-    eventRegistration.sport_type_id])
-  const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, 64, 67].includes(eventRegistration.sport_type_id), [eventRegistration.sport_type_id])
+  const handleRemovePoint = (index: number) => {
+    remove(index);
+  }
+
+
+
+
 
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -148,6 +161,8 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
       saveAs(blob, "Athletes.docx")
     })
   }
+
+
 
   const downloadTxt = () => {
     const rows: any = startList?.map((startListItem: any) => {
@@ -348,7 +363,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                       </Box>
                     ) : null}
                     <Paper sx={{ width: "100%" }}>
-                      <TableContainer sx={{ maxHeight: 440 }}>
+                      <TableContainer sx={{ maxHeight: 440, overflow: "auto", width: '1200px' }}>
                         <Table stickyHeader aria-label="sticky table">
                           <TableHead>
                             <TableRow>
@@ -478,6 +493,46 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                                     )} */}
                                         </Box>
                                       ))}
+
+                                    {isSpecialSportTypeWithPoints &&
+                                      fields.map((field, index) => (
+                                        <Box key={field.id} sx={{ display: "flex", gap: 0.5 }}>
+                                          <Box>
+                                            <Controller
+                                              name={`points.${index + 1}`}
+                                              control={control}
+                                              render={({ field }) => (
+                                                <TextField
+                                                  inputProps={{ style: { height: "7px", width: "120px" } }}
+                                                  placeholder={`Высота`}
+                                                  {...field}
+                                                />
+                                              )}
+                                            />
+                                            <Controller
+                                              name={`points.${index + 1}`}
+                                              control={control}
+                                              render={({ field }) => (
+                                                <TextField
+                                                  inputProps={{ style: { height: "7px", width: "120px" } }}
+                                                  placeholder={`Очко`}
+                                                  {...field}
+                                                />
+                                              )}
+                                            />
+                                          </Box>
+                                          <Button onClick={() => handleRemovePoint(index)}>
+                                            <CircleMinus />
+                                          </Button>
+                                        </Box>
+
+                                      ))
+
+                                    }
+                                    {isSpecialSportTypeWithPoints && <Button onClick={handleAddPoint}>
+                                      <CirclePlus />
+                                    </Button>}
+
                                   </TableCell>
                                 ) : null}
                                 <TableCell>
