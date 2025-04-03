@@ -82,9 +82,6 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
 
 
 
-
-
-
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue)
   }
@@ -185,20 +182,19 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
 
     if (data.attempts && typeof data.attempts === "object") {
       formattedAttempts = Object.entries(data.attempts).map(([key, value]) => ({
-
         key,
         value,
       }))
     }
 
     if (isSpecialSportType) {
-
       formattedAttempts.push({ key: "resultAfterThreeAttempts", value: data.resultAfterThreeAttempts || "" })
-
-
       // payload.resultAfterThreeAttempts = data.resultAfterThreeAttempts || ""
       // payload.wind = data.wind || ""
     }
+
+
+
 
     const payload: any = {
       event_registration_id: Number(eventRegistration.id),
@@ -209,21 +205,29 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
       condition: data.wind,
     }
 
-
-
-
-    console.log("Sending payload:", payload)
-
-    try {
-      const res = await axios.post('/api/eventSportsmen', payload);
-      if (res.status === 200) {
-        toast.success('Сохранено');
-        router.refresh();
-      }
-    } catch (error) {
-      console.error('Error submitting start list:', error);
-      toast.error('Произошла ошибка');
+    if (isSpecialSportTypeWithPoints && data.pointsAttachment) {
+      payload.attempts = data.pointsAttachment.map((point: any) => ({
+        height: point.height,
+        point: point.point
+      }))
     }
+
+    console.log(data);
+
+    console.log("Sending payload:", payload);
+
+
+
+    // try {
+    //   const res = await axios.post('/api/eventSportsmen', payload);
+    //   if (res.status === 200) {
+    //     toast.success('Сохранено');
+    //     router.refresh();
+    //   }
+    // } catch (error) {
+    //   console.error('Error submitting start list:', error);
+    //   toast.error('Произошла ошибка');
+    // }
   }
 
   const handleSubmitWithId = (id: number) => {
@@ -260,6 +264,13 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
             }
           }
           payload.wind = windValues
+        }
+
+        if (isSpecialSportTypeWithPoints && data.points) {
+          payload.pointsAttachment = data.points.map((point: any) => ({
+            height: point.height,
+            point: point.point,
+          }))
         }
 
         onSubmitSportsmans(payload, id)
@@ -339,7 +350,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                   <Typography sx={{ mb: 2 }} variant="h4">
                     {key}
                   </Typography>
-                  <form action="">
+                  <form className="max-w-[1250px] w-[100%] mx-auto">
                     {eventRegistration.event_registration_setting.condition.status === "true" ? (
                       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                         <Controller
@@ -363,7 +374,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                       </Box>
                     ) : null}
                     <Paper sx={{ width: "100%" }}>
-                      <TableContainer sx={{ maxHeight: 440, overflow: "auto", width: '1200px' }}>
+                      <TableContainer sx={{ maxHeight: 440, overflow: "auto" }}>
                         <Table stickyHeader aria-label="sticky table">
                           <TableHead>
                             <TableRow>
@@ -385,7 +396,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                 // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49
                                 <TableCell>Место</TableCell>
                               ) : null}
-                              {/* <TableCell></TableCell> */}
+                              <TableCell align="center">Действие</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -497,9 +508,9 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                     {isSpecialSportTypeWithPoints &&
                                       fields.map((field, index) => (
                                         <Box key={field.id} sx={{ display: "flex", gap: 0.5 }}>
-                                          <Box>
+                                          <Box className='flex flex-col gap-2'>
                                             <Controller
-                                              name={`points.${index + 1}`}
+                                              name={`points.${index}.height`}
                                               control={control}
                                               render={({ field }) => (
                                                 <TextField
@@ -510,7 +521,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                               )}
                                             />
                                             <Controller
-                                              name={`points.${index + 1}`}
+                                              name={`points.${index}.point`}
                                               control={control}
                                               render={({ field }) => (
                                                 <TextField
@@ -521,15 +532,14 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                               )}
                                             />
                                           </Box>
-                                          <Button onClick={() => handleRemovePoint(index)}>
+                                          <Button className="p-0 min-w-[20px]" color="error" onClick={() => handleRemovePoint(index)}>
                                             <CircleMinus />
                                           </Button>
                                         </Box>
-
                                       ))
 
                                     }
-                                    {isSpecialSportTypeWithPoints && <Button onClick={handleAddPoint}>
+                                    {isSpecialSportTypeWithPoints && <Button className="p-0 min-w-[20px]" onClick={handleAddPoint}>
                                       <CirclePlus />
                                     </Button>}
 
@@ -544,7 +554,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                       render={({ field }) => (
                                         <TextField
                                           inputProps={{
-                                            style: { height: "7px" },
+                                            style: { height: "7px", width: "100px" },
                                           }}
                                           placeholder="Результат"
                                           {...field}
@@ -563,7 +573,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                       render={({ field }) => (
                                         <TextField
                                           inputProps={{
-                                            style: { height: "7px" },
+                                            style: { height: "7px", width: "100px" },
                                           }}
                                           placeholder="Место"
                                           {...field}

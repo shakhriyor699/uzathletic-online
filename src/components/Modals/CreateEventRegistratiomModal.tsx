@@ -127,6 +127,8 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
   };
 
   const onSubmit = async (data: any) => {
+    console.log(data);
+
     const newData = {
       user_id: data.judge.id,
       event_id: Number(params.eventId),
@@ -165,20 +167,18 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
     }
 
 
-
-
-    try {
-      const res = id ? await axios.put(`/api/eventRegistration/${id}`, newData) : await axios.post('/api/eventRegistration', newData)
-      if (res.status === 200) {
-        toast.success('Событие создано')
-      }
-    } catch (error) {
-      toast.error('Событие не создано')
-    } finally {
-      reset()
-      handleClose()
-      router.refresh()
-    }
+    // try {
+    //   const res = id ? await axios.put(`/api/eventRegistration/${id}`, newData) : await axios.post('/api/eventRegistration', newData)
+    //   if (res.status === 200) {
+    //     toast.success('Событие создано')
+    //   }
+    // } catch (error) {
+    //   toast.error('Событие не создано')
+    // } finally {
+    //   reset()
+    //   handleClose()
+    //   router.refresh()
+    // }
 
   }
 
@@ -225,12 +225,13 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
                   //   onScroll: handleScroll
                   // }}
                   id="sportType"
+                  multiple
                   options={options.map((option) => ({
                     id: option.id,
                     label: option.sport_type_name.en,
                     gender_id: option.gender_id,
                   }))}
-                  value={field.value || null}
+                  value={field.value || []}
                   isOptionEqualToValue={(option, value) => option.id === value?.id}
                   getOptionLabel={(option) => option.label || ""}
                   onChange={(event, value) => {
