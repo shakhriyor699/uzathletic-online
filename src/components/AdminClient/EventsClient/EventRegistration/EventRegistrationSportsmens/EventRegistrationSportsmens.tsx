@@ -44,7 +44,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   const router = useRouter()
 
 
-  
+
 
 
   // const addGroup = () => {
@@ -297,6 +297,9 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     const blob = new Blob(rows, { type: "text/plain;charset=utf-8" });
     saveAs(blob, "Athletes.txt");
   };
+
+  console.log(eventSportsmen);
+
 
 
   return (

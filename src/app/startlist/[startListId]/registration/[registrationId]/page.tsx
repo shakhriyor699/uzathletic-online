@@ -1,4 +1,5 @@
 import { getEventRegistrationById } from '@/app/actions/getEventRegistrationById'
+import { getEventSportsmenById } from '@/app/actions/getEventSportsmenById'
 import { getStartLists } from '@/app/actions/getStartList'
 import EventRegistrationSportsmens from '@/components/AdminClient/EventsClient/EventRegistration/EventRegistrationSportsmens/EventRegistrationSportsmens'
 import { Button } from '@mui/material'
@@ -16,6 +17,7 @@ interface Params {
 const RegistrationIdPage: FC<Params> = async ({ params }) => {
   const eventRegistration = await getEventRegistrationById(params.registrationId)
   const startList = await getStartLists(params.registrationId)
+  const eventSportsmen = await getEventSportsmenById(params.registrationId)
 
 
 
@@ -27,7 +29,7 @@ const RegistrationIdPage: FC<Params> = async ({ params }) => {
           На главную
         </Link>
       </Button>
-      <EventRegistrationSportsmens startList={startList.sportsmen_sortables} eventRegistration={eventRegistration} />
+      <EventRegistrationSportsmens startList={startList.sportsmen_sortables} eventRegistration={eventRegistration} eventSportsmen={eventSportsmen} />
     </>
   )
 }
