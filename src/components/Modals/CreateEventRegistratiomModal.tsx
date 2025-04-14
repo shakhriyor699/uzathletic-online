@@ -134,7 +134,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
       event_id: Number(params.eventId),
       city_id: data.city.id,
       gender_id: data.sportType.gender_id,
-      sport_type_id: data.sportType.id,
+      sport_type_id: data.sportType.length === 1 ? data.sportType[0].id : null,
       name: {
         ru: data.sportType.label,
         uz: data.sportType.label,
@@ -163,22 +163,24 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
           }
         }
       )),
-      sportsmen: []
+      sportsmen: [],
+      sport_types: data.sportType.length > 1 ? data.sportType.map((item: any) => item.id) : []
     }
+    console.log(newData);
 
 
-    // try {
-    //   const res = id ? await axios.put(`/api/eventRegistration/${id}`, newData) : await axios.post('/api/eventRegistration', newData)
-    //   if (res.status === 200) {
-    //     toast.success('Событие создано')
-    //   }
-    // } catch (error) {
-    //   toast.error('Событие не создано')
-    // } finally {
-    //   reset()
-    //   handleClose()
-    //   router.refresh()
-    // }
+    try {
+      const res = id ? await axios.put(`/api/eventRegistration/${id}`, newData) : await axios.post('/api/eventRegistration', newData)
+      if (res.status === 200) {
+        toast.success('Событие создано')
+      }
+    } catch (error) {
+      toast.error('Событие не создано')
+    } finally {
+      reset()
+      handleClose()
+      router.refresh()
+    }
 
   }
 
