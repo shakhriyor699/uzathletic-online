@@ -12,7 +12,7 @@ import { IGetUser } from '@/types/userTypes';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { Autocomplete, Box, Button, Input, InputLabel, Modal, Tab, TextField, Typography } from '@mui/material'
+import { Autocomplete, Box, Button, Checkbox, Input, InputLabel, Modal, Tab, TextField, Typography } from '@mui/material'
 import axios from 'axios';
 import { CircleX } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
@@ -568,6 +568,11 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
                           onChange={(e) => updateMultiSportItem(index, "wind", e.target.checked)}
                         />
                       </Box> */}
+
+                      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                        <InputLabel sx={{ cursor: 'pointer', userSelect: 'none' }} htmlFor={`wind-${index}`}>Имеется ли общий ветер?</InputLabel>
+                        <Checkbox id={`wind-${index}`} sx={{ cursor: 'pointer' }} checked={item.wind} onChange={(e) => updateMultiSportItem(index, "wind", e.target.checked)} />
+                      </Box>
 
                       <TextField
                         label="Дата начала"
