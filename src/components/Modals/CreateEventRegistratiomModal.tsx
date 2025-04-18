@@ -57,7 +57,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedOptions, setSelectedOptions] = useState<any[]>([]);
   const [multiSportItems, setMultiSportItems] = useState<Array<{
-    sportType: { id: number; label: string } | null;
+    sportType: { id: number; label: string, gender_id: number } | null;
     datestart: { date: string; time: string } | null;
     country: { id: number; name: { [key: string]: string } } | null;
     city: { id: number; label: string } | null;
@@ -242,31 +242,44 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
         return
       }
 
-      // const newData = {
-      //   user_id: users[0]?.id,
-      //   event_id: Number(params.eventId),
-      //   city_id: cityByCountry.cities[0]?.id,
-      //   gender_id: 1,
-      //   name: {
-      //     ru: "Многоборье",
-      //     uz: "Многоборье",
-      //     en: "Multi-sport",
-      //   },
-      //   attempts: 1,
-      //   type: "Многоборье",
-      //   description: "",
-      //   start_time: 
-      //   end_time: "2025-01-10 10:01:12",
-      //   condition: {
-      //     status: "false",
-      //   },
-      //   condition_type: "wind",
-      //   procedure: [],
-      //   sportsmen: [],
-      //   sport_types: multiSportItems.map((item) => (item.sportType ? item.sportType.id : null)).filter(Boolean),
-      // }
+      const newData = {
+        user_id: null,
+        event_id: Number(params.eventId),
+        city_id: multiSportItems[0].city?.id,
+        gender_id: multiSportItems[0].sportType?.gender_id || null,
+        name: {
+          ru: "Многоборье",
+          uz: "Многоборье",
+          en: "Multi-sport",
+        },
+        attempts: 1,
+        type: "multievent",
+        description: "",
+        start_time: multiSportItems[0].datestart,
+        end_time: null,
+        condition: {
+          status: null,
+        },
+        condition_type: "wind",
+        procedure: [],
+        sportsmen: [],
+        sport_types: multiSportItems.map((item) => {
+          return {
+            sport_type_id: item.sportType?.id,
+            sport_type_name: item.sportType?.label,
+            start_time: item.datestart,
+            end_time: null,
+            attempts: item.attempts,
+            condition: {
+              status: item.wind ? "true" : "false",
+            },
+            user_id: item.judge?.id
+          }
 
-      // console.log("Sending multi-sport data to API:", newData)
+        })/* .filter(Boolean) */,
+      }
+
+      console.log("Sending multi-sport data to API:", newData)
 
       // const res = id
       //   ? await axios.put(`/api/eventRegistration/${id}`, newData)
@@ -551,8 +564,9 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
                         options={options.map((option) => ({
                           id: option.id,
                           label: option.sport_type_name.en,
+                          gender_id: option.gender_id,
                         }))}
-                        value={item.sportType ? { ...item.sportType, id: item.sportType.id.toString() } : null}
+                        value={item.sportType ? { ...item.sportType, id: item.sportType.id.toString(), gender_id: item.sportType.gender_id } : null}
                         onChange={(_, value) => updateMultiSportItem(index, "sportType", value)}
                         isOptionEqualToValue={(option, value) => option.id === value?.id}
                         getOptionLabel={(option) => option?.label || ""}
