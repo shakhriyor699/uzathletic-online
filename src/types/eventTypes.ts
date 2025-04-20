@@ -5,6 +5,7 @@ export interface IEventResponse {
   parent_id?: string
   country_id: string
   name: ILang
+  sport_types?: any[]
   days?: {
     day: string
   }[]

@@ -55,7 +55,7 @@ export interface IEventRegistrationResponse {
     event_registration_id: number
     id: number
   }
-
+  sport_types?: any[]
 }
 
 export interface IEventRegistration {
@@ -78,5 +78,6 @@ export interface IEventRegistration {
     type: ILang
   }
   sportsmen: ISportsmen[]
+  sport_types?: any[]
 
 }

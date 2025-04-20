@@ -214,18 +214,18 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
     // console.log(newData);
 
 
-    // try {
-    //   const res = id ? await axios.put(`/api/eventRegistration/${id}`, newData) : await axios.post('/api/eventRegistration', newData)
-    //   if (res.status === 200) {
-    //     toast.success('Событие создано')
-    //   }
-    // } catch (error) {
-    //   toast.error('Событие не создано')
-    // } finally {
-    //   reset()
-    //   handleClose()
-    //   router.refresh()
-    // }
+    try {
+      const res = id ? await axios.put(`/api/eventRegistration/${id}`, newData) : await axios.post('/api/eventRegistration', newData)
+      if (res.status === 200) {
+        toast.success('Событие создано')
+      }
+    } catch (error) {
+      toast.error('Событие не создано')
+    } finally {
+      reset()
+      handleClose()
+      router.refresh()
+    }
   }
 
   const handleSubmitTab2 = async (e: React.FormEvent) => {
@@ -258,7 +258,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
         start_time: multiSportItems[0].datestart,
         end_time: null,
         condition: {
-          status: null,
+          status: 'wind',
         },
         condition_type: "wind",
         procedure: [],
@@ -281,23 +281,27 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
 
       console.log("Sending multi-sport data to API:", newData)
 
-      // const res = id
-      //   ? await axios.put(`/api/eventRegistration/${id}`, newData)
-      //   : await axios.post("/api/eventRegistration", newData)
+      const res = id
+        ? await axios.put(`/api/eventRegistration/${id}`, newData)
+        : await axios.post("/api/eventRegistration", newData)
 
-      // if (res.status === 200) {
-      //   toast.success("Многоборье создано")
-      //   setMultiSportItems([
-      //     {
-      //       sportType: null,
-      //       datestart: "",
-      //       wind: false,
-      //       attempts: 1,
-      //     },
-      //   ])
-      //   handleClose()
-      //   router.refresh()
-      // }
+      if (res.status === 200) {
+        toast.success("Многоборье создано")
+        setMultiSportItems([
+          {
+            sportType: null,
+            datestart: null,
+            country: null,
+            city: null,
+            judge: null,
+            procedures: null,
+            wind: false,
+            attempts: 1,
+          },
+        ])
+        handleClose()
+        router.refresh()
+      }
     } catch (error) {
       console.error("Error submitting multi-sport form:", error)
       toast.error("Многоборье не создано")
@@ -333,7 +337,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
     setMultiSportItems(newItems)
   }
 
-  // Handle updating a multi-sport item
+ 
   const updateMultiSportItem = (index: number, field: string, value: any) => {
     const newItems = [...multiSportItems]
     newItems[index] = { ...newItems[index], [field]: value }

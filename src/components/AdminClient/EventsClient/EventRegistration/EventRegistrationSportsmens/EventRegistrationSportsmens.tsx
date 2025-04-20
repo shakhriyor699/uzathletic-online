@@ -298,7 +298,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     saveAs(blob, "Athletes.txt");
   };
 
-  console.log(eventSportsmen);
 
 
 
