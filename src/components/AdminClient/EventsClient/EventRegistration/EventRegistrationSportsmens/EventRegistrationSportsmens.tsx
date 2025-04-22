@@ -132,6 +132,9 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
         sportsmen: processedData,
       };
 
+      console.log(payload);
+      
+
       const res = await axios.post('/api/startList', payload);
       if (res.status === 200) {
         toast.success('Спортсмен добавлен в стартлист');
