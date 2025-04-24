@@ -114,14 +114,32 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     // resetField('sportsmen')
     // router.refresh()
 
+    // console.log(data);
+
+
     try {
       const processedData = {} as Record<string, any>;
+
       for (const groupName in data) {
         if (Array.isArray(data[groupName])) {
-          processedData[groupName] = data[groupName].map((sportsman: any) => ({
-            sportsman_id: sportsman.id,
-            position: sportsman.position,
-          }));
+          processedData[groupName] = data[groupName]
+            .filter((sportsman: any, index: number) => {
+              if (!sportsman || typeof sportsman !== 'object') {
+                console.error(`Invalid sportsman at index ${index} in group ${groupName}:`, sportsman);
+                return false;
+              }
+              if (!('id' in sportsman) || !('position' in sportsman)) {
+                console.error(`Missing id or position at index ${index} in group ${groupName}:`, sportsman);
+                return false;
+              }
+              return true;
+            })
+            .map((sportsman: any) => ({
+              sportsman_id: sportsman.id,
+              position: sportsman.position,
+            }));
+
+          console.log(`Processed group ${groupName}:`, processedData[groupName]);
         } else {
           console.error(`Invalid data for group: ${groupName}`, data[groupName]);
         }
@@ -132,8 +150,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
         sportsmen: processedData,
       };
 
-      console.log(payload);
-      
 
       const res = await axios.post('/api/startList', payload);
       if (res.status === 200) {

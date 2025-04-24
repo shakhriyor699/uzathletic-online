@@ -53,7 +53,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   const router = useRouter()
 
 
-  console.log(eventRegistrationTypes);
+
 
 
 
