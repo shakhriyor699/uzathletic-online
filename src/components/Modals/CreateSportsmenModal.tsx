@@ -217,26 +217,26 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
         name: option.label.replace(/^[^,]+, /, ""),
         pb: option.pb,
         sb: option.sb,
-        event_registration_id: option.event_registration_id || option.id,  // Используйте сохраненный ID или запасной вариант
+        event_registration_id: option.event_registration_id || option.id,  
       })),
     }
 
     console.log(newData);
 
 
-    // try {
-    //   const res = id ? await axios.put(`/api/sportsmens/${id}`, newData) : await axios.post("/api/sportsmens", newData)
-    //   if (res.status === 200) {
-    //     toast.success("Спортсмен добавлен")
-    //   }
-    // } catch (error) {
-    //   toast.error("Спортсмен не добавлен")
-    // } finally {
-    //   setSelectedOptions([])
-    //   reset()
-    //   handleClose()
-    //   router.refresh()
-    // }
+    try {
+      const res = id ? await axios.put(`/api/sportsmens/${id}`, newData) : await axios.post("/api/sportsmens", newData)
+      if (res.status === 200) {
+        toast.success("Спортсмен добавлен")
+      }
+    } catch (error) {
+      toast.error("Спортсмен не добавлен")
+    } finally {
+      setSelectedOptions([])
+      reset()
+      handleClose()
+      router.refresh()
+    }
 
     // const res = await axios.post('/api/sportsmens', newData)
 

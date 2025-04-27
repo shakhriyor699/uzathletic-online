@@ -121,6 +121,10 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       const processedData = {} as Record<string, any>;
 
       for (const groupName in data) {
+        if (groupName === 'position' || groupName === 'result') {
+          continue; // пропускаем эти ключи
+        }
+
         if (Array.isArray(data[groupName])) {
           processedData[groupName] = data[groupName]
             .filter((sportsman: any, index: number) => {
@@ -145,10 +149,14 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
         }
       }
 
+
       const payload = {
         event_registration_id: Number(eventRegistration.id),
         sportsmen: processedData,
       };
+
+      console.log(payload, processedData);
+
 
 
       const res = await axios.post('/api/startList', payload);
