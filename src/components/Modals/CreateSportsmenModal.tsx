@@ -158,7 +158,10 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   }
 
   const countriesOptions = [
-    ...countries.map((option) => ({ id: option.id, label: option.name.ru })),
+    ...countries.map((option) => ({
+      id: option.id,
+      label: typeof option.name === "object" && "ru" in option.name ? option.name.ru : option.name,
+    })),
     // { id: 'add-new', label: 'Добавить, если нет подходящего?' }
   ]
 
