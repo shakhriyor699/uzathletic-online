@@ -53,6 +53,8 @@ const EventsClient: FC<EventsClientProps> = ({ data, currentUser }) => {
   const [events, setEvents] = React.useState<IEvent[]>(data)
   const router = useRouter()
 
+
+
   useEffect(() => {
     loadEvents(page + 1)
   }, [page]);
