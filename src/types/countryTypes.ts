@@ -3,7 +3,7 @@ import { ILang } from "./langTypes"
 
 export interface ICountry {
   id: number
-  name: ILang
+  name: ILang | string
 }
 
 export interface ICountryCreate {

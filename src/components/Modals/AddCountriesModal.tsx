@@ -50,7 +50,9 @@ const AddCountriesModal: FC<IAddCountriesModalProps> = ({ countries }) => {
         en: data.nameen
       }
     }
-    const res = await axios.post('/api/countries', newData)
+    console.log(data);
+    
+    const res = await axios.post('/api/countries', data)
     router.refresh()
     if (res.status === 200) {
       toast.success('Страна добавлена')
@@ -92,9 +94,9 @@ const AddCountriesModal: FC<IAddCountriesModalProps> = ({ countries }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <InputLabel id="demo-simple-select-label" htmlFor='nameuz'>Название страны</InputLabel>
-            <TextField {...register('nameuz', { required: true })} name="nameuz" id="name" type="text" variant="outlined" sx={{ width: '100%' }} placeholder="Название этапа uz" />
-            <TextField {...register('nameru', { required: true })} name="nameru" id="name" type="text" variant="outlined" sx={{ width: '100%' }} placeholder="Название этапа ru" />
-            <TextField {...register('nameen', { required: true })} name="nameen" id="name" type="text" variant="outlined" sx={{ width: '100%' }} placeholder="Название этапа en" />
+            <TextField {...register('name', { required: true })} name="name" id="name" type="text" variant="outlined" sx={{ width: '100%' }} placeholder="Введите в формате (Uzbekistan - UZB)" />
+            {/* <TextField {...register('nameru', { required: true })} name="nameru" id="name" type="text" variant="outlined" sx={{ width: '100%' }} placeholder="Название этапа ru" /> */}
+            {/* <TextField {...register('nameen', { required: true })} name="nameen" id="name" type="text" variant="outlined" sx={{ width: '100%' }} placeholder="Название этапа en" /> */}
             <Button type='submit' variant="contained">Сохранить</Button>
           </Box>
         </form>
@@ -118,7 +120,7 @@ const AddCountriesModal: FC<IAddCountriesModalProps> = ({ countries }) => {
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                           <TableCell>
-                            {row.name.ru}
+                            {typeof row.name === 'object' && 'ru' in row.name ? row.name.ru : row.name}
                           </TableCell>
                           <TableCell>
                             <Button onClick={() => handleDelete(row.id)} type='button'><Trash2 color="red" /></Button>
