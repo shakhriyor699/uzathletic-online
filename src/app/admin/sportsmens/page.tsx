@@ -30,6 +30,7 @@ const SportsmensPage = async () => {
         currentUser={currentUser['user-data']}
         genders={genders}
         cities={cities.data}
+        countries={countries}
         sportTypes={sportTypes}
       />
       <CreateSportsmenModal

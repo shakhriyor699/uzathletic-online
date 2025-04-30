@@ -11,7 +11,7 @@ import { getAllSportsmens } from '@/app/actions/getAllSportsmens'
 import { IUserData } from '@/types/authTypes'
 import { IGender } from '@/types/genderTypes'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
-import { ICity } from '@/types/countryTypes'
+import { ICity, ICountry } from '@/types/countryTypes'
 import { IEventRegistrationResponse } from '@/types/eventRegistrationTypes'
 import { ISportType } from '@/types/sportTypeTypes'
 
@@ -22,6 +22,7 @@ interface SportsmentsClientProps {
   genders?: IGender[]
   cities?: ICity[]
   sportTypes?: ISportType[]
+  countries: ICountry[]
 }
 
 const SportsmensClient: FC<SportsmentsClientProps> = ({
@@ -30,7 +31,8 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   totalPage,
   genders,
   cities,
-  sportTypes
+  sportTypes,
+  countries
 }) => {
   const { handleOpen } = useSportsmenModal()
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
@@ -93,10 +95,12 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
 
 
   const onSubmit = async (data: FieldValues) => {
+    
+
     setSubmitting(true)
 
     try {
-      const res = await getAllSportsmens(page, '', data.gender ? data.gender.id : '', data.cities ? data.cities.label : '', data['event-type'] ? data['event-type'].id : '')
+      const res = await getAllSportsmens(page, '', data.gender ? data.gender.id : '', data.cities ? data.cities.label : data.countries.label, data['event-type'] ? data['event-type'].id : '')
       setData(res.data)
     } catch (error) {
       throw error
@@ -168,6 +172,25 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
                   getOptionLabel={(option) => option.label}
                   onChange={(event, value) => field.onChange(value)}
                   renderInput={(params) => <TextField  {...params} label="Регион" />}
+                />
+              )}
+            />
+            <Controller
+              name="countries"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  {...field}
+                  sx={{
+                    width: 300,
+                  }}
+                  id='cities'
+                  options={countries?.map((option) => ({ id: option.id, label: typeof option.name === 'object' ? option.name.ru : option.name })) || []}
+                  value={countries?.map((option) => ({ id: option.id, label: typeof option.name === 'object' ? option.name.ru : option.name })).find((option) => option.id === field.value?.id) || null}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => option.label}
+                  onChange={(event, value) => field.onChange(value)}
+                  renderInput={(params) => <TextField  {...params} label="Страна" />}
                 />
               )}
             />
@@ -281,7 +304,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
                 />
               </Paper>
             ) : <Typography variant='h6' className='text-center'>Нет данных</Typography>
-            
+
         }
 
       </Box>
