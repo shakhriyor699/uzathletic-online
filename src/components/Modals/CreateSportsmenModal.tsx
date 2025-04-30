@@ -1,7 +1,9 @@
 "use client"
 import { getAllEventRegistrations } from "@/app/actions/getAllEventRegistration"
 import { getCitiesByCountryId } from "@/app/actions/getCitiesByCountry"
+import { useAddCountriesModal } from "@/hooks/useAddCountriesModal"
 import useSportsmenModal from "@/hooks/useSportsmenModal"
+import { IUserData } from "@/types/authTypes"
 import type { ICountry } from "@/types/countryTypes"
 import type { IEventRegistrationResponse } from "@/types/eventRegistrationTypes"
 import type { IGender } from "@/types/genderTypes"
@@ -32,9 +34,10 @@ interface CreateSportsmenModalProps {
   genders: IGender[]
   eventRegistrationTypes: IEventRegistrationResponse[]
   countries: ICountry[]
+  currentUser?: IUserData | undefined
 }
 
-const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventRegistrationTypes, countries }) => {
+const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventRegistrationTypes, countries, currentUser }) => {
   const { open, handleClose, id, sportsmanToEdit } = useSportsmenModal()
   const [selectedOptions, setSelectedOptions] = useState<any[]>(sportsmanToEdit?.sportsmen_disciplines || [])
   const {
@@ -51,6 +54,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   const [cities, setCities] = useState([])
   const [page, setPage] = useState(1)
   const router = useRouter()
+  const { handleOpen } = useAddCountriesModal()
 
 
 
@@ -157,12 +161,17 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
     setSelectedOptions(selectedOptions.filter((option) => option !== optionToDelete))
   }
 
+  const handleOpenAddCountries = () => {
+    handleClose()
+    handleOpen()
+  }
+
   const countriesOptions = [
     ...countries.map((option) => ({
       id: option.id,
       label: typeof option.name === "object" && "ru" in option.name ? option.name.ru : option.name,
     })),
-    // { id: 'add-new', label: 'Добавить, если нет подходящего?' }
+    { id: 'add-new', label: 'Добавить, если нет подходящего?' }
   ]
 
   const fetchCities = async (id: string) => {
@@ -220,7 +229,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
         name: option.label.replace(/^[^,]+, /, ""),
         pb: option.pb,
         sb: option.sb,
-        event_registration_id: option.event_registration_id || option.id,  
+        event_registration_id: option.event_registration_id || option.id,
       })),
     }
 
@@ -315,11 +324,11 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
                       if (value) fetchCities(value.id)
                     }}
                     renderInput={(params) => <TextField {...params} label="Страна" />}
-                    renderOption={(props, option) => (
-                      <li {...props} /* onClick={option.id === 'add-new' ? handleOpenAddCountries : props.onClick} */>
+                    renderOption={(props, option) => {
+                      return currentUser?.role.name === 'admin' && <li {...props} onClick={option.id === 'add-new' ? handleOpenAddCountries : props.onClick} >
                         {option.label}
                       </li>
-                    )}
+                    }}
                   />
                 )}
               />

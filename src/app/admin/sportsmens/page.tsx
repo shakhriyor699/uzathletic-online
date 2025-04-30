@@ -6,6 +6,7 @@ import { getAllSportsmens } from '@/app/actions/getAllSportsmens'
 import { getAllSportTypes } from '@/app/actions/getAllSportTypes'
 import { getCurrentUser } from '@/app/actions/getCurrentUser'
 import SportsmensClient from '@/components/AdminClient/SportsmensClient/SportsmensClient'
+import AddCountriesModal from '@/components/Modals/AddCountriesModal'
 import CreateSportsmenModal from '@/components/Modals/CreateSportsmenModal'
 import React from 'react'
 
@@ -19,6 +20,7 @@ const SportsmensPage = async () => {
   const countries = await getAllCountry()
   const currentUser = await getCurrentUser()
   const cities = await getAllCities()
+  const getAllCountries = await getAllCountry()
 
   return (
     <>
@@ -34,7 +36,9 @@ const SportsmensPage = async () => {
         genders={genders}
         eventRegistrationTypes={eventRegistrationTypes}
         countries={countries}
+        currentUser={currentUser['user-data']}
       />
+      <AddCountriesModal countries={getAllCountries} />
     </>
   )
 }
