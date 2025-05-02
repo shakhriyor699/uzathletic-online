@@ -72,7 +72,8 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
 
   useEffect(() => {
     if (id && sportsmanToEdit) {
-
+      console.log(id);
+      
       setValue('name', sportsmanToEdit.name)
       setValue('surname', sportsmanToEdit.family_name)
       setValue('birth', sportsmanToEdit.birth)
@@ -94,11 +95,16 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
       }))
       setSelectedOptions(disciplines)
     }
+    console.log(sportsmanToEdit, 'asd');
+    
 
 
 
   }, [id, sportsmanToEdit, setValue])
 
+
+  console.log(selectedOptions, 'selectedOptions');
+  
 
 
   // useEffect(() => {
@@ -124,6 +130,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   const handleModalClose = () => {
     handleClose()
     reset()
+    setSelectedOptions([])
     router.refresh()
   }
 
@@ -191,7 +198,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   }
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log('data', data);
+
 
     const newData = {
       name: data.name,
@@ -228,11 +235,11 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
       //   event_registration_id: option.id,
       // })),
       sportsmen_disciplines: selectedOptions.map((option: any) => ({
-        // id: id ? option.id : null,
+        id: id ? option.id : null,
         name: option.label.replace(/^[^,]+, /, ""),
         pb: option.pb,
         sb: option.sb,
-        event_registration_id: option.event_registration_id || option.id,
+        event_registration_id: option.event_registration_id ,
       })),
     }
 

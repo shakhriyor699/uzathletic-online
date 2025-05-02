@@ -43,7 +43,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   const [groupName, setGroupName] = useState<string>('');
   const router = useRouter()
 
-  console.log(eventRegistration, 'asd');
+  console.log(eventRegistration, startList, eventSportsmen, 'asd');
 
 
 
@@ -314,13 +314,17 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
 
   const downloadTxt = () => {
-    const rows: any = startList?.map((startListItem: any) => {
-      return Object.keys(startListItem.sportsmen).map((key) => {
-        return startListItem.sportsmen[key].map((athlete: any) => (
-          `A,${athlete.sportsman.name},${athlete.sportsman.family_name},${athlete.sportsman.birth},${athlete.sportsman.gender_id === 1 ? 'M' : 'F'},${athlete.sportsman.address},${athlete.sport_type_number},${athlete.sportsman.sportsmen_disciplines?.map((discipline: any) => discipline.sb)},M\n`
-        )
-        ).join("\n")
-      })
+    // const rows: any = startList?.map((startListItem: any) => {
+    //   return Object.keys(startListItem.sportsmen).map((key) => {
+    //     return startListItem.sportsmen[key].map((athlete: any) => (
+    //       `A,${athlete.sportsman.name},${athlete.sportsman.family_name},${athlete.sportsman.birth},${athlete.sportsman.gender_id === 1 ? 'M' : 'F'},${athlete.sportsman.address},${athlete.sport_type_number},${athlete.sportsman.sportsmen_disciplines?.map((discipline: any) => discipline.sb)},M\n`
+    //     )
+    //     ).join("\n")
+    //   })
+    // })
+
+    const rows: any = eventSportsmen.sportsmen.map((athlete: any) => {
+      return `A,${athlete.sportsmen.name},${athlete.sportsmen.family_name},${athlete.sportsmen.birth},${athlete.sportsmen.gender_id === 1 ? 'M' : 'F'},${athlete.sportsmen.address}`
     })
     const blob = new Blob(rows, { type: "text/plain;charset=utf-8" });
     saveAs(blob, "Athletes.txt");
