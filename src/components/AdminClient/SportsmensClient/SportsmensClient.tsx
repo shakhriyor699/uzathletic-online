@@ -49,7 +49,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
 
   useEffect(() => {
     loadEvents(page + 1, searchQuery)
-  }, [page, searchQuery]);
+  }, [page, searchQuery, sportsmens, handleOpen]);
 
 
 
@@ -95,12 +95,9 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
 
 
   const onSubmit = async (data: FieldValues) => {
-    
-
     setSubmitting(true)
-
     try {
-      const res = await getAllSportsmens(page, '', data.gender ? data.gender.id : '', data.cities ? data.cities.label : data.countries.label, data['event-type'] ? data['event-type'].id : '')
+      const res = await getAllSportsmens(page, '', data.gender ? data.gender.id : '', data.cities ? data.cities.label : data.countries ? data.countries.labe : '', data['event-type'] ? data['event-type'].id : '')
       setData(res.data)
     } catch (error) {
       throw error
@@ -114,9 +111,6 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
     router.refresh();
     setData(sportsmens)
   }
-
-
-
 
 
   return (
@@ -280,9 +274,9 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
                               }
                             </TableCell>
                             <TableCell>
-                              {/* <Button onClick={() => handleEdit(row)}>
-                          <Pencil className='cursor-pointer' color='green' />
-                        </Button> */}
+                              {<Button onClick={() => handleEdit(row)}>
+                                <Pencil className='cursor-pointer' color='green' />
+                              </Button>}
                               <Button onClick={() => handleDelete(row.id)}>
                                 <Trash2 className='cursor-pointer' color='red' />
                               </Button>

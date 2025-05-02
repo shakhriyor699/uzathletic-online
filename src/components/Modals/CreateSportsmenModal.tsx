@@ -63,56 +63,8 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
 
   useEffect(() => {
     if (id) {
-      setValue("name", sportsmanToEdit?.name)
-      setValue("surname", sportsmanToEdit?.family_name)
-      // { id: option.id, label: `${option.name.ru}/${option.name.uz}/${option.name.en}` }
-      // const selectedOptions = sportsmanToEdit?.coaches.map((coach: any) => ({ id: coach.id, label: `${coach.name}/${coach.family_name}` }));
-      // setValue('input1', selectedOptions);
-      setValue("gender", {
-        id: sportsmanToEdit?.gender.id,
-        label: `${sportsmanToEdit?.gender.name.ru}/${sportsmanToEdit?.gender.name.uz}/${sportsmanToEdit?.gender.name.en}`,
-      })
-      setValue("birth", sportsmanToEdit?.birth)
-      setValue("bib", sportsmanToEdit?.chest_number)
-      setValue("address", { id: sportsmanToEdit?.address, label: sportsmanToEdit?.address })
+      console.log(sportsmanToEdit);
 
-      if (sportsmanToEdit?.coaches) {
-        // const coachesData = sportsmanToEdit.coaches.map((coach: any) => ({
-        //   value: coach.family_name,
-        // }))
-        // setValue("input1", coachesData)
-
-        // const coachesNames = sportsmanToEdit.coaches.map((coach: any) => ({
-        //   value: coach.name,
-        // }))
-        // setValue("input2", coachesNames)
-        const coachesData = sportsmanToEdit.coaches.map((coach: any) => ({
-          id: coach.id,
-          name: coach.name,
-          family_name: coach.family_name,
-        }))
-        setValue("coaches", coachesData)
-        // sportsmanToEdit.coaches.forEach((_, index) => {
-        //   append({ value: '' });
-        // });
-
-        if (sportsmanToEdit.sportsmen_disciplines && sportsmanToEdit.sportsmen_disciplines.length > 0) {
-          const disciplinesData = sportsmanToEdit.event_registrations.map((discipline: any) => {
-            const matchingEvent = sportsmanToEdit.sportsmen_disciplines.find(
-              (event: any) => event.name === discipline.name.ru,
-            )
-
-            return {
-              id: discipline.id,
-              label: discipline.name.ru,
-              pb: matchingEvent?.pb || "",
-              sb: matchingEvent?.sb || "",
-              // sport_type_id: discipline.sport_type_id,
-            }
-          })
-          setSelectedOptions(disciplinesData)
-        }
-      }
     }
   }, [id, sportsmanToEdit])
 
@@ -123,6 +75,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   const handleModalClose = () => {
     handleClose()
     reset()
+    router.refresh()
   }
 
   const loadOptions = async (page: number) => {
