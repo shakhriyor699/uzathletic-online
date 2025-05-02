@@ -69,30 +69,47 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   // }, [id, sportsmanToEdit])
 
 
+  // useEffect(() => {
+  //   if (id && sportsmanToEdit) {
+  //     setValue('name', sportsmanToEdit.name)
+  //     setValue('surname', sportsmanToEdit.family_name)
+  //     setValue('birth', sportsmanToEdit.birth)
+  //     setValue('bib', sportsmanToEdit.chest_number)
+  //     setValue('gender', sportsmanToEdit.gender)
+  //     setValue('country', {
+  //       id: sportsmanToEdit.address, // Предположим, что вы получаете `Iran - IRN`
+  //       label: sportsmanToEdit.address,
+  //     })
+  //     setValue('coaches', sportsmanToEdit.coaches || [])
+
+  //     // disciplines
+  //     const disciplines = sportsmanToEdit.sportsmen_disciplines.map((d: any) => ({
+  //       id: d.event_registration_id,
+  //       label: `${d.name}, ${d.sb || ''}`,
+  //       pb: d.pb,
+  //       sb: d.sb,
+  //       event_registration_id: d.event_registration_id,
+  //     }))
+  //     setSelectedOptions(disciplines)
+  //   }
+  // }, [id, sportsmanToEdit, setValue])
+
+
   useEffect(() => {
     if (id && sportsmanToEdit) {
-      setValue('name', sportsmanToEdit.name)
-      setValue('surname', sportsmanToEdit.family_name)
-      setValue('birth', sportsmanToEdit.birth)
-      setValue('bib', sportsmanToEdit.chest_number)
-      setValue('gender', sportsmanToEdit.gender)
-      setValue('country', {
-        id: sportsmanToEdit.address, // Предположим, что вы получаете `Iran - IRN`
-        label: sportsmanToEdit.address,
-      })
-      setValue('coaches', sportsmanToEdit.coaches || [])
+      // Обновляем значения формы
+      setValue("name", sportsmanToEdit.name)
+      setValue("surname", sportsmanToEdit.family_name)
+      setValue("birth", sportsmanToEdit.birth)
+      setValue("gender", sportsmanToEdit.gender)
+      setValue("bib", sportsmanToEdit.chest_number)
+      setValue("address", { label: sportsmanToEdit.address })
 
-      // disciplines
-      const disciplines = sportsmanToEdit.sportsmen_disciplines.map((d: any) => ({
-        id: d.event_registration_id,
-        label: `${d.name}, ${d.sb || ''}`,
-        pb: d.pb,
-        sb: d.sb,
-        event_registration_id: d.event_registration_id,
-      }))
-      setSelectedOptions(disciplines)
+      if (JSON.stringify(selectedOptions) !== JSON.stringify(sportsmanToEdit.sportsmen_disciplines)) {
+        setSelectedOptions(sportsmanToEdit.sportsmen_disciplines ?? [])
+      }
     }
-  }, [id, sportsmanToEdit, setValue])
+  }, [id])
 
   useEffect(() => {
     loadOptions(page + 1)

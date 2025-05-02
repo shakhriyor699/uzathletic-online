@@ -43,6 +43,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   const [groupName, setGroupName] = useState<string>('');
   const router = useRouter()
 
+  console.log(eventRegistration, 'asd');
 
 
 
