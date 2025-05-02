@@ -52,6 +52,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   }, [page, searchQuery, sportsmens, handleOpen]);
 
 
+console.log(filteredData, 'sportsmen');
 
 
 

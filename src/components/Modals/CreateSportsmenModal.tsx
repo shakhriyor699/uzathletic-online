@@ -69,8 +69,10 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   // }, [id, sportsmanToEdit])
 
 
+
   useEffect(() => {
     if (id && sportsmanToEdit) {
+
       setValue('name', sportsmanToEdit.name)
       setValue('surname', sportsmanToEdit.family_name)
       setValue('birth', sportsmanToEdit.birth)
@@ -82,19 +84,19 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
       })
       setValue('coaches', sportsmanToEdit.coaches || [])
 
+      // disciplines
       const disciplines = sportsmanToEdit.sportsmen_disciplines.map((d: any) => ({
-        id: d.event_registration_id,
-        label: `${d.name}, ${d.sb || ''}`,
+        id: d.id,
+        label: `${d.name}`,
         pb: d.pb,
         sb: d.sb,
         event_registration_id: d.event_registration_id,
       }))
-
-      const isSame = JSON.stringify(disciplines) === JSON.stringify(selectedOptions)
-      if (!isSame) {
-        setSelectedOptions(disciplines)
-      }
+      setSelectedOptions(disciplines)
     }
+
+
+
   }, [id, sportsmanToEdit, setValue])
 
 
@@ -219,19 +221,21 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
       //   }
       // )),
       // sportsmen_disciplines: selectedOptions.map((option: any) => ({
-      //   // id: id ? option.id : null,
+      //   id: id ? option.id : null,
       //   name: option.label.replace(/^[^,]+, /, ""),
       //   pb: option.pb,
       //   sb: option.sb,
       //   event_registration_id: option.id,
       // })),
       sportsmen_disciplines: selectedOptions.map((option: any) => ({
+        // id: id ? option.id : null,
         name: option.label.replace(/^[^,]+, /, ""),
         pb: option.pb,
         sb: option.sb,
         event_registration_id: option.event_registration_id || option.id,
       })),
     }
+
 
 
 
