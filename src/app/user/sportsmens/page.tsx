@@ -24,6 +24,7 @@ const SportsmensPage = async () => {
         totalPage={sportsmens.total}
         currentUser={currentUser['user-data']}
         genders={genders}
+        countries={countries}
       />
       <CreateSportsmenModal
         genders={genders}
