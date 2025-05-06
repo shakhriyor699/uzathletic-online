@@ -73,7 +73,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   useEffect(() => {
     if (id && sportsmanToEdit) {
       console.log(id);
-      
+
       setValue('name', sportsmanToEdit.name)
       setValue('surname', sportsmanToEdit.family_name)
       setValue('birth', sportsmanToEdit.birth)
@@ -96,7 +96,6 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
       setSelectedOptions(disciplines)
     }
     console.log(sportsmanToEdit, 'asd');
-    
 
 
 
@@ -104,7 +103,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
 
 
   console.log(selectedOptions, 'selectedOptions');
-  
+
 
 
   // useEffect(() => {
@@ -197,6 +196,9 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
     }
   }
 
+  console.log(selectedOptions);
+  
+
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
 
 
@@ -239,10 +241,11 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
         name: option.label.replace(/^[^,]+, /, ""),
         pb: option.pb,
         sb: option.sb,
-        event_registration_id: option.event_registration_id ,
+        event_registration_id: option.event_registration_id,
       })),
     }
 
+    console.log(newData, 'newdata');
 
 
 

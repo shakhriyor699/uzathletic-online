@@ -179,7 +179,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
       event_id: Number(params.eventId),
       city_id: data.city.id,
       gender_id: data.sportType.gender_id,
-      sport_type_id: data.sportType.length === 1 ? data.sportType[0].id : null,
+      sport_type_id:  data.sportType.id ,
       name: {
         ru: data.sportType.label,
         uz: data.sportType.label,
@@ -211,7 +211,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
       sportsmen: [],
       sport_types: data.sportType.length > 1 ? data.sportType.map((item: any) => item.id) : []
     }
-    // console.log(newData);
+    console.log(newData, 'newData');
 
 
     try {

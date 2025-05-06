@@ -323,14 +323,15 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     //   })
     // })
 
-    const rows: any = eventSportsmen.sportsman.map((athlete: any) => {
-      return `A,${athlete.sportsmen.name},${athlete.sportsmen.family_name},${athlete.sportsmen.birth},${athlete.sportsmen.gender_id === 1 ? 'M' : 'F'},${athlete.sportsmen.address}`
+    const rows: any = eventSportsmen.sportsmen.map((athlete: any) => {
+      return `A,${athlete.name},${athlete.family_name},${athlete.birth},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(" - ")[1]},${athlete.sport_type_number},${athlete.sportsmen_disciplines?.map((discipline: any) => discipline.sb)},M\n`
     })
     const blob = new Blob(rows, { type: "text/plain;charset=utf-8" });
     saveAs(blob, "Athletes.txt");
   };
 
 
+  console.log(eventRegistration, '11');
 
 
   return (
@@ -354,6 +355,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                     <TableCell>Имя</TableCell>
                     <TableCell>Фамилия</TableCell>
                     <TableCell>Дата рождения</TableCell>
+                    <TableCell>Регион</TableCell>
                     <TableCell>Нагрудной номер</TableCell>
                     <TableCell></TableCell>
                   </TableRow>
@@ -371,6 +373,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                         </TableCell>
                         <TableCell>{sportsmen.family_name}</TableCell>
                         <TableCell>{sportsmen.birth}</TableCell>
+                        <TableCell>{sportsmen.address}</TableCell>
                         <TableCell>{sportsmen.chest_number}</TableCell>
                         <TableCell>
                           {currentUser?.name === 'Admin' && <Trash2 color='red' className='cursor-pointer' />}
