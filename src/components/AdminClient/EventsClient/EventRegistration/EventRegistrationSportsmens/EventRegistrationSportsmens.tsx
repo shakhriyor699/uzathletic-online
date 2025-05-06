@@ -312,6 +312,13 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     })()
   }
 
+  console.log(startList, '23');
+
+  const deleteStartListItem = async (id: number) => {
+    
+  }
+  
+
 
   const downloadTxt = () => {
     // const rows: any = startList?.map((startListItem: any) => {
@@ -324,14 +331,14 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     // })
 
     const rows: any = eventSportsmen.sportsmen.map((athlete: any) => {
-      return `A,${athlete.name},${athlete.family_name},${athlete.birth},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(" - ")[1]},${athlete.sport_type_number},${athlete.sportsmen_disciplines?.map((discipline: any) => discipline.sb)},M\n`
+      return `A,${athlete.name},${athlete.family_name},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(" - ")[1]},${eventSportsmen.sport_type.sport_type_number},${athlete.sportsmen_disciplines?.map((discipline: any) => discipline.sb)},M\n`
     })
     const blob = new Blob(rows, { type: "text/plain;charset=utf-8" });
     saveAs(blob, "Athletes.txt");
   };
 
 
-  console.log(eventRegistration, '11');
+ 
 
 
   return (
