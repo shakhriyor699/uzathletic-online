@@ -323,7 +323,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     //   })
     // })
 
-    const rows: any = eventSportsmen.sportsmen.map((athlete: any) => {
+    const rows: any = eventSportsmen.sportsman.map((athlete: any) => {
       return `A,${athlete.sportsmen.name},${athlete.sportsmen.family_name},${athlete.sportsmen.birth},${athlete.sportsmen.gender_id === 1 ? 'M' : 'F'},${athlete.sportsmen.address}`
     })
     const blob = new Blob(rows, { type: "text/plain;charset=utf-8" });

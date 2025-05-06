@@ -52,7 +52,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   }, [page, searchQuery, sportsmens, handleOpen]);
 
 
-console.log(filteredData, 'sportsmen');
+  console.log(filteredData, 'sportsmen');
 
 
 
@@ -97,8 +97,12 @@ console.log(filteredData, 'sportsmen');
 
   const onSubmit = async (data: FieldValues) => {
     setSubmitting(true)
+    console.log(data);
+    
     try {
       const res = await getAllSportsmens(page, '', data.gender ? data.gender.id : '', data.cities ? data.cities.label : data.countries ? data.countries.labe : '', data['event-type'] ? data['event-type'].id : '')
+      console.log(data.cities ? data.cities.label : data.countries ? data.countries.label : '');
+
       setData(res.data)
     } catch (error) {
       throw error
