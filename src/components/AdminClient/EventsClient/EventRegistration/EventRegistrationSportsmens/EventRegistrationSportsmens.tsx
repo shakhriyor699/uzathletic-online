@@ -315,9 +315,9 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   console.log(startList, '23');
 
   const deleteStartListItem = async (id: number) => {
-    
+
   }
-  
+
 
 
   const downloadTxt = () => {
@@ -338,7 +338,8 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   };
 
 
- 
+  console.log(startList, 'start');
+
 
 
   return (
@@ -529,11 +530,15 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                                           <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
                                           <TableCell>
                                             {
-                                              sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => (
-                                                <Typography key={discipline.id} component={'span'}>
-                                                  {discipline.sb}
-                                                </Typography>
-                                              ))
+                                              sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => {
+                                                if (eventRegistration.id === discipline.id) {
+                                                  return (<Typography key={discipline.id} component={'span'}>
+                                                    {discipline.sb}
+                                                  </Typography>)
+                                                }
+
+                                              }
+                                              )
                                             }
                                           </TableCell>
                                           {currentUser?.name === 'Admin' &&
