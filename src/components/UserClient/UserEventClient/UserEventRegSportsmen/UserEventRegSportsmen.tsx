@@ -201,7 +201,6 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
     }
 
 
-console.log(isSpecialSportType, 'asd');
 
 
     const payload: any = {
@@ -513,7 +512,7 @@ console.log(isSpecialSportType, 'asd');
                                         </Box>
                                       ))}
 
-                                    {
+                                    {isSpecialSportTypeWithPoints &&
                                       fields.map((field, index) => (
                                         <Box key={field.id} sx={{ display: "flex", gap: 0.5 }}>
                                           <Box className='flex flex-col gap-2'>
