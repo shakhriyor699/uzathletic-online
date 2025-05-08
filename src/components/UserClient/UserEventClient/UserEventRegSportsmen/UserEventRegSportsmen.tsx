@@ -54,16 +54,23 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
   const [value, setValue] = React.useState("1")
   const isSpecialSportType = useMemo(() => [51, 52, 54, 55, 56, 57, 65, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id), [
     eventRegistration.sport_type_id])
+
   const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, 64, 67].includes(eventRegistration.sport_type_id), [eventRegistration.sport_type_id])
+
+  console.log(isSpecialSportTypeWithPoints);
+  
+
   const defaultValues = useMemo(() => ({
     position: "",
     result: "",
     ...(isSpecialSportTypeWithPoints ? { points: [{ point: "" }] } : {})
   }), [isSpecialSportTypeWithPoints]);
+
   const { register, handleSubmit, reset, control, resetField, getValues } = useForm<FieldValues>({
     mode: "onChange",
     defaultValues
   })
+
   const router = useRouter()
   const attempts = eventRegistration.attempts
 
@@ -194,6 +201,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
     }
 
 
+console.log(isSpecialSportType, 'asd');
 
 
     const payload: any = {
@@ -417,10 +425,10 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                 </TableCell>
                                 {eventRegistration.user_id === currentUser.id ? (
                                   // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49
-                                  <TableCell sx={{ display: "flex", gap: 1, alignItems: "center" }} align="center">
-                                    {attempts.slice(0, 3).map((attempt, index) => (
+                                   <TableCell sx={{ display: "flex", gap: 1, alignItems: "center" }} align="center">
+                                    {isSpecialSportType && attempts.slice(0, 3).map((attempt, index) => (
                                       <Box key={index} sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
-                                        {isSpecialSportType && <Controller
+                                        {/* isSpecialSportType && */ <Controller
                                           name={`wind.${index + 1}`}
                                           control={control}
                                           render={({ field }) => (
@@ -505,7 +513,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                         </Box>
                                       ))}
 
-                                    {isSpecialSportTypeWithPoints &&
+                                    {
                                       fields.map((field, index) => (
                                         <Box key={field.id} sx={{ display: "flex", gap: 0.5 }}>
                                           <Box className='flex flex-col gap-2'>

@@ -179,14 +179,14 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
       event_id: Number(params.eventId),
       city_id: data.city.id,
       gender_id: data.sportType.gender_id,
-      sport_type_id:  data.sportType.id ,
+      sport_type_id: data.sportType.id,
       name: {
         ru: data.sportType.label,
         uz: data.sportType.label,
         en: data.sportType.label
       },
       attempts: Number(data.attempts),
-      type: data.sportType.label,
+      type: /* data.sportType.label */ 'single',
       description: '',
       start_time: data.datestart.replace('T', ' '),
       end_time: /* data.dateend.replace('T', ' ') */ '2025-01-10 10:01:12',
@@ -211,7 +211,6 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
       sportsmen: [],
       sport_types: data.sportType.length > 1 ? data.sportType.map((item: any) => item.id) : []
     }
-    console.log(newData, 'newData');
 
 
     try {
@@ -337,7 +336,7 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
     setMultiSportItems(newItems)
   }
 
- 
+
   const updateMultiSportItem = (index: number, field: string, value: any) => {
     const newItems = [...multiSportItems]
     newItems[index] = { ...newItems[index], [field]: value }
