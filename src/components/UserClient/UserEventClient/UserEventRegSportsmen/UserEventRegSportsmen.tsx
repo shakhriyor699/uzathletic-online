@@ -514,7 +514,8 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                         <Box key={field.id} sx={{ display: "flex", gap: 0.5 }}>
                                           <Box className='flex flex-col gap-2'>
                                             <Controller
-                                              name={`points.${index}.height`}
+                                              // name={`points.${index}.height`}
+                                              name={`points.${sportsmen.sportsman.id}.height`}
                                               control={control}
                                               render={({ field }) => (
                                                 <TextField
@@ -525,7 +526,8 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                               )}
                                             />
                                             <Controller
-                                              name={`points.${index}.point`}
+                                              // name={`points.${index}.point`}
+                                              name={`points.${sportsmen.sportsman.id}.point`}
                                               control={control}
                                               render={({ field }) => (
                                                 <TextField
@@ -536,7 +538,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                               )}
                                             />
                                           </Box>
-                                          <Button className="p-0 min-w-[20px]" color="error" onClick={() => handleRemovePoint(index)}>
+                                          <Button className="p-0 min-w-[20px]" color="error" onClick={() => handleRemovePoint(sportsmen.sportsman.id)}>
                                             <CircleMinus />
                                           </Button>
                                         </Box>
