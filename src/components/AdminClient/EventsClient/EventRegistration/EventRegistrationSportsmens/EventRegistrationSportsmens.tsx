@@ -419,26 +419,28 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     // })
 
     const rows: any = eventSportsmen.sportsmen.map((athlete: any) => {
-      return `A,${athlete.name},${athlete.family_name},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(" - ")[1]},${eventSportsmen.sport_type.sport_type_number},${athlete.sportsmen_disciplines?.map((discipline: any) => {
-        if (eventRegistration.id == discipline.event_registration_id) return discipline.sb
-      })},M\n`
+      const discipline = athlete.sportsmen_disciplines?.find(
+        (d: any) => d.event_registration_id === eventRegistration.id
+      );
+      const sb = discipline?.sb ?? '';
+      return `A,${athlete.family_name},${athlete.name},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(" - ")[1]},${eventSportsmen.sport_type.sport_type_number},${sb},M\n`
     })
     const blob = new Blob(rows, { type: "text/plain;charset=utf-8" });
     saveAs(blob, "Athletes.txt");
   };
 
 
-  console.log(eventRegistration.id, 'id');
+  // console.log(eventRegistration.id, 'id');
 
-  const rows: any = eventSportsmen.sportsmen.map((athlete: any) => {
-    return `A,${athlete.name},${athlete.family_name},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(" - ")[1]},${eventSportsmen.sport_type.sport_type_number},${athlete.sportsmen_disciplines?.map((discipline: any) => {
-      console.log(eventRegistration.id == discipline.event_registration_id);
+  // const rows: any = eventSportsmen.sportsmen.map((athlete: any) => {
+  //   return `A,${athlete.name},${athlete.family_name},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(" - ")[1]},${eventSportsmen.sport_type.sport_type_number},${athlete.sportsmen_disciplines?.map((discipline: any) => {
+  //     console.log(eventRegistration.id == discipline.event_registration_id);
 
-      if (eventRegistration.id == discipline.event_registration_id) return discipline.sb
-    })},M\n`
-  })
+  //     if (eventRegistration.id == discipline.event_registration_id) return discipline.sb
+  //   })},M\n`
+  // })
 
-  console.log(rows);
+  // console.log(rows);
 
 
 
