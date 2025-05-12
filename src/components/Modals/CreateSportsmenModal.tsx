@@ -250,10 +250,10 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
 
 
     try {
-      const res = id ? await axios.put(`/api/sportsmens/${id}`, newData) : await axios.post("/api/sportsmens", newData)
-      if (res.status === 200) {
-        toast.success("Спортсмен добавлен")
-      }
+        const res = id ? await axios.put(`/api/sportsmens/${id}`, newData) : await axios.post("/api/sportsmens", newData)
+        if (res.status === 200) {
+          toast.success("Спортсмен добавлен")
+        }
     } catch (error) {
       toast.error("Спортсмен не добавлен")
     } finally {

@@ -263,8 +263,95 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
 
 
+  const downLoadResultDoc = (eventSportsmen: any) => {
+    const headerRow = new DocxTableRow({
+      children: [
+        new DocxTableCell({ children: [new Paragraph("№")] }),
+        new DocxTableCell({ children: [new Paragraph("Name Surname")] }),
+        new DocxTableCell({ children: [new Paragraph("DOB")] }),
+        new DocxTableCell({ children: [new Paragraph("Country/Region")] }),
+        new DocxTableCell({ children: [new Paragraph("BIB")] }),
+        // new DocxTableCell({ children: [new Paragraph("Вид")] }),
+        ...(eventSportsmen?.attempts?.length > 0
+          ? eventSportsmen.attempts.map((_: any, index: number) =>
+            new DocxTableCell({ children: [new Paragraph(`Attempt ${index + 1}`)] })
+          )
+          : [new DocxTableCell({ children: [new Paragraph("Attempts")] })]),
+        new DocxTableCell({ children: [new Paragraph("Result")] }),
+        new DocxTableCell({ children: [new Paragraph("Place")] }),
+      ],
+    });
+
+    const bodyRows = eventSportsmen.sportsmen.map((sportsman: any, index: number) => {
+      const baseCells = [
+        new DocxTableCell({ children: [new Paragraph((index + 1).toString())] }),
+        new DocxTableCell({
+          children: [new Paragraph(`${sportsman.name || ''} ${sportsman.family_name || ''}`)],
+        }),
+        new DocxTableCell({ children: [new Paragraph(sportsman.birth || '')] }),
+        new DocxTableCell({ children: [new Paragraph(sportsman.address || '')] }),
+        new DocxTableCell({ children: [new Paragraph(sportsman.chest_number || '')] }),
+        // new DocxTableCell({ children: [new Paragraph(eventSportsmen.name?.ru || '')] }),
+      ];
+
+      const attemptCells =
+        sportsman.pivot?.attempts?.length > 0
+          ? sportsman.pivot.attempts.map((attempt: any) => {
+            const val = String(Object.values(attempt)[0] || '');
+            return new DocxTableCell({ children: [new Paragraph(val || '-')] });
+          })
+          : eventSportsmen.attempts.map(() =>
+            new DocxTableCell({ children: [new Paragraph("Нет данных")] })
+          );
+
+      const resultCells = [
+        new DocxTableCell({
+          children: [new Paragraph(sportsman.pivot?.result || 'нет результата')],
+        }),
+        new DocxTableCell({
+          children: [new Paragraph(sportsman.pivot?.position || 'нет результата')],
+        }),
+      ];
+
+      return new DocxTableRow({ children: [...baseCells, ...attemptCells, ...resultCells] });
+    });
+
+    const table = new DocxTable({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [headerRow, ...bodyRows],
+    });
+
+    const titleParagraph = new Paragraph({
+      children: [new TextRun({ text: "Результат соревнований", bold: true, size: 24 })],
+      spacing: { after: 300 },
+    });
+
+    const dateParagraph = new Paragraph({
+      children: [new TextRun({ text: "Дата проведения: (число.месяц.год)", size: 16 })],
+    });
+
+    const cityParagraph = new Paragraph({
+      children: [new TextRun({ text: "Город:", size: 16 })],
+    });
+
+    const doc = new Document({
+      sections: [
+        {
+          properties: {},
+          children: [titleParagraph, dateParagraph, cityParagraph, table],
+        },
+      ],
+    });
+
+    Packer.toBlob(doc).then((blob) => {
+      saveAs(blob, "AthletesTable.docx");
+    });
+  }
+
+
+
   const onSubmitSportsmans = async (data: FieldValues, id: number) => {
-    // console.log(data, id);
+
 
     const payload = {
       event_registration_id: Number(eventRegistration.id),
@@ -275,7 +362,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       condition: data.condition
     };
 
-    console.log(payload);
+
 
     try {
       const res = await axios.post('/api/eventSportsmen', payload);
@@ -312,7 +399,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     })()
   }
 
-  console.log(startList, '23');
 
   const deleteStartListItem = async (id: number) => {
 
@@ -338,7 +424,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   };
 
 
-  console.log(startList, 'start');
 
 
 
@@ -605,6 +690,11 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
           <Box>
             <Typography variant='h4' mb={5}>Результаты</Typography>
           </Box>
+          <Box>
+            <Button onClick={() => downLoadResultDoc(eventSportsmen)} type='button' variant='contained' sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <FaFileWord />
+              Скачать результаты</Button>
+          </Box>
           <Paper sx={{ width: '100%' }}>
             <TableContainer sx={{ maxHeight: 440 }}>
               <Table stickyHeader aria-label="sticky table">
@@ -612,41 +702,52 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                   <TableRow>
                     <TableCell>№</TableCell>
                     <TableCell>Спортсмен</TableCell>
+                    <TableCell>Дата рождения</TableCell>
+                    <TableCell>Регион</TableCell>
+                    <TableCell>BIB</TableCell>
                     <TableCell>Вид</TableCell>
-                    {eventSportsmen?.attempts.length > 0 && <TableCell>
-                      {
-                        eventSportsmen?.attempts.map((item: any) => {
-                          // const filteredAttempts = item.event_registration.attempts.filter((item: any) => {
-                          //   return Object.values(item).some((value: any) => value.trim() !== "");
-                          // });
-                          return (
-                            item.length > 0 && 'Попытки'
-                          )
-                        })
-                      }
-                    </TableCell>}
+
+                    {/* Отображение заголовков для попыток */}
+                    {eventSportsmen?.attempts?.length > 0 &&
+                      eventSportsmen.attempts.map((_: any, index: number) => (
+                        <TableCell key={`attempt-header-${index}`}>Попытка {index + 1}</TableCell>
+                      ))}
+
                     <TableCell>Результат</TableCell>
                     <TableCell>Занятое место</TableCell>
                     <TableCell>Действия</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {
-                    eventSportsmen.sportsmen.map((sportsmen: any, index: number) => (
-                      <TableRow key={eventSportsmen.id}>
-                        <TableCell>{sportsmen.id}</TableCell>
-                        <TableCell>{sportsmen.name} {sportsmen.family_name}</TableCell>
-                        <TableCell>{eventSportsmen.name.ru}</TableCell>
-                        <TableCell>{sportsmen.pivot.result || 'нет результата'}</TableCell>
-                        <TableCell>{sportsmen.pivot.position || 'нет результата'}</TableCell>
+                  {eventSportsmen.sportsmen.map((sportsman: any, index: number) => (
+                    <TableRow key={sportsman.id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{sportsman.name} {sportsman.family_name}</TableCell>
+                      <TableCell>{sportsman.birth}</TableCell>
+                      <TableCell>{sportsman.address}</TableCell>
+                      <TableCell>{sportsman.chest_number}</TableCell>
+                      <TableCell>{eventSportsmen.name.ru}</TableCell>
 
-                        {currentUser?.name === 'Admin' &&
-                          <TableCell>
-                            <Trash2 color='red' className='cursor-pointer' />
-                          </TableCell>}
-                      </TableRow>
-                    ))
-                  }
+                      {/* Отображение значений попыток спортсмена */}
+                      {sportsman.pivot?.attempts ? sportsman.pivot?.attempts?.map((attempt: any, i: number) => (
+                        <TableCell key={`attempt-${sportsman.id}-${i}`}>
+                          {String(Object.values(attempt)[0]) || '-'}
+                        </TableCell>
+                      )) : (
+                        eventSportsmen.attempts.map((_: any, index: number) => (
+                          <TableCell key={`attempt-header-${index}`}>Нет данных</TableCell>
+                        ))
+                      )}
+
+                      <TableCell>{sportsman.pivot.result || 'нет результата'}</TableCell>
+                      <TableCell>{sportsman.pivot.position || 'нет результата'}</TableCell>
+
+                      {currentUser?.name === 'Admin' &&
+                        <TableCell>
+                          <Trash2 color='red' className='cursor-pointer' />
+                        </TableCell>}
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
