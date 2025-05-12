@@ -261,6 +261,8 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     });
   };
 
+  console.log(eventSportsmen, 'eventSportsmen');
+  
 
 
   const downLoadResultDoc = (eventSportsmen: any) => {
@@ -273,10 +275,10 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
         new DocxTableCell({ children: [new Paragraph("BIB")] }),
         // new DocxTableCell({ children: [new Paragraph("Вид")] }),
         ...(eventSportsmen?.attempts?.length > 0
-          ? eventSportsmen.attempts.map((_: any, index: number) =>
+         ? eventSportsmen.attempts.map((_: any, index: number) =>
             new DocxTableCell({ children: [new Paragraph(`Attempt ${index + 1}`)] })
-          )
-          : [new DocxTableCell({ children: [new Paragraph("Attempts")] })]),
+          ): []
+           /* [new DocxTableCell({ children: [new Paragraph("Attempts")] })] */),
         new DocxTableCell({ children: [new Paragraph("Result")] }),
         new DocxTableCell({ children: [new Paragraph("Place")] }),
       ],
@@ -417,7 +419,9 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     // })
 
     const rows: any = eventSportsmen.sportsmen.map((athlete: any) => {
-      return `A,${athlete.name},${athlete.family_name},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(" - ")[1]},${eventSportsmen.sport_type.sport_type_number},${athlete.sportsmen_disciplines?.map((discipline: any) => discipline.sb)},M\n`
+      return `A,${athlete.name},${athlete.family_name},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(" - ")[1]},${eventSportsmen.sport_type.sport_type_number},${athlete.sportsmen_disciplines?.map((discipline: any) => {
+        if(eventRegistration.id === discipline.id) return discipline.sb
+      })},M\n`
     })
     const blob = new Blob(rows, { type: "text/plain;charset=utf-8" });
     saveAs(blob, "Athletes.txt");
