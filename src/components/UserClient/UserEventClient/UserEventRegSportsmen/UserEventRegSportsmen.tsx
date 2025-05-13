@@ -275,15 +275,15 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
         }
 
         if (isSpecialSportTypeWithPoints && data.points) {
-          // payload.pointsAttachment = data.points.map((point: any) => ({
-          //   height: point.height,
-          //   point: point.point,
-          // }))
-          console.log(data, 'data');
+          payload.pointsAttachment = data.points[id].map((point: any) => ({
+            height: point.height,
+            point: point.point,
+          }))
+          // console.log(data.points[id], 'data');
 
         }
 
-        onSubmitSportsmans(payload, id)
+        onSubmitSportsmans(payload, id) 
       }
     })()
   }
@@ -360,7 +360,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                   <Typography sx={{ mb: 2 }} variant="h4">
                     {key}
                   </Typography>
-                  <form className="max-w-[1250px] w-[100%] mx-auto">
+                  <form className=" w-[100%] mx-auto">
                     {eventRegistration.event_registration_setting.condition.status === "true" ? (
                       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                         <Controller

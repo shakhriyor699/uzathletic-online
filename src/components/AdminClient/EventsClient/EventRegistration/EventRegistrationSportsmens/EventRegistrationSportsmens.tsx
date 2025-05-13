@@ -208,7 +208,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.name || "")] }),
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.family_name || "")] }),
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.birth || "")] }),
-              new DocxTableCell({ children: [new Paragraph(athlete.sportsman.address || "")] }),
+              new DocxTableCell({ children: [new Paragraph(athlete.sportsman.address.split(" - ")[1] || "")] }),
               new DocxTableCell({
                 children: [new Paragraph(
                   athlete.sportsman.sportsmen_disciplines?.map((discipline: any) => discipline.sb).join(", ") || ""
@@ -291,7 +291,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
           children: [new Paragraph(`${sportsman.name || ''} ${sportsman.family_name || ''}`)],
         }),
         new DocxTableCell({ children: [new Paragraph(sportsman.birth || '')] }),
-        new DocxTableCell({ children: [new Paragraph(sportsman.address || '')] }),
+        new DocxTableCell({ children: [new Paragraph(sportsman.address.split(" - ")[1] || '')] }),
         new DocxTableCell({ children: [new Paragraph(sportsman.chest_number || '')] }),
         // new DocxTableCell({ children: [new Paragraph(eventSportsmen.name?.ru || '')] }),
       ];
