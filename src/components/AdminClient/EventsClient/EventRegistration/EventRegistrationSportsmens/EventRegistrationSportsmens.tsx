@@ -725,7 +725,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                     <TableCell>Дата рождения</TableCell>
                     <TableCell>Регион</TableCell>
                     <TableCell>BIB</TableCell>
-                    <TableCell>Вид</TableCell>
+                    {/* <TableCell>Вид</TableCell> */}
 
                     {/* Отображение заголовков для попыток */}
                     {eventSportsmen?.attempts?.length > 0 &&
@@ -735,7 +735,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
                     <TableCell>Результат</TableCell>
                     <TableCell>Занятое место</TableCell>
-                    <TableCell>Действия</TableCell>
+                    {currentUser?.name === 'Admin' && <TableCell>Действия</TableCell>}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -744,9 +744,9 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{sportsman.name} {sportsman.family_name}</TableCell>
                       <TableCell>{sportsman.birth}</TableCell>
-                      <TableCell>{sportsman.address}</TableCell>
+                      <TableCell>{sportsman.address.split(" - ")[1]}</TableCell>
                       <TableCell>{sportsman.chest_number}</TableCell>
-                      <TableCell>{eventSportsmen.name.ru}</TableCell>
+                      {/* <TableCell>{eventSportsmen.name.ru}</TableCell> */}
 
                       {/* Отображение значений попыток спортсмена */}
                       {sportsman.pivot?.attempts ? sportsman.pivot?.attempts?.map((attempt: any, i: number) => (

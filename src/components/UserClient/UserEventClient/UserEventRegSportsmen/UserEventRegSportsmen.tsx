@@ -37,6 +37,7 @@ import { ArrowLeftFromLine, CircleMinus, CirclePlus } from "lucide-react"
 import { useRouter } from "next/navigation"
 import axios from "axios"
 import { toast } from "sonner"
+import SportsmanRow from "./SportsmenRow"
 
 interface UserEventRegSportsmenProps {
   eventRegistration: IEventRegistrationResponse
@@ -58,31 +59,34 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
   const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, 64, 67].includes(eventRegistration.sport_type_id), [eventRegistration.sport_type_id])
 
   const defaultValues = useMemo(() => ({
-    position: "",
-    result: "",
-    ...(isSpecialSportTypeWithPoints ? { points: [{ point: "" }] } : {})
-  }), [isSpecialSportTypeWithPoints]);
+    position: {},
+    result: {},
+    attempts: {},
+    wind: {},
+    resultAfterThreeAttempts: {},
+    points: {}, // Теперь points — это объект, где ключи — sportsmanId
+  }), []);
 
   const { register, handleSubmit, reset, control, resetField, getValues } = useForm<FieldValues>({
     mode: "onChange",
     defaultValues
   })
-  
+
   const router = useRouter()
   const attempts = eventRegistration.attempts
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "points"
-  });
+  // const { fields, append, remove } = useFieldArray({
+  //   control,
+  //   name: "points"
+  // });
 
-  const handleAddPoint = () => {
-    append({ point: "" });
-  }
+  // const handleAddPoint = () => {
+  //   append({ point: "" });
+  // }
 
-  const handleRemovePoint = (index: number) => {
-    remove(index);
-  }
+  // const handleRemovePoint = (index: number) => {
+  //   remove(index);
+  // }
 
 
 
@@ -271,10 +275,12 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
         }
 
         if (isSpecialSportTypeWithPoints && data.points) {
-          payload.pointsAttachment = data.points.map((point: any) => ({
-            height: point.height,
-            point: point.point,
-          }))
+          // payload.pointsAttachment = data.points.map((point: any) => ({
+          //   height: point.height,
+          //   point: point.point,
+          // }))
+          console.log(data, 'data');
+
         }
 
         onSubmitSportsmans(payload, id)
@@ -386,7 +392,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                               <TableCell>Спортсмен</TableCell>
                               <TableCell>Регион</TableCell>
                               <TableCell>BIB</TableCell>
-                              <TableCell>Заявленый результат</TableCell>
+                              {/* <TableCell>Заявленый результат</TableCell> */}
 
                               {eventRegistration.user_id === currentUser.id ? (
                                 // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49
@@ -405,202 +411,214 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                           </TableHead>
                           <TableBody>
                             {startList.sportsmen[key].map((sportsmen: any, index: number) => (
-                              <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                                <TableCell>{index + 1}</TableCell>
-                                <TableCell component="th" scope="row">
-                                  {sportsmen.sportsman.name} {sportsmen.sportsman.family_name}
-                                </TableCell>
-                                <TableCell>{sportsmen.sportsman.address}</TableCell>
-                                <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
-                                <TableCell>
-                                  {sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => (
-                                    <Typography key={discipline.id} component={"span"}>
-                                      {discipline.sb}
-                                    </Typography>
-                                  ))}
-                                </TableCell>
-                                {eventRegistration.user_id === currentUser.id ? (
-                                  // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49
-                                  <TableCell sx={{ display: "flex", gap: 1, alignItems: "center" }} align="center">
-                                    {attempts.slice(0, 3).map((attempt, index) => (
-                                      <Box key={index} sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
-                                        {isSpecialSportType && <Controller
-                                          name={`wind.${index + 1}`}
-                                          control={control}
-                                          render={({ field }) => (
-                                            <TextField
-                                              inputProps={{ style: { height: "7px" } }}
-                                              placeholder={`Ветер`}
-                                              {...field}
-                                            />
-                                          )}
-                                        />}
-                                        <Controller
-                                          name={`attempt.${index + 1}`}
-                                          control={control}
-                                          render={({ field }) => (
-                                            <TextField
-                                              inputProps={{
-                                                style: { height: "7px" },
-                                              }}
-                                              placeholder={`Попытка № ${index + 1}`}
-                                              {...field}
-                                            />
-                                          )}
-                                        />
+                              // <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                              //   <TableCell>{index + 1}</TableCell>
+                              //   <TableCell component="th" scope="row">
+                              //     {sportsmen.sportsman.name} {sportsmen.sportsman.family_name}
+                              //   </TableCell>
+                              //   <TableCell>{sportsmen.sportsman.address}</TableCell>
+                              //   <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
+                              //   <TableCell>
+                              //     {sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => (
+                              //       <Typography key={discipline.id} component={"span"}>
+                              //         {discipline.sb}
+                              //       </Typography>
+                              //     ))}
+                              //   </TableCell>
+                              //   {eventRegistration.user_id === currentUser.id ? (
+                              //     // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49
+                              //     <TableCell sx={{ display: "flex", gap: 1, alignItems: "center" }} align="center">
+                              //       {attempts.slice(0, 3).map((attempt, index) => (
+                              //         <Box key={index} sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
+                              //           {isSpecialSportType && <Controller
+                              //             name={`wind.${index + 1}`}
+                              //             control={control}
+                              //             render={({ field }) => (
+                              //               <TextField
+                              //                 inputProps={{ style: { height: "7px", width: "70px" } }}
+                              //                 placeholder={`Ветер`}
+                              //                 {...field}
+                              //               />
+                              //             )}
+                              //           />}
+                              //           <Controller
+                              //             name={`attempt.${index + 1}`}
+                              //             control={control}
+                              //             render={({ field }) => (
+                              //               <TextField
+                              //                 inputProps={{
+                              //                   style: { height: "7px", width: "70px" },
+                              //                 }}
+                              //                 placeholder={`Попытка № ${index + 1}`}
+                              //                 {...field}
+                              //               />
+                              //             )}
+                              //           />
 
-                                        {/* {
-                                                  eventRegistration.event_registration_setting.condition.status === 'false' &&
-                                                  <TextField inputProps={{
-                                                    style: { height: '7px' }
-                                                  }} placeholder={`Ветер`} />
-                                                } */}
-                                      </Box>
-                                    ))}
+                              //           {/* {
+                              //                     eventRegistration.event_registration_setting.condition.status === 'false' &&
+                              //                     <TextField inputProps={{
+                              //                       style: { height: '7px' }
+                              //                     }} placeholder={`Ветер`} />
+                              //                   } */}
+                              //         </Box>
+                              //       ))}
 
-                                    {isSpecialSportType && (
-                                      <Controller
-                                        name={`resultAfterThreeAttempts.${sportsmen.sportsman.id}`}
-                                        control={control}
-                                        render={({ field }) => (
-                                          <TextField
-                                            inputProps={{ style: { height: "7px" } }}
-                                            placeholder="Результат после 3 попыток"
-                                            // sx={{ mt:  }}
-                                            {...field}
-                                          />
-                                        )}
-                                      />
-                                    )}
+                              //       {isSpecialSportType && (
+                              //         <Controller
+                              //           name={`resultAfterThreeAttempts.${sportsmen.sportsman.id}`}
+                              //           control={control}
+                              //           render={({ field }) => (
+                              //             <TextField
+                              //               inputProps={{ style: { height: "7px", width: "80px" } }}
+                              //               placeholder="Результат после 3 попыток"
+                              //               // sx={{ mt:  }}
+                              //               {...field}
+                              //             />
+                              //           )}
+                              //         />
+                              //       )}
 
-                                    {isSpecialSportType &&
-                                      attempts.slice(3, 6).map((attempt, index) => (
-                                        <Box key={index + 3} sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
-                                          <Controller
-                                            name={`wind.${index + 4}`}
-                                            control={control}
-                                            render={({ field }) => (
-                                              <TextField
-                                                inputProps={{ style: { height: "7px" } }}
-                                                placeholder={`Ветер`}
-                                                {...field}
-                                              />
-                                            )}
-                                          />
+                              //       {isSpecialSportType &&
+                              //         attempts.slice(3, 6).map((attempt, index) => (
+                              //           <Box key={index + 3} sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
+                              //             <Controller
+                              //               name={`wind.${index + 4}`}
+                              //               control={control}
+                              //               render={({ field }) => (
+                              //                 <TextField
+                              //                   inputProps={{ style: { height: "7px", width: "70px" } }}
+                              //                   placeholder={`Ветер`}
+                              //                   {...field}
+                              //                 />
+                              //               )}
+                              //             />
 
-                                          <Controller
-                                            name={`attempt.${index + 4}`}
-                                            control={control}
-                                            render={({ field }) => (
-                                              <TextField
-                                                inputProps={{ style: { height: "7px" } }}
-                                                placeholder={`Попытка № ${index + 4}`}
-                                                {...field}
-                                              />
-                                            )}
-                                          />
+                              //             <Controller
+                              //               name={`attempt.${index + 4}`}
+                              //               control={control}
+                              //               render={({ field }) => (
+                              //                 <TextField
+                              //                   inputProps={{ style: { height: "7px", width: "70px" } }}
+                              //                   placeholder={`Попытка № ${index + 4}`}
+                              //                   {...field}
+                              //                 />
+                              //               )}
+                              //             />
 
-                                          {/* {eventRegistration.event_registration_setting.condition.status === 'false' && (
-                                                      <TextField
-                                                        inputProps={{ style: { height: '7px' } }}
-                                                        placeholder="Ветер"
-                                                      />
-                                                    )} */}
-                                        </Box>
-                                      ))}
+                              //             {/* {eventRegistration.event_registration_setting.condition.status === 'false' && (
+                              //                         <TextField
+                              //                           inputProps={{ style: { height: '7px' } }}
+                              //                           placeholder="Ветер"
+                              //                         />
+                              //                       )} */}
+                              //           </Box>
+                              //         ))}
 
-                                    {isSpecialSportTypeWithPoints &&
-                                      fields.map((field, index) => (
-                                        <Box key={field.id} sx={{ display: "flex", gap: 0.5 }}>
-                                          <Box className='flex flex-col gap-2'>
-                                            <Controller
-                                              // name={`points.${index}.height`}
-                                              name={`points.${sportsmen.sportsman.id}.height`}
-                                              control={control}
-                                              render={({ field }) => (
-                                                <TextField
-                                                  inputProps={{ style: { height: "7px", width: "120px" } }}
-                                                  placeholder={`Высота`}
-                                                  {...field}
-                                                />
-                                              )}
-                                            />
-                                            <Controller
-                                              // name={`points.${index}.point`}
-                                              name={`points.${sportsmen.sportsman.id}.point`}
-                                              control={control}
-                                              render={({ field }) => (
-                                                <TextField
-                                                  inputProps={{ style: { height: "7px", width: "120px" } }}
-                                                  placeholder={`Очко`}
-                                                  {...field}
-                                                />
-                                              )}
-                                            />
-                                          </Box>
-                                          <Button className="p-0 min-w-[20px]" color="error" onClick={() => handleRemovePoint(sportsmen.sportsman.id)}>
-                                            <CircleMinus />
-                                          </Button>
-                                        </Box>
-                                      ))
+                              //       {isSpecialSportTypeWithPoints &&
+                              //         fields.map((field, index) => (
+                              //           <Box key={field.id} sx={{ display: "flex", gap: 0.5 }}>
+                              //             <Box className='flex flex-col gap-2'>
+                              //               <Controller
+                              //                 // name={`points.${index}.height`}
+                              //                 name={`points.${sportsmen.sportsman.id}.height`}
+                              //                 control={control}
+                              //                 render={({ field }) => (
+                              //                   <TextField
+                              //                     inputProps={{ style: { height: "7px", width: "120px" } }}
+                              //                     placeholder={`Высота`}
+                              //                     {...field}
+                              //                   />
+                              //                 )}
+                              //               />
+                              //               <Controller
+                              //                 // name={`points.${index}.point`}
+                              //                 name={`points.${sportsmen.sportsman.id}.point`}
+                              //                 control={control}
+                              //                 render={({ field }) => (
+                              //                   <TextField
+                              //                     inputProps={{ style: { height: "7px", width: "120px" } }}
+                              //                     placeholder={`Очко`}
+                              //                     {...field}
+                              //                   />
+                              //                 )}
+                              //               />
+                              //             </Box>
+                              //             <Button className="p-0 min-w-[20px]" color="error" onClick={() => handleRemovePoint(sportsmen.sportsman.id)}>
+                              //               <CircleMinus />
+                              //             </Button>
+                              //           </Box>
+                              //         ))
 
-                                    }
-                                    {isSpecialSportTypeWithPoints && <Button className="p-0 min-w-[20px]" onClick={handleAddPoint}>
-                                      <CirclePlus />
-                                    </Button>}
+                              //       }
+                              //       {isSpecialSportTypeWithPoints && <Button className="p-0 min-w-[20px]" onClick={handleAddPoint}>
+                              //         <CirclePlus />
+                              //       </Button>}
 
-                                  </TableCell>
-                                ) : null}
-                                <TableCell>
-                                  {eventRegistration.user_id === currentUser.id ? (
-                                    // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49
-                                    <Controller
-                                      name={`result.${sportsmen.sportsman.id}`}
-                                      control={control}
-                                      render={({ field }) => (
-                                        <TextField
-                                          inputProps={{
-                                            style: { height: "7px", width: "100px" },
-                                          }}
-                                          placeholder="Результат"
-                                          {...field}
-                                        // {...register(`result`)}
-                                        />
-                                      )}
-                                    />
-                                  ) : null}
-                                </TableCell>
-                                <TableCell>
-                                  {eventRegistration.user_id === currentUser.id ? (
-                                    // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49
-                                    <Controller
-                                      name={`position.${sportsmen.sportsman.id}`}
-                                      control={control}
-                                      render={({ field }) => (
-                                        <TextField
-                                          inputProps={{
-                                            style: { height: "7px", width: "100px" },
-                                          }}
-                                          placeholder="Место"
-                                          {...field}
-                                        // {...register(`position`)}
-                                        />
-                                      )}
-                                    />
-                                  ) : null}
-                                </TableCell>
-                                <TableCell>
-                                  {eventRegistration.user_id === currentUser.id ? (
-                                    // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49
-                                    <Button
-                                      onClick={() => handleSubmitWithId(sportsmen.sportsman.id)}
-                                      variant="contained"
-                                    >
-                                      Сохранить
-                                    </Button>
-                                  ) : null}
-                                </TableCell>
-                              </TableRow>
+                              //     </TableCell>
+                              //   ) : null}
+                              //   <TableCell>
+                              //     {eventRegistration.user_id === currentUser.id ? (
+                              //       // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49
+                              //       <Controller
+                              //         name={`result.${sportsmen.sportsman.id}`}
+                              //         control={control}
+                              //         render={({ field }) => (
+                              //           <TextField
+                              //             inputProps={{
+                              //               style: { height: "7px", width: "100px" },
+                              //             }}
+                              //             placeholder="Результат"
+                              //             {...field}
+                              //           // {...register(`result`)}
+                              //           />
+                              //         )}
+                              //       />
+                              //     ) : null}
+                              //   </TableCell>
+                              //   <TableCell>
+                              //     {eventRegistration.user_id === currentUser.id ? (
+                              //       // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49
+                              //       <Controller
+                              //         name={`position.${sportsmen.sportsman.id}`}
+                              //         control={control}
+                              //         render={({ field }) => (
+                              //           <TextField
+                              //             inputProps={{
+                              //               style: { height: "7px", width: "100px" },
+                              //             }}
+                              //             placeholder="Место"
+                              //             {...field}
+                              //           // {...register(`position`)}
+                              //           />
+                              //         )}
+                              //       />
+                              //     ) : null}
+                              //   </TableCell>
+                              //   <TableCell>
+                              //     {eventRegistration.user_id === currentUser.id ? (
+                              //       // && eventRegistration.sport_type_id >= 1 && eventRegistration.sport_type_id <= 49
+                              //       <Button
+                              //         onClick={() => handleSubmitWithId(sportsmen.sportsman.id)}
+                              //         variant="contained"
+                              //       >
+                              //         Сохранить
+                              //       </Button>
+                              //     ) : null}
+                              //   </TableCell>
+                              // </TableRow>
+                              <SportsmanRow
+                                key={sportsmen.sportsman.id}
+                                sportsman={sportsmen.sportsman}
+                                index={index}
+                                control={control}
+                                eventRegistration={eventRegistration}
+                                currentUser={currentUser}
+                                isSpecialSportType={isSpecialSportType}
+                                isSpecialSportTypeWithPoints={isSpecialSportTypeWithPoints}
+                                attempts={attempts}
+                                handleSubmitWithId={handleSubmitWithId}
+                              />
                             ))}
                           </TableBody>
                         </Table>
