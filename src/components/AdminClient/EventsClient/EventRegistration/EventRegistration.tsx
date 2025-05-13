@@ -101,7 +101,7 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
               {
                 days?.map((day, index) => {
                   const isOpen = openRows.includes(index)
-                  console.log(day);
+            
 
                   return (
                     <TabPanel value={day.date} key={day.date}>
