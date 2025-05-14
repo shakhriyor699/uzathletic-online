@@ -190,20 +190,27 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     });
   };
 
+  console.log(startList, 'startList');
+
+
+
+
   const downloadDoc = () => {
     const tables: any = startList?.map((startListItem: any, index) => {
+
+
       return Object.keys(startListItem.sportsmen || {}).map((key) => {
         const titleParagraph = new Paragraph({
           children: [new TextRun({ text: key, bold: true, size: 20 })],
           spacing: { after: 200 },
         });
 
-        const tableRows = startListItem.sportsmen[key]?.map((athlete: any) => {
+        const tableRows = startListItem.sportsmen[key]?.map((athlete: any, i: number) => {
           if (!athlete.sportsman) return null;
 
           return new DocxTableRow({
             children: [
-              new DocxTableCell({ children: [new Paragraph((index + 1).toString())] }),
+              new DocxTableCell({ children: [new Paragraph((i + 1).toString())] }),
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.chest_number)] }),
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.name || "")] }),
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.family_name || "")] }),
@@ -211,7 +218,11 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.address.split(" - ")[1] || "")] }),
               new DocxTableCell({
                 children: [new Paragraph(
-                  athlete.sportsman.sportsmen_disciplines?.map((discipline: any) => discipline.sb).join(", ") || ""
+                  athlete.sportsman.sportsmen_disciplines?.map((discipline: any) => {
+                    if (eventRegistration.id === discipline.event_registration_id) {
+                      return discipline.sb
+                    }
+                  }).join(", ") || ""
                 )]
               }),
             ],
@@ -222,13 +233,13 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
           rows: [
             new DocxTableRow({
               children: [
-                new DocxTableCell({ children: [new Paragraph("Очередность")] }),
+                new DocxTableCell({ children: [new Paragraph("№")] }),
                 new DocxTableCell({ children: [new Paragraph("BIB")] }),
-                new DocxTableCell({ children: [new Paragraph("Имя")] }),
-                new DocxTableCell({ children: [new Paragraph("Фамилия")] }),
-                new DocxTableCell({ children: [new Paragraph("Год рождения")] }),
-                new DocxTableCell({ children: [new Paragraph("Регион")] }),
-                new DocxTableCell({ children: [new Paragraph("Заявленый результат")] }),
+                new DocxTableCell({ children: [new Paragraph("Name")] }),
+                new DocxTableCell({ children: [new Paragraph("Surname")] }),
+                new DocxTableCell({ children: [new Paragraph("DOB")] }),
+                new DocxTableCell({ children: [new Paragraph("Country/Region")] }),
+                new DocxTableCell({ children: [new Paragraph("Seeding")] }),
               ],
             }),
             ...tableRows,
