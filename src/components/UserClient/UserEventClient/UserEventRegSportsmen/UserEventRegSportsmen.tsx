@@ -53,8 +53,16 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
   eventSportsmen,
 }) => {
   const [value, setValue] = React.useState("1")
-  const isSpecialSportType = useMemo(() => [51, 52, 54, 55, 56, 57, 65, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id), [
-    eventRegistration.sport_type_id])
+  // const isSpecialSportType = useMemo(() => [51, 52, 54, 55, 56, 57, 65, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id), [
+  //   eventRegistration.sport_type_id])
+
+  const isSpecialSportType = useMemo(() =>
+    [51, 52, 54, 55, 56, 57, 65, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id),
+    [eventRegistration.sport_type_id]);
+
+  const shouldShowWindField = useMemo(() =>
+    [51, 52, 65, 66].includes(eventRegistration.sport_type_id),
+    [eventRegistration.sport_type_id]);
 
   const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, 64, 67].includes(eventRegistration.sport_type_id), [eventRegistration.sport_type_id])
 
@@ -186,20 +194,16 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
 
   const onSubmitSportsmans = async (data: FieldValues, id: number) => {
 
+
     let formattedAttempts: any = []
 
     if (data.attempts && typeof data.attempts === "object") {
       formattedAttempts = Object.entries(data.attempts).map(([key, value]) => ({
-        key,
+        id,
         value,
       }))
     }
 
-    if (isSpecialSportType) {
-      formattedAttempts.push({ key: "resultAfterThreeAttempts", value: data.resultAfterThreeAttempts || "" })
-      // payload.resultAfterThreeAttempts = data.resultAfterThreeAttempts || ""
-      // payload.wind = data.wind || ""
-    }
 
 
 
@@ -210,7 +214,20 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
       attempts: formattedAttempts,
       result: data.result,
       position: data.position,
-      condition: data.wind,
+      condition: {
+        wind: data.wind,
+        sport_type_number: eventSportsmen.sport_type.sport_type_number
+      },
+    }
+
+
+    if (isSpecialSportType) {
+      formattedAttempts.push({ key: "resultAfterThreeAttempts", value: data.resultAfterThreeAttempts || "" })
+      // payload.resultAfterThreeAttempts = data.resultAfterThreeAttempts || ""
+      payload.condition = {
+        wind: data.condition || "",
+        sport_type_number: eventSportsmen.sport_type.sport_type_number
+      }
     }
 
     if (isSpecialSportTypeWithPoints && data.pointsAttachment) {
@@ -222,20 +239,20 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
 
     console.log(data);
 
-    console.log("Sending payload:", payload);
+    console.log("Sending payload:", payload, data, 'data');
 
 
 
-    // try {
-    //   const res = await axios.post('/api/eventSportsmen', payload);
-    //   if (res.status === 200) {
-    //     toast.success('Сохранено');
-    //     router.refresh();
-    //   }
-    // } catch (error) {
-    //   console.error('Error submitting start list:', error);
-    //   toast.error('Произошла ошибка');
-    // }
+    try {
+      const res = await axios.post('/api/eventSportsmen', payload);
+      if (res.status === 200) {
+        toast.success('Сохранено');
+        router.refresh();
+      }
+    } catch (error) {
+      console.error('Error submitting start list:', error);
+      toast.error('Произошла ошибка');
+    }
   }
 
   const handleSubmitWithId = (id: number) => {
@@ -262,17 +279,38 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
 
 
         if (isSpecialSportType) {
+          console.log(data, 'data');
+
           payload.resultAfterThreeAttempts = data.resultAfterThreeAttempts ? data.resultAfterThreeAttempts[id] : ""
 
+          payload.attempts = data.attempt[id].map((attempt: any, i: number) => ({
+            key: id,
+            value: attempt
+          }))
 
-          const windValues: any = {}
-          for (let i = 1; i <= 6; i++) {
-            if (data.wind && data.wind[i]) {
-              windValues[i] = data.wind[i]
-            }
+          if (shouldShowWindField) {
+            payload.condition = data.wind[id].map((wind: any, i: number) => ({
+              key: id,
+              value: wind
+            }))
           }
-          payload.wind = windValues
+
+
+
+          console.log(payload, 'payload1');
+
+
+
+          // const windValues: any = {}
+          // for (let i = 1; i <= 6; i++) {
+          //   if (data.wind && data.wind[i]) {
+          //     windValues[i] = data.wind[i]
+          //   }
+          // }
+          // payload.wind = windValues
         }
+
+
 
         if (isSpecialSportTypeWithPoints && data.points) {
           payload.pointsAttachment = data.points[id].map((point: any) => ({
@@ -283,10 +321,28 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
 
         }
 
-        onSubmitSportsmans(payload, id) 
+        onSubmitSportsmans(payload, id)
       }
     })()
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  console.log(eventSportsmen, 'results');
+
+
+
+
 
   return (
     <Box>
@@ -296,6 +352,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             <Tab label="Спортсмены" value="1" />
             <Tab label="Стартлист" value="2" />
+            {eventSportsmen && !Array.isArray(eventSportsmen) && <Tab label="Результаты" value="3" />}
             {/* <Tab label="Item Three" value="3" /> */}
           </TabList>
         </Box>
@@ -618,6 +675,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                 isSpecialSportTypeWithPoints={isSpecialSportTypeWithPoints}
                                 attempts={attempts}
                                 handleSubmitWithId={handleSubmitWithId}
+                                shouldShowWindField={shouldShowWindField}
                               />
                             ))}
                           </TableBody>
@@ -631,6 +689,134 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
           ))}
         </TabPanel>
         {/* <TabPanel value="3">Item Three</TabPanel> */}
+
+
+
+
+        {eventSportsmen && !Array.isArray(eventSportsmen) && <TabPanel value="3">
+          <Box>
+            <Typography variant='h4' mb={5}>Результаты</Typography>
+          </Box>
+          {/* <Box>
+            <Button onClick={() => downLoadResultDoc(eventSportsmen)} type='button' variant='contained' sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <FaFileWord />
+              Скачать результаты</Button>
+          </Box> */}
+          <Paper sx={{ width: '100%' }}>
+            <TableContainer sx={{ maxHeight: 440 }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>№</TableCell>
+                    <TableCell>Спортсмен</TableCell>
+                    <TableCell>Дата рождения</TableCell>
+                    <TableCell align="center">Регион</TableCell>
+                    <TableCell align="center">BIB</TableCell>
+                    {/* <TableCell>Вид</TableCell> */}
+
+                    {/* Отображение заголовков для попыток */}
+                    {!isSpecialSportType &&
+                      !isSpecialSportTypeWithPoints && eventSportsmen?.attempts?.length > 0 &&
+                      eventSportsmen.attempts.map((_: any, index: number) => (
+                        <TableCell key={`attempt-header-${index}`}>Попытка {index + 1}</TableCell>
+                      ))}
+
+                    {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
+                      eventSportsmen.sportsmen[0]?.pivot.attempts.map((key: any, attemptIndex: number) => {
+                        return <TableCell align="center" key={`attempt-header-${attemptIndex}`}>{key?.key ? 'Результат после 3 попыток' : `Попытка ${attemptIndex + 1}`}</TableCell>
+                      })
+                    }
+
+                    {isSpecialSportTypeWithPoints && Array.from({
+                      length: Math.max(
+                        ...eventSportsmen.sportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+                      )
+                    }).map((_, attemptIndex) => (
+                      <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
+                        {['height', 'point'].map((key) => (
+                          <p key={key}>
+                            {key === 'height' ? 'Высота ' : 'Результат '}
+                          </p>
+                        ))}
+                      </TableCell>
+                    ))}
+
+                    <TableCell>Результат</TableCell>
+                    <TableCell>Занятое место</TableCell>
+                    {currentUser?.name === 'Admin' && <TableCell>Действия</TableCell>}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {eventSportsmen?.sportsmen?.map((sportsman: any, index: number) => {
+
+                    return (
+                      <React.Fragment key={`row-${index}`}>
+                        <TableRow>
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{`${sportsman.family_name} ${sportsman.name}`}</TableCell>
+                          <TableCell>{sportsman.birth}</TableCell>
+                          <TableCell align='center'>{sportsman.address.split(" - ")[1]}</TableCell>
+                          <TableCell align="center">{sportsman.chest_number}</TableCell>
+
+                          {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
+                            eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
+                              console.log(key, 'key');
+                              // console.log(eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex]?.value, 'asd');
+
+
+                              return <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
+                                {shouldShowWindField && <p>{key?.key === 'resultAfterThreeAttempts' ? '' : 'Ветер'} {eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex + 1]?.value}</p>}
+                                <p>{key?.key === 'resultAfterThreeAttempts' ? '' : `Попытка: `}  {key?.key === 'resultAfterThreeAttempts' ? key.value : key.value.value}</p>
+                              </TableCell>
+                            })
+                          }
+
+                          {isSpecialSportTypeWithPoints &&
+                            Array.from({
+                              length: Math.max(
+                                ...eventSportsmen.sportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+                              )
+                            }).map((_, attemptIndex) => (
+                              <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
+                                {['height', 'point'].map((key) => {
+                                  // Попытаемся взять значение из первого попавшегося спортсмена, у кого оно есть
+                                  const value = eventSportsmen.sportsmen.find(
+                                    (s: any) => s.pivot?.attempts?.[attemptIndex]?.[key] !== undefined
+                                  )?.pivot?.attempts?.[attemptIndex]?.[key];
+
+                                  return (
+                                    <p key={key}>
+                                      {key === 'height' ? ` ${value ?? '-'}` : ` ${value ?? '-'}`}
+                                    </p>
+                                  );
+                                })}
+                              </TableCell>
+                            ))}
+
+
+                          <TableCell>{sportsman.pivot.result}</TableCell>
+                          <TableCell>{sportsman.pivot.position}</TableCell>
+
+                          {currentUser?.name === 'Admin' && <TableCell>Редактировать</TableCell>}
+                        </TableRow>
+
+                        {/* {shouldShowWindField && (
+                          <TableRow>
+                            <TableCell colSpan={5} />
+
+                            <TableCell colSpan={2 + (currentUser?.name === 'Admin' ? 1 : 0)} />
+                          </TableRow>
+                        )} */}
+                      </React.Fragment>
+                    );
+                  })}
+                </TableBody>
+
+
+              </Table>
+            </TableContainer>
+          </Paper>
+        </TabPanel>}
       </TabContext>
     </Box>
   )

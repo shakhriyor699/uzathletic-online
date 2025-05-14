@@ -18,6 +18,7 @@ interface SportsmanRowProps {
   isSpecialSportTypeWithPoints: boolean;
   attempts: any[];
   handleSubmitWithId: (id: number) => void;
+  shouldShowWindField: boolean
 }
 
 const SportsmanRow: FC<SportsmanRowProps> = ({
@@ -30,6 +31,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
   isSpecialSportTypeWithPoints,
   attempts,
   handleSubmitWithId,
+  shouldShowWindField
 }) => {
   // Уникальный useFieldArray для каждого спортсмена
   // const { fields, append, remove } = useFieldArray({
@@ -41,7 +43,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
 
   const hasInitialized = useRef(false);
 
- 
+
   useEffect(() => {
     if (isSpecialSportTypeWithPoints && !hasInitialized.current && fields.length === 0) {
       append({ height: "", point: "" });
@@ -55,7 +57,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
       <TableCell component="th" scope="row">
         {sportsman.name} {sportsman.family_name}
       </TableCell>
-      <TableCell>{sportsman.address}</TableCell>
+      <TableCell>{sportsman.address.split(" - ")[1]}</TableCell>
       <TableCell>{sportsman.chest_number}</TableCell>
 
 
@@ -63,7 +65,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
         <TableCell sx={{ display: "flex", gap: 1, alignItems: "center" }} align="center">
           {attempts.slice(0, 3).map((_, attemptIndex) => (
             <Box key={attemptIndex} sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
-              {isSpecialSportType && (
+              {shouldShowWindField && (
                 <Controller
                   name={`wind.${sportsman.id}.${attemptIndex + 1}`}
                   control={control}
@@ -107,7 +109,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
           {isSpecialSportType &&
             attempts.slice(3, 6).map((_, attemptIndex) => (
               <Box key={attemptIndex + 3} sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
-                <Controller
+                {shouldShowWindField && <Controller
                   name={`wind.${sportsman.id}.${attemptIndex + 4}`}
                   control={control}
                   render={({ field }) => (
@@ -117,7 +119,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
                       {...field}
                     />
                   )}
-                />
+                />}
                 <Controller
                   name={`attempt.${sportsman.id}.${attemptIndex + 4}`}
                   control={control}
