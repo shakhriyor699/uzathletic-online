@@ -8,7 +8,7 @@ import { Autocomplete, Box, Button, InputLabel, Paper, Tab, Table, TableBody, Ta
 import axios from 'axios'
 import { CircleX, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import React, { FC, useState } from 'react'
+import React, { FC, useMemo, useState } from 'react'
 import { Controller, FieldValues, SubmitHandler, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 import { saveAs } from "file-saver";
@@ -43,7 +43,15 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   const [groupName, setGroupName] = useState<string>('');
   const router = useRouter()
 
-  console.log(eventRegistration, startList, eventSportsmen, 'asd');
+  const isSpecialSportType = useMemo(() =>
+    [51, 52, 54, 55, 56, 57, 65, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id),
+    [eventRegistration.sport_type_id]);
+
+  const shouldShowWindField = useMemo(() =>
+    [51, 52, 65, 66].includes(eventRegistration.sport_type_id),
+    [eventRegistration.sport_type_id]);
+
+  const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, 64, 67].includes(eventRegistration.sport_type_id), [eventRegistration.sport_type_id])
 
 
 
@@ -617,7 +625,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                                   <TableCell>Регион</TableCell>
                                   <TableCell>Год рождения</TableCell>
                                   <TableCell>BIB</TableCell>
-                                  <TableCell>Заявленый результат</TableCell>
+                                  {currentUser?.name === 'Admin' && <TableCell>Заявленый результат</TableCell>}
                                   {currentUser?.name === 'Admin' &&
                                     <>
                                       <TableCell>Результат</TableCell>
@@ -721,11 +729,11 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
           <Box>
             <Typography variant='h4' mb={5}>Результаты</Typography>
           </Box>
-          <Box>
-            <Button onClick={() => downLoadResultDoc(eventSportsmen)} type='button' variant='contained' sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <FaFileWord />
-              Скачать результаты</Button>
-          </Box>
+          {/* <Box>
+               <Button onClick={() => downLoadResultDoc(eventSportsmen)} type='button' variant='contained' sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                 <FaFileWord />
+                 Скачать результаты</Button>
+             </Box> */}
           <Paper sx={{ width: '100%' }}>
             <TableContainer sx={{ maxHeight: 440 }}>
               <Table stickyHeader aria-label="sticky table">
@@ -734,15 +742,39 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                     <TableCell>№</TableCell>
                     <TableCell>Спортсмен</TableCell>
                     <TableCell>Дата рождения</TableCell>
-                    <TableCell>Регион</TableCell>
-                    <TableCell>BIB</TableCell>
+                    <TableCell align="center">Регион</TableCell>
+                    <TableCell align="center">BIB</TableCell>
                     {/* <TableCell>Вид</TableCell> */}
 
                     {/* Отображение заголовков для попыток */}
-                    {eventSportsmen?.attempts?.length > 0 &&
+                    {!isSpecialSportType &&
+                      !isSpecialSportTypeWithPoints && eventSportsmen?.attempts?.length > 0 &&
                       eventSportsmen.attempts.map((_: any, index: number) => (
                         <TableCell key={`attempt-header-${index}`}>Попытка {index + 1}</TableCell>
                       ))}
+
+                    {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
+                      eventSportsmen.sportsmen[0]?.pivot.attempts.map((key: any, attemptIndex: number) => {
+                        return <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
+                          <p>Ветер</p>
+                          <p>{key?.key ? null : `Попытка ${attemptIndex + 1}`}</p>
+                        </TableCell>
+                      })
+                    }
+
+                    {isSpecialSportTypeWithPoints && Array.from({
+                      length: Math.max(
+                        ...eventSportsmen.sportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+                      )
+                    }).map((_, attemptIndex) => (
+                      <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
+                        {['height', 'point'].map((key) => (
+                          <p key={key}>
+                            {key === 'height' ? 'Высота ' : 'Результат '}
+                          </p>
+                        ))}
+                      </TableCell>
+                    ))}
 
                     <TableCell>Результат</TableCell>
                     <TableCell>Занятое место</TableCell>
@@ -750,36 +782,70 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {eventSportsmen.sportsmen.map((sportsman: any, index: number) => (
-                    <TableRow key={sportsman.id}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{sportsman.name} {sportsman.family_name}</TableCell>
-                      <TableCell>{sportsman.birth}</TableCell>
-                      <TableCell>{sportsman.address.split(" - ")[1]}</TableCell>
-                      <TableCell>{sportsman.chest_number}</TableCell>
-                      {/* <TableCell>{eventSportsmen.name.ru}</TableCell> */}
+                  {eventSportsmen?.sportsmen?.map((sportsman: any, index: number) => {
 
-                      {/* Отображение значений попыток спортсмена */}
-                      {sportsman.pivot?.attempts ? sportsman.pivot?.attempts?.map((attempt: any, i: number) => (
-                        <TableCell key={`attempt-${sportsman.id}-${i}`}>
-                          {String(Object.values(attempt)[0]) || '-'}
-                        </TableCell>
-                      )) : (
-                        eventSportsmen.attempts.map((_: any, index: number) => (
-                          <TableCell key={`attempt-header-${index}`}>Нет данных</TableCell>
-                        ))
-                      )}
+                    return (
+                      <React.Fragment key={`row-${index}`}>
+                        <TableRow>
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{`${sportsman.family_name} ${sportsman.name}`}</TableCell>
+                          <TableCell>{sportsman.birth}</TableCell>
+                          <TableCell align='center'>{sportsman.address.split(" - ")[1]}</TableCell>
+                          <TableCell align="center">{sportsman.chest_number}</TableCell>
 
-                      <TableCell>{sportsman.pivot.result || 'нет результата'}</TableCell>
-                      <TableCell>{sportsman.pivot.position || 'нет результата'}</TableCell>
+                          {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
+                            eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
 
-                      {currentUser?.name === 'Admin' &&
-                        <TableCell>
-                          <Trash2 color='red' className='cursor-pointer' />
-                        </TableCell>}
-                    </TableRow>
-                  ))}
+
+                              return <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
+                                {shouldShowWindField && <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ''} {eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex + 1]?.value}</p>}
+                                <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ` `}  {key?.key === null ? key.value : key.value.value}</p>
+                              </TableCell>
+                            })
+                          }
+
+                          {isSpecialSportTypeWithPoints &&
+                            Array.from({
+                              length: Math.max(
+                                ...eventSportsmen.sportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+                              )
+                            }).map((_, attemptIndex) => (
+                              <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
+                                {['height', 'point'].map((key) => {
+                                  // Попытаемся взять значение из первого попавшегося спортсмена, у кого оно есть
+                                  const value = eventSportsmen.sportsmen.find(
+                                    (s: any) => s.pivot?.attempts?.[attemptIndex]?.[key] !== undefined
+                                  )?.pivot?.attempts?.[attemptIndex]?.[key];
+
+                                  return (
+                                    <p key={key}>
+                                      {key === 'height' ? ` ${value ?? '-'}` : ` ${value ?? '-'}`}
+                                    </p>
+                                  );
+                                })}
+                              </TableCell>
+                            ))}
+
+
+                          <TableCell>{sportsman.pivot.result}</TableCell>
+                          <TableCell>{sportsman.pivot.position}</TableCell>
+
+                          {currentUser?.name === 'Admin' && <TableCell>Редактировать</TableCell>}
+                        </TableRow>
+
+                        {/* {shouldShowWindField && (
+                             <TableRow>
+                               <TableCell colSpan={5} />
+   
+                               <TableCell colSpan={2 + (currentUser?.name === 'Admin' ? 1 : 0)} />
+                             </TableRow>
+                           )} */}
+                      </React.Fragment>
+                    );
+                  })}
                 </TableBody>
+
+
               </Table>
             </TableContainer>
           </Paper>
