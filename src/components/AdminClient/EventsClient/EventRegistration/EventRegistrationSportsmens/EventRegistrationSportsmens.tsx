@@ -291,7 +291,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     });
   };
 
-  console.log(sortedSportsmen, 'asd');
+
   sortedSportsmen.map((sportsman: any) => {
     const attemptCells =
       sportsman.pivot?.attempts?.length > 0
@@ -477,6 +477,18 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       children: [new TextRun({ text: `Дата проведения: ${new Date().toLocaleDateString()}`, size: 16 })],
     });
 
+    let windParagraph = new Paragraph({});
+    if (!isSpecialSportType &&
+      !isSpecialSportTypeWithPoints) {
+      const wind = sortedSportsmen?.[0]?.pivot?.condition?.wind
+
+      windParagraph = new Paragraph({
+        children: [new TextRun({ text: `Ветер: ${wind}`, size: 16 })],
+      });
+    }
+
+
+
     const cityParagraph = new Paragraph({
       children: [new TextRun({ text: "Город:", size: 16 })],
     });
@@ -485,7 +497,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       sections: [
         {
           properties: {},
-          children: [titleParagraph, dateParagraph, cityParagraph, table],
+          children: [titleParagraph, dateParagraph, windParagraph, cityParagraph, table],
         },
       ],
     });
@@ -494,6 +506,13 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       saveAs(blob, "AthletesResults.docx");
     });
   };
+  // !isSpecialSportType &&
+  //       !isSpecialSportTypeWithPoints && sortedSportsmen?.[0]?.pivot?.condition?.wind && (
+  //         <Typography variant="h6" sx={{ mb: 2, ml: 2 }}>
+  //           Ветер: {sortedSportsmen[0].pivot.condition.wind}
+  //         </Typography>
+  //       )
+  console.log(sortedSportsmen?.[0]?.pivot?.condition?.wind, 'wind');
 
 
 
@@ -507,7 +526,9 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       attempts: data.attempts ? data.attempts : '',
       result: data.result,
       position: data.position,
-      condition: data.condition
+      condition: {
+        wind: data.condition
+      }
     };
 
 
@@ -862,6 +883,12 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
               Скачать результаты</Button>
           </Box>
           <Paper sx={{ width: '100%' }}>
+            {!isSpecialSportType &&
+              !isSpecialSportTypeWithPoints && sortedSportsmen?.[0]?.pivot?.condition?.wind && (
+                <Typography variant="h6" sx={{ mb: 2, ml: 2 }}>
+                  Ветер: {sortedSportsmen[0].pivot.condition.wind}
+                </Typography>
+              )}
             <TableContainer sx={{ maxHeight: 440 }}>
               <Table stickyHeader aria-label="sticky table">
                 <TableHead>
@@ -919,9 +946,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
                     console.log(sportsman, 'sportsman22222');
 
-
-
-
                     return (
                       <React.Fragment key={`row-${index}`}>
                         <TableRow>
@@ -931,31 +955,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                           <TableCell align='center'>{sportsman.address.split(" - ")[1]}</TableCell>
                           <TableCell align="center">{sportsman.chest_number}</TableCell>
 
-                          {/* {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
-                            eventSportsmen.sportsmen[index]?.pivot.attempts && eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
-                              console.log(key, 'key2');
 
-
-                              return <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
-                                {shouldShowWindField && <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ''} {eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex + 1]?.value}</p>}
-                                <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ` `}  {key?.key === null ? key.value : key.value.value}</p>
-                              </TableCell>
-                            })
-                          } */}
-
-
-                          {/* {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
-                            eventSportsmen.sportsmen[index]?.pivot.attempts && eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
-                              console.log(key, 'key2222');
-                              // console.log(eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex]?.value, 'asd');
-
-
-                              return <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
-                                {shouldShowWindField && <p>{key?.key === 'resultAfterThreeAttempts' ? '' : 'Ветер'} {eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex + 1]?.value}</p>}
-                                <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ``}  {key?.key === 'resultAfterThreeAttempts' ? key.value : key.value.value}</p>
-                              </TableCell>
-                            })
-                          } */}
 
 
                           {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
