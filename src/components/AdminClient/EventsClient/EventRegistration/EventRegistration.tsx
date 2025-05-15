@@ -6,7 +6,7 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { CircleChevronDown, CircleChevronUp, Eye, Pencil, Trash2 } from 'lucide-react';
+import { ArrowLeftFromLine, CircleChevronDown, CircleChevronUp, Eye, Pencil, Trash2 } from 'lucide-react';
 import { ILang } from '@/types/langTypes';
 import axios from 'axios';
 import { toast } from 'sonner';
@@ -58,7 +58,7 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
       return timeA - timeB;
     })
   }));
-  
+
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -73,6 +73,7 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
   return (
     <>
       <Box>
+        <Button variant="outlined" startIcon={<ArrowLeftFromLine />} onClick={() => router.back()}></Button>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box>
             <Typography variant="h5">{event.name.ru}</Typography>

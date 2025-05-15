@@ -4,9 +4,10 @@ import { ILang } from '@/types/langTypes'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
-import { Box, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import { Eye } from 'lucide-react'
+import { Box, Button, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { ArrowLeftFromLine, Eye } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { FC } from 'react'
 
 interface UserEventClientProps {
@@ -33,6 +34,7 @@ interface UserEventClientProps {
 
 const UserEventClient: FC<UserEventClientProps> = ({ event, days }) => {
   const [value, setValue] = React.useState(`${days?.[0].date}`);
+  const router = useRouter()
 
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -48,11 +50,12 @@ const UserEventClient: FC<UserEventClientProps> = ({ event, days }) => {
       return timeA - timeB;
     })
   }));
-  
+
 
   return (
     <>
       <Box>
+        <Button variant="outlined" startIcon={<ArrowLeftFromLine />} onClick={() => router.back()}></Button>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box>
             <Typography variant="h5">{event.name.ru}</Typography>
