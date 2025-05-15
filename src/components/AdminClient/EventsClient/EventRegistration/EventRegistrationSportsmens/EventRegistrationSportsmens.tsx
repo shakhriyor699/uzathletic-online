@@ -53,16 +53,16 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
   const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, 64, 67].includes(eventRegistration.sport_type_id), [eventRegistration.sport_type_id])
 
-  // const sortedSportsmen = [...eventSportsmen?.sportsmen].sort((a, b) => {
-  //   const posA = isNaN(Number(a.pivot.position)) ? Infinity : Number(a.pivot.position);
-  //   const posB = isNaN(Number(b.pivot.position)) ? Infinity : Number(b.pivot.position);
-  //   return posA - posB;
-  // });
+  const sortedSportsmen = [...eventSportsmen?.sportsmen].sort((a, b) => {
+    const posA = isNaN(Number(a.pivot.position)) ? Infinity : Number(a.pivot.position);
+    const posB = isNaN(Number(b.pivot.position)) ? Infinity : Number(b.pivot.position);
+    return posA - posB;
+  });
 
-  const sortedSportsmen = [...eventSportsmen?.sportsmen].filter(s => !isNaN(Number(s.pivot?.position)))
-    .sort((a, b) => Number(a.pivot.position) - Number(b.pivot.position));
+  // const sortedSportsmen = [...eventSportsmen?.sportsmen].filter(s => !isNaN(Number(s.pivot?.position)))
+  //   .sort((a, b) => Number(a.pivot.position) - Number(b.pivot.position));
 
-  console.log(sortedSportsmen, 'sorted');
+  // console.log(sortedSportsmen, 'sorted');
 
 
 
