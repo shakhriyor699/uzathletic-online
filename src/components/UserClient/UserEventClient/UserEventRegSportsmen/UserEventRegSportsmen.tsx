@@ -763,7 +763,11 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                           <TableCell align="center">{sportsman.chest_number}</TableCell>
 
                           {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
-                            eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
+                            Array.from({
+                              length: Math.max(
+                                ...eventSportsmen.sportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+                              )
+                            }).map((key: any, attemptIndex: number) => {
                               console.log(key, 'key');
                               // console.log(eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex]?.value, 'asd');
 
