@@ -478,7 +478,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     });
 
     let windParagraph = new Paragraph({});
-    console.log('asd');
+
     
     if (!isSpecialSportType &&
       !isSpecialSportTypeWithPoints) {
