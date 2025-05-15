@@ -39,6 +39,15 @@ const StartListClient: FC<StartListClientProps> = ({ event, days }) => {
     setValue(newValue);
   };
 
+  const sortedData = (days ?? []).map(day => ({
+    ...day,
+    events: day.events.sort((a, b) => {
+      const timeA = new Date(a.start_time).getTime();
+      const timeB = new Date(b.start_time).getTime();
+      return timeA - timeB;
+    })
+  }));
+
   return (
     <Container maxWidth="xl">
       <Box>
@@ -67,7 +76,7 @@ const StartListClient: FC<StartListClientProps> = ({ event, days }) => {
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <TabList onChange={handleChange} aria-label="lab API tabs example">
                   {
-                    days?.map((day, index) => <Tab key={day.date} label={`День ${index + 1}`} value={day.date} />)
+                    sortedData?.map((day, index) => <Tab key={day.date} label={`День ${index + 1}`} value={day.date} />)
                   }
                 </TabList>
               </Box>

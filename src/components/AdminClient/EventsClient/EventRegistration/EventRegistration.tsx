@@ -49,8 +49,6 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
     )
   }
 
-  console.log(event, days, 'evetn');
-
 
   const sortedData = (days ?? []).map(day => ({
     ...day,
@@ -60,6 +58,7 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
       return timeA - timeB;
     })
   }));
+  
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
