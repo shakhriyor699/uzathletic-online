@@ -49,6 +49,7 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
     )
   }
 
+  console.log(event, days, 'evetn');
 
 
   const sortedData = (days ?? []).map(day => ({
@@ -101,7 +102,7 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
               {
                 days?.map((day, index) => {
                   const isOpen = openRows.includes(index)
-            
+
 
                   return (
                     <TabPanel value={day.date} key={day.date}>
