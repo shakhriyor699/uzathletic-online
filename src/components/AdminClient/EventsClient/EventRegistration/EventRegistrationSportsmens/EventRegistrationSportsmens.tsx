@@ -8,7 +8,7 @@ import { Autocomplete, Box, Button, InputLabel, Paper, Tab, Table, TableBody, Ta
 import axios from 'axios'
 import { CircleX, Pencil, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import React, { FC, useMemo, useState } from 'react'
+import React, { FC, useEffect, useMemo, useState } from 'react'
 import { Controller, FieldValues, SubmitHandler, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 import { saveAs } from "file-saver";
@@ -71,6 +71,12 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   //   setGroups([...groups, { name: groupName, sportsmen: [] }]);
   //   setGroupName('');
   // };
+
+  useEffect(() => {
+    if (value === '3') {
+      router.refresh()
+    }
+  }, [value]);
 
   const addGroup = () => {
     if (!groupName.trim()) {
@@ -479,8 +485,8 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
     let windParagraph = new Paragraph({});
 
- 
-    
+
+
     if (!isSpecialSportType &&
       !isSpecialSportTypeWithPoints) {
       const wind = sortedSportsmen?.[0]?.pivot?.condition?.wind
@@ -529,7 +535,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       const res = await axios.post('/api/eventSportsmen', payload);
       if (res.status === 200) {
         toast.success('Сохранено');
-        router.refresh();
+        // router.refresh();
       }
     } catch (error) {
       console.error('Error submitting start list:', error);
@@ -883,6 +889,29 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
               )}
             <TableContainer sx={{ maxHeight: 440 }}>
               <Table stickyHeader aria-label="sticky table">
+
+                {/* {
+                  !isSpecialSportType &&
+                  !isSpecialSportTypeWithPoints && startList.map((item: any, index: number) => {
+                    console.log(item, sortedSportsmen, 'item');
+                    return Object.keys(item.sportsmen).map((key, index) => {
+                      return (
+                        <>
+                        <Typography sx={{ mb: 2 }} variant='h4'>{key}</Typography>
+                          <TableRow key={index}>
+                            <TableCell>{index + 1}</TableCell>
+                            <TableCell>{sortedSportsmen[index].name}</TableCell>
+                            <TableCell>{sortedSportsmen[index].pivot?.result}</TableCell>
+                            <TableCell>{sortedSportsmen[index].pivot?.position}</TableCell>
+                          </TableRow>
+                        </>
+                      )
+                    })
+                  }
+                  )
+                } */}
+
+
                 <TableHead>
                   <TableRow>
                     <TableCell>№</TableCell>
