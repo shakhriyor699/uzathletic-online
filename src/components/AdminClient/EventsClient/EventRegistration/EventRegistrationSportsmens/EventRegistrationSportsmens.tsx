@@ -506,7 +506,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       saveAs(blob, "AthletesResults.docx");
     });
   };
-
   
   // !isSpecialSportType &&
   //       !isSpecialSportTypeWithPoints && sortedSportsmen?.[0]?.pivot?.condition?.wind && (
