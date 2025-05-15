@@ -722,7 +722,11 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                       ))}
 
                     {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
-                      eventSportsmen.sportsmen[0]?.pivot.attempts.map((key: any, attemptIndex: number) => {
+                      Array.from({
+                        length: Math.max(
+                          ...eventSportsmen.sportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+                        )
+                      }).map((key: any, attemptIndex: number) => {
                         return <TableCell align="center" key={`attempt-header-${attemptIndex}`}>{key?.key ? 'Результат после 3 попыток' : `Попытка ${attemptIndex + 1}`}</TableCell>
                       })
                     }

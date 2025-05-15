@@ -754,7 +754,11 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                       ))}
 
                     {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
-                      eventSportsmen.sportsmen[0]?.pivot.attempts.map((key: any, attemptIndex: number) => {
+                      Array.from({
+                        length: Math.max(
+                          ...eventSportsmen.sportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+                        )
+                      }).map((key: any, attemptIndex: number) => {
                         return <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
                           <p>Ветер</p>
                           <p>{key?.key ? null : `Попытка ${attemptIndex + 1}`}</p>
@@ -794,7 +798,11 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                           <TableCell align="center">{sportsman.chest_number}</TableCell>
 
                           {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
-                            eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
+                            Array.from({
+                              length: Math.max(
+                                ...eventSportsmen.sportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+                              )
+                            }).map((key: any, attemptIndex: number) => {
 
 
                               return <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
