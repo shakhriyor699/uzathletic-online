@@ -6,7 +6,7 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import { Autocomplete, Box, Button, InputLabel, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, Typography } from '@mui/material'
 import axios from 'axios'
-import { CircleX, Trash2 } from 'lucide-react'
+import { CircleX, Pencil, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { FC, useMemo, useState } from 'react'
 import { Controller, FieldValues, SubmitHandler, useForm, useWatch } from 'react-hook-form'
@@ -625,7 +625,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                                   <TableCell>Регион</TableCell>
                                   <TableCell>Год рождения</TableCell>
                                   <TableCell>BIB</TableCell>
-                                  {currentUser?.name === 'Admin' && <TableCell>Заявленый результат</TableCell>}
+                                  {/* {currentUser?.name === 'Admin' && <TableCell>Заявленый результат</TableCell>}  */}
                                   {currentUser?.name === 'Admin' &&
                                     <>
                                       <TableCell>Результат</TableCell>
@@ -652,7 +652,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                                           <TableCell>{sportsmen.sportsman.address}</TableCell>
                                           <TableCell>{sportsmen.sportsman.birth}</TableCell>
                                           <TableCell>{sportsmen.sportsman.chest_number}</TableCell>
-                                          <TableCell>
+                                          {/* <TableCell>
                                             {
                                               sportsmen.sportsman.sportsmen_disciplines.map((discipline: any, index: number) => {
                                                 if (eventRegistration.id === discipline.id) {
@@ -664,7 +664,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                                               }
                                               )
                                             }
-                                          </TableCell>
+                                          </TableCell> */}
                                           {currentUser?.name === 'Admin' &&
                                             <>
                                               <TableCell>
@@ -757,8 +757,10 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                       Array.from({
                         length: Math.max(
                           ...eventSportsmen.sportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
-                        )
+                        ) - 1
                       }).map((key: any, attemptIndex: number) => {
+                        console.log(key, 'attemptIndex');
+
                         return <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
                           <p>Ветер</p>
                           <p>{key?.key ? null : `Попытка ${attemptIndex + 1}`}</p>
@@ -812,7 +814,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
                           {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
                             eventSportsmen.sportsmen[index]?.pivot.attempts && eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
-                              console.log(key, 'key');
+                              console.log(key, 'key2222');
                               // console.log(eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex]?.value, 'asd');
 
 
@@ -826,19 +828,8 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
 
 
-
-
-
-
-
-
-
                           {isSpecialSportTypeWithPoints &&
-                            Array.from({
-                              length: Math.max(
-                                ...eventSportsmen.sportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
-                              )
-                            }).map((_, attemptIndex) => (
+                            eventSportsmen.sportsmen[index]?.pivot.attempts && eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => (
                               <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
                                 {['height', 'point'].map((key) => {
                                   // Попытаемся взять значение из первого попавшегося спортсмена, у кого оно есть
@@ -859,7 +850,12 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                           <TableCell>{sportsman.pivot.result}</TableCell>
                           <TableCell>{sportsman.pivot.position}</TableCell>
 
-                          {currentUser?.name === 'Admin' && <TableCell>Редактировать</TableCell>}
+                          {currentUser?.name === 'Admin' && <TableCell>
+
+                            <Button /* onClick={() => handleDelete(row.id)} */>
+                              <Trash2 className='cursor-pointer' color='red' />
+                            </Button>
+                          </TableCell>}
                         </TableRow>
 
                         {/* {shouldShowWindField && (
