@@ -53,6 +53,12 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
   const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, 64, 67].includes(eventRegistration.sport_type_id), [eventRegistration.sport_type_id])
 
+  const sortedSportsmen = [...eventSportsmen?.sportsmen].sort((a, b) => {
+    const posA = isNaN(Number(a.pivot.position)) ? Infinity : Number(a.pivot.position);
+    const posB = isNaN(Number(b.pivot.position)) ? Infinity : Number(b.pivot.position);
+    return posA - posB;
+  });
+
 
 
 
@@ -198,7 +204,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     });
   };
 
-  console.log(startList, 'startList');
+
 
 
 
@@ -280,30 +286,97 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     });
   };
 
-  console.log(eventSportsmen, 'eventSportsmen');
+  console.log(sortedSportsmen, 'asd');
+  sortedSportsmen.map((sportsman: any) => {
+    const attemptCells =
+      sportsman.pivot?.attempts?.length > 0
+        ? sportsman.pivot.attempts.map((attempt: any) => {
+          const val = String(Object.values(attempt)[0] || '');
+          console.log(attempt.value?.value, 'val');
+
+          return new DocxTableCell({ children: [new Paragraph(attempt.value?.value || '-')] });
+        })
+        : eventSportsmen.attempts.map(() =>
+          new DocxTableCell({ children: [new Paragraph("Нет данных")] })
+        );
+    console.log(attemptCells, 'attemptCells');
+
+  })
 
 
+  const downLoadResultDoc = (sortedSportsmen: any) => {
+    // Создаем заголовки таблицы
+    const headerCells = [
+      new DocxTableCell({ children: [new Paragraph("№")] }),
+      new DocxTableCell({ children: [new Paragraph("Name Surname")] }),
+      new DocxTableCell({ children: [new Paragraph("DOB")] }),
+      new DocxTableCell({ children: [new Paragraph("Country/Region")] }),
+      new DocxTableCell({ children: [new Paragraph("BIB")] }),
+    ];
 
-  const downLoadResultDoc = (eventSportsmen: any) => {
-    const headerRow = new DocxTableRow({
-      children: [
-        new DocxTableCell({ children: [new Paragraph("№")] }),
-        new DocxTableCell({ children: [new Paragraph("Name Surname")] }),
-        new DocxTableCell({ children: [new Paragraph("DOB")] }),
-        new DocxTableCell({ children: [new Paragraph("Country/Region")] }),
-        new DocxTableCell({ children: [new Paragraph("BIB")] }),
-        // new DocxTableCell({ children: [new Paragraph("Вид")] }),
-        ...(eventSportsmen?.attempts?.length > 0
-          ? eventSportsmen.attempts.map((_: any, index: number) =>
-            new DocxTableCell({ children: [new Paragraph(`Attempt ${index + 1}`)] })
-          ) : []
-           /* [new DocxTableCell({ children: [new Paragraph("Attempts")] })] */),
-        new DocxTableCell({ children: [new Paragraph("Result")] }),
-        new DocxTableCell({ children: [new Paragraph("Place")] }),
-      ],
-    });
+    // Добавляем заголовки для попыток в зависимости от типа спорта
+    if (isSpecialSportType) {
+      // Для специальных видов спорта (прыжки, метания)
+      const maxAttempts = Math.max(
+        ...sortedSportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+      ) - 1;
 
-    const bodyRows = eventSportsmen.sportsmen.map((sportsman: any, index: number) => {
+      for (let i = 0; i < maxAttempts; i++) {
+        headerCells.push(
+          new DocxTableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: shouldShowWindField ? "Ветер" : "",
+                    break: 1
+                  }),
+                  new TextRun({ text: `Attempt ${i + 1}` })
+                ]
+              })
+            ]
+          })
+        );
+      }
+    } else if (isSpecialSportTypeWithPoints) {
+      // Для видов с высотой и очками (прыжки в высоту/шест)
+      const maxAttempts = Math.max(
+        ...sortedSportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+      );
+
+      for (let i = 0; i < maxAttempts; i++) {
+        headerCells.push(
+          new DocxTableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({ text: "Высота", break: 1 }),
+                  new TextRun({ text: "Результат" })
+                ]
+              })
+            ]
+          })
+        );
+      }
+    } else {
+      // Для обычных видов (беговые)
+      eventSportsmen?.attempts?.forEach((_: any, index: number) => {
+        headerCells.push(
+          new DocxTableCell({ children: [new Paragraph(`Попытка ${index + 1}`)] })
+        );
+      });
+    }
+
+    // Добавляем финальные колонки
+    headerCells.push(
+      new DocxTableCell({ children: [new Paragraph("Result")] }),
+      new DocxTableCell({ children: [new Paragraph("Place")] })
+    );
+
+    const headerRow = new DocxTableRow({ children: headerCells });
+
+    // Создаем строки с данными
+    const bodyRows = sortedSportsmen.map((sportsman: any, index: number) => {
       const baseCells = [
         new DocxTableCell({ children: [new Paragraph((index + 1).toString())] }),
         new DocxTableCell({
@@ -312,18 +385,64 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
         new DocxTableCell({ children: [new Paragraph(sportsman.birth || '')] }),
         new DocxTableCell({ children: [new Paragraph(sportsman.address.split(" - ")[1] || '')] }),
         new DocxTableCell({ children: [new Paragraph(sportsman.chest_number || '')] }),
-        // new DocxTableCell({ children: [new Paragraph(eventSportsmen.name?.ru || '')] }),
       ];
 
-      const attemptCells =
-        sportsman.pivot?.attempts?.length > 0
-          ? sportsman.pivot.attempts.map((attempt: any) => {
-            const val = String(Object.values(attempt)[0] || '');
-            return new DocxTableCell({ children: [new Paragraph(val || '-')] });
-          })
-          : eventSportsmen.attempts.map(() =>
-            new DocxTableCell({ children: [new Paragraph("Нет данных")] })
+      let attemptCells: DocxTableCell[] = [];
+
+      if (isSpecialSportType) {
+        // Обработка специальных видов (прыжки/метания)
+        sportsman.pivot?.attempts?.forEach((attempt: any, attemptIndex: number) => {
+          if (attempt?.key !== 'resultAfterThreeAttempts') {
+            attemptCells.push(
+              new DocxTableCell({
+                children: [
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: shouldShowWindField
+                          ? `${sportsman.pivot?.condition?.wind?.[attemptIndex + 1]?.value || '-'}`
+                          : "",
+                        break: 1
+                      }),
+                      new TextRun({
+                        text: attempt?.value?.value?.toString() || '-'
+                      })
+                    ]
+                  })
+                ]
+              })
+            );
+          }
+        });
+      } else if (isSpecialSportTypeWithPoints) {
+        // Обработка видов с высотой и очками
+        sportsman.pivot?.attempts?.forEach((attempt: any) => {
+          attemptCells.push(
+            new DocxTableCell({
+              children: [
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: attempt?.height?.toString() || '-', break: 1 }),
+                    new TextRun({ text: attempt?.point?.toString() || '-' })
+                  ]
+                })
+              ]
+            })
           );
+        });
+      } else {
+        // Обработка обычных видов
+        eventSportsmen?.attempts?.forEach((_: any, attemptIndex: number) => {
+          const attempt = sportsman.pivot?.attempts?.[attemptIndex];
+          attemptCells.push(
+            new DocxTableCell({
+              children: [
+                new Paragraph(attempt?.value?.value?.toString() || '-')
+              ]
+            })
+          );
+        });
+      }
 
       const resultCells = [
         new DocxTableCell({
@@ -334,7 +453,9 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
         }),
       ];
 
-      return new DocxTableRow({ children: [...baseCells, ...attemptCells, ...resultCells] });
+      return new DocxTableRow({
+        children: [...baseCells, ...attemptCells, ...resultCells]
+      });
     });
 
     const table = new DocxTable({
@@ -348,7 +469,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     });
 
     const dateParagraph = new Paragraph({
-      children: [new TextRun({ text: "Дата проведения: (число.месяц.год)", size: 16 })],
+      children: [new TextRun({ text: `Дата проведения: ${new Date().toLocaleDateString()}`, size: 16 })],
     });
 
     const cityParagraph = new Paragraph({
@@ -365,9 +486,10 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     });
 
     Packer.toBlob(doc).then((blob) => {
-      saveAs(blob, "AthletesTable.docx");
+      saveAs(blob, "AthletesResults.docx");
     });
-  }
+  };
+
 
 
 
@@ -729,11 +851,11 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
           <Box>
             <Typography variant='h4' mb={5}>Результаты</Typography>
           </Box>
-          {/* <Box>
-               <Button onClick={() => downLoadResultDoc(eventSportsmen)} type='button' variant='contained' sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                 <FaFileWord />
-                 Скачать результаты</Button>
-             </Box> */}
+          <Box>
+            <Button onClick={() => downLoadResultDoc(sortedSportsmen)} type='button' variant='contained' sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <FaFileWord />
+              Скачать результаты</Button>
+          </Box>
           <Paper sx={{ width: '100%' }}>
             <TableContainer sx={{ maxHeight: 440 }}>
               <Table stickyHeader aria-label="sticky table">
@@ -788,7 +910,11 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {eventSportsmen?.sportsmen?.map((sportsman: any, index: number) => {
+                  {sortedSportsmen.map((sportsman: any, index: number) => {
+
+
+
+
 
                     return (
                       <React.Fragment key={`row-${index}`}>

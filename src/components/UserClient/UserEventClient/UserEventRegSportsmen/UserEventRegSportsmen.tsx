@@ -66,6 +66,12 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
 
   const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, 64, 67].includes(eventRegistration.sport_type_id), [eventRegistration.sport_type_id])
 
+  const sortedSportsmen = [...eventSportsmen?.sportsmen].sort((a, b) => {
+    const posA = isNaN(Number(a.pivot.position)) ? Infinity : Number(a.pivot.position);
+    const posB = isNaN(Number(b.pivot.position)) ? Infinity : Number(b.pivot.position);
+    return posA - posB;
+  });
+
   const defaultValues = useMemo(() => ({
     position: {},
     result: {},
@@ -751,8 +757,10 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {eventSportsmen?.sportsmen?.map((sportsman: any, index: number) => {
-                    console.log(eventSportsmen.sportsmen[index]?.pivot.attempts, 'eventSportsmen');
+                  {sortedSportsmen.map((sportsman: any, index: number) => {
+               
+
+
 
                     return (
                       <React.Fragment key={`row-${index}`}>
