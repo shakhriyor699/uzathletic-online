@@ -507,9 +507,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     });
   };
 
-
-
-
   const onSubmitSportsmans = async (data: FieldValues, id: number) => {
 
 
