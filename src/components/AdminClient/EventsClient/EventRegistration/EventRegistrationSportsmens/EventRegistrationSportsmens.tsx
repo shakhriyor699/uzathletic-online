@@ -44,14 +44,14 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   const router = useRouter()
 
   const isSpecialSportType = useMemo(() =>
-    [51, 52, 54, 55, 56, 57, 65, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id),
-    [eventRegistration.sport_type_id]);
+    [51, 52, 54, 55, 56, 57, /* 65, */ 64, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id),
+    []);
 
   const shouldShowWindField = useMemo(() =>
-    [51, 52, 65, 66].includes(eventRegistration.sport_type_id),
-    [eventRegistration.sport_type_id]);
+    [51, 52, 64, 66].includes(eventRegistration.sport_type_id),
+    []);
 
-  const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, 64, 67].includes(eventRegistration.sport_type_id), [eventRegistration.sport_type_id])
+  const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, /* 64, */ 65, 67].includes(eventRegistration.sport_type_id), [])
 
   const sortedSportsmen = [...eventSportsmen?.sportsmen].sort((a, b) => {
     const posA = isNaN(Number(a.pivot.position)) ? Infinity : Number(a.pivot.position);
