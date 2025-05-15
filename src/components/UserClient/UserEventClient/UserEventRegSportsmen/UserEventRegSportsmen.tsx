@@ -772,24 +772,24 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                           <TableCell align="center">{sportsman.chest_number}</TableCell>
 
                           {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
-                            eventSportsmen.sportsmen[index]?.pivot.attempts && eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
+                            sortedSportsmen[index]?.pivot.attempts && sortedSportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
                               console.log(key, 'key');
                               // console.log(eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex]?.value, 'asd');
 
 
                               return key?.key !== 'resultAfterThreeAttempts' && <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
-                                {shouldShowWindField && <p>{key?.key === 'resultAfterThreeAttempts' ? '' : 'Ветер'} {eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex + 1]?.value}</p>}
+                                {shouldShowWindField && <p>{key?.key === 'resultAfterThreeAttempts' ? '' : 'Ветер'} {sortedSportsmen[index]?.pivot.condition.wind[attemptIndex + 1]?.value}</p>}
                                 <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ` `}  {key?.key === 'resultAfterThreeAttempts' ? null : key.value.value}</p>
                               </TableCell>
                             })
                           }
 
                           {isSpecialSportTypeWithPoints &&
-                            eventSportsmen.sportsmen[index]?.pivot.attempts && eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => (
+                            sortedSportsmen[index]?.pivot.attempts && sortedSportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => (
                               <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
                                 {['height', 'point'].map((key) => {
                                   // Попытаемся взять значение из первого попавшегося спортсмена, у кого оно есть
-                                  const value = eventSportsmen.sportsmen.find(
+                                  const value = sortedSportsmen.find(
                                     (s: any) => s.pivot?.attempts?.[attemptIndex]?.[key] !== undefined
                                   )?.pivot?.attempts?.[attemptIndex]?.[key];
 

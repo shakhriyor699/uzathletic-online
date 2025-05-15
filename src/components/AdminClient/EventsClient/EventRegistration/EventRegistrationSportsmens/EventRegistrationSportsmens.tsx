@@ -53,11 +53,16 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
   const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, 64, 67].includes(eventRegistration.sport_type_id), [eventRegistration.sport_type_id])
 
-  const sortedSportsmen = [...eventSportsmen?.sportsmen].sort((a, b) => {
-    const posA = isNaN(Number(a.pivot.position)) ? Infinity : Number(a.pivot.position);
-    const posB = isNaN(Number(b.pivot.position)) ? Infinity : Number(b.pivot.position);
-    return posA - posB;
-  });
+  // const sortedSportsmen = [...eventSportsmen?.sportsmen].sort((a, b) => {
+  //   const posA = isNaN(Number(a.pivot.position)) ? Infinity : Number(a.pivot.position);
+  //   const posB = isNaN(Number(b.pivot.position)) ? Infinity : Number(b.pivot.position);
+  //   return posA - posB;
+  // });
+
+  const sortedSportsmen = [...eventSportsmen?.sportsmen].filter(s => !isNaN(Number(s.pivot?.position)))
+    .sort((a, b) => Number(a.pivot.position) - Number(b.pivot.position));
+
+  console.log(sortedSportsmen, 'sorted');
 
 
 
@@ -912,7 +917,8 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                 <TableBody>
                   {sortedSportsmen.map((sportsman: any, index: number) => {
 
-
+                    console.log(sportsman, 'sportsman22222');
+                    
 
 
 
@@ -953,13 +959,13 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
 
                           {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
-                            eventSportsmen.sportsmen[index]?.pivot.attempts && eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
+                            sortedSportsmen[index]?.pivot.attempts && sortedSportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
                               console.log(key, 'key');
                               // console.log(eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex]?.value, 'asd');
 
 
                               return key?.key !== 'resultAfterThreeAttempts' && <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
-                                {shouldShowWindField && <p>{key?.key === 'resultAfterThreeAttempts' ? '' : 'Ветер'} {eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex + 1]?.value}</p>}
+                                {shouldShowWindField && <p>{key?.key === 'resultAfterThreeAttempts' ? '' : 'Ветер'} {sortedSportsmen[index]?.pivot.condition.wind[attemptIndex + 1]?.value}</p>}
                                 <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ` `}  {key?.key === 'resultAfterThreeAttempts' ? null : key.value.value}</p>
                               </TableCell>
                             })
@@ -968,11 +974,11 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
 
                           {isSpecialSportTypeWithPoints &&
-                            eventSportsmen.sportsmen[index]?.pivot.attempts && eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => (
+                            sortedSportsmen[index]?.pivot.attempts && sortedSportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => (
                               <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
                                 {['height', 'point'].map((key) => {
                                   // Попытаемся взять значение из первого попавшегося спортсмена, у кого оно есть
-                                  const value = eventSportsmen.sportsmen.find(
+                                  const value = sortedSportsmen.find(
                                     (s: any) => s.pivot?.attempts?.[attemptIndex]?.[key] !== undefined
                                   )?.pivot?.attempts?.[attemptIndex]?.[key];
 
