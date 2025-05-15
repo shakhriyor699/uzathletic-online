@@ -63,7 +63,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
 
       {eventRegistration.user_id === currentUser.id && (
         <TableCell sx={{ display: "flex", gap: 1, alignItems: "center" }} align="center">
-          {attempts.slice(0, 3).map((_, attemptIndex) => (
+          {isSpecialSportType && attempts.slice(0, 3).map((_, attemptIndex) => (
             <Box key={attemptIndex} sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
               {shouldShowWindField && (
                 <Controller
@@ -78,7 +78,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
                   )}
                 />
               )}
-              <Controller
+             { <Controller
                 name={`attempt.${sportsman.id}.${attemptIndex + 1}`}
                 control={control}
                 render={({ field }) => (
@@ -88,7 +88,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
                     {...field}
                   />
                 )}
-              />
+              />}
             </Box>
           ))}
 
