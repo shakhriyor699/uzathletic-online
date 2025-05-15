@@ -478,6 +478,8 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     });
 
     let windParagraph = new Paragraph({});
+    console.log('asd');
+    
     if (!isSpecialSportType &&
       !isSpecialSportTypeWithPoints) {
       const wind = sortedSportsmen?.[0]?.pivot?.condition?.wind
@@ -486,7 +488,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
         children: [new TextRun({ text: `Ветер: ${wind}`, size: 16 })],
       });
     }
-
 
 
     const cityParagraph = new Paragraph({
