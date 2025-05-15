@@ -889,7 +889,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                         console.log(key, 'attemptIndex');
 
                         return <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
-                          <p>Ветер</p>
+                          {shouldShowWindField && <p>Ветер</p>}
                           <p>{key?.key ? null : `Попытка ${attemptIndex + 1}`}</p>
                         </TableCell>
                       })
@@ -918,7 +918,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                   {sortedSportsmen.map((sportsman: any, index: number) => {
 
                     console.log(sportsman, 'sportsman22222');
-                    
+
 
 
 
