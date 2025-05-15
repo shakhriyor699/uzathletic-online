@@ -812,7 +812,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                           } */}
 
 
-                          {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
+                          {/* {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
                             eventSportsmen.sportsmen[index]?.pivot.attempts && eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
                               console.log(key, 'key2222');
                               // console.log(eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex]?.value, 'asd');
@@ -823,8 +823,21 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                                 <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ``}  {key?.key === 'resultAfterThreeAttempts' ? key.value : key.value.value}</p>
                               </TableCell>
                             })
-                          }
+                          } */}
 
+
+                          {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
+                            eventSportsmen.sportsmen[index]?.pivot.attempts && eventSportsmen.sportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
+                              console.log(key, 'key');
+                              // console.log(eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex]?.value, 'asd');
+
+
+                              return key?.key !== 'resultAfterThreeAttempts' && <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
+                                {shouldShowWindField && <p>{key?.key === 'resultAfterThreeAttempts' ? '' : 'Ветер'} {eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex + 1]?.value}</p>}
+                                <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ` `}  {key?.key === 'resultAfterThreeAttempts' ? null : key.value.value}</p>
+                              </TableCell>
+                            })
+                          }
 
 
 
