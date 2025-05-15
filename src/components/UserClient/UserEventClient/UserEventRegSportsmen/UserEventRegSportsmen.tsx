@@ -782,7 +782,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
 
 
                               return key?.key !== 'resultAfterThreeAttempts' && <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
-                                {shouldShowWindField && <p>{key?.key === 'resultAfterThreeAttempts' ? '' : 'Ветер'} {sortedSportsmen[index]?.pivot.condition.wind[attemptIndex + 1]?.value}</p>}
+                                {shouldShowWindField && <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ''} {sortedSportsmen[index]?.pivot.condition.wind[attemptIndex + 1]?.value}</p>}
                                 <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ` `}  {key?.key === 'resultAfterThreeAttempts' ? null : key.value.value}</p>
                               </TableCell>
                             })
