@@ -22,13 +22,14 @@ export interface StartListResponse {
 export interface StartListSportsmen {
   id: number
   event_registration_id: number
+  isDisabled?: boolean
   sportsmen: {
     [key: string]: any
   }
- 
+
 }
 
-export interface IStartList  {
+export interface IStartList {
   id: number
   user_id: number
   event_id: number
@@ -42,6 +43,6 @@ export interface IStartList  {
   start_time: string
   end_time: string
   description: ILang
-  status:  boolean | null
+  status: boolean | null
   sportsmen_sortable: StartListSportsmen[]
 }

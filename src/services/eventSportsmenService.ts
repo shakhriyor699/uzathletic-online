@@ -4,7 +4,7 @@ import { axiosWithAuth } from "@/config/interceptors"
 import { IEventSportsmen } from "@/types/eventSportsmenTypes"
 
 export const createOrUpdate = async (data: IEventSportsmen) => {
-  const res = await axiosWithAuth.post<IEventSportsmen>('/event-sportsmen/event/create-or-update', data)
+  const res = await axiosWithAuth.post<IEventSportsmen>('/event-sportsmen/event/create', data)
   return res
 }
 

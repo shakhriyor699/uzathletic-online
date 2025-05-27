@@ -19,7 +19,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import React, { useMemo, type FC } from "react"
+import React, { useEffect, useMemo, type FC } from "react"
 import { saveAs } from "file-saver"
 import {
   Document,
@@ -53,6 +53,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
   eventSportsmen,
 }) => {
   const [value, setValue] = React.useState("1")
+  const [startListSpostsmen, setStartListSportsmen] = React.useState<StartListSportsmen[]>([])
   // const isSpecialSportType = useMemo(() => [51, 52, 54, 55, 56, 57, 65, 66, 68, 69, 70, 71].includes(eventRegistration.sport_type_id), [
   //   eventRegistration.sport_type_id])
 
@@ -67,8 +68,22 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
   const isSpecialSportTypeWithPoints = useMemo(() => [50, 53, /* 64, */ 65, 67].includes(eventRegistration.sport_type_id), [])
 
 
-  console.log(eventRegistration.sport_type_id, 'iddd');
-  
+  // useEffect(() => {
+  //   const dataWithState = startList.map((s) => ({
+  //     ...s,
+  //     sportsmen: Object.keys(s.sportsmen).reduce<Record<string, any[]>>((acc, key) => {
+  //       acc[key] = s.sportsmen[key].map((sportsman: any) => ({
+  //         ...sportsman,
+  //         isDisabled: false,
+  //       }))
+  //       return acc
+  //     }, {}),
+  //   }));
+  //   // console.log(dataWithState, 'dataWithState');
+  //   setStartListSportsmen(dataWithState);
+
+  // }, [startList])
+  // console.log(startListSpostsmen, 'dataWithState');
 
   const sortedSportsmen = [...eventSportsmen?.sportsmen].sort((a, b) => {
     const posA = isNaN(Number(a.pivot.position)) ? Infinity : Number(a.pivot.position);
@@ -251,6 +266,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
 
     console.log("Sending payload:", payload, data, 'data');
 
+  
 
 
     try {
@@ -438,6 +454,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                               {...field}
                               id="outlined-basic"
                               label="Ветер"
+                              disabled={startList.isDisabled}
                               variant="outlined"
                               size="small"
                               sx={{ my: 2 }}
@@ -686,6 +703,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                                 attempts={attempts}
                                 handleSubmitWithId={handleSubmitWithId}
                                 shouldShowWindField={shouldShowWindField}
+                                isDisabled={startList.isDisabled}
                               />
                             ))}
                           </TableBody>
@@ -762,7 +780,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                 </TableHead>
                 <TableBody>
                   {sortedSportsmen.map((sportsman: any, index: number) => {
-               
+
 
 
 

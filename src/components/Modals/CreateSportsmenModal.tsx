@@ -145,11 +145,21 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
     }
   }
 
-  const handleInputChange = (id: number, type: string, value: string) => {
+  // const handleInputChange = (id: number, type: string, value: string) => {
+  //   setSelectedOptions((prevOptions) =>
+  //     prevOptions.map((option) => (option.id === id ? { ...option, [type]: value } : option)),
+  //   )
+  // }
+
+  const handleInputChange = (id: number | null, type: string, value: string) => {
     setSelectedOptions((prevOptions) =>
-      prevOptions.map((option) => (option.id === id ? { ...option, [type]: value } : option)),
-    )
-  }
+      prevOptions.map((option) =>
+        (option.id === id || option.event_registration_id === id)
+          ? { ...option, [type]: value }
+          : option
+      ),
+    );
+  };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", ":", "."]
@@ -196,8 +206,8 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
     }
   }
 
-  console.log(selectedOptions);
-  
+  console.log(selectedOptions, 'selectedOptions');
+
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
 
@@ -237,7 +247,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
       //   event_registration_id: option.id,
       // })),
       sportsmen_disciplines: selectedOptions.map((option: any) => ({
-        id: id ? option.id : null,
+        id: option.id || null,
         name: option.label.replace(/^[^,]+, /, ""),
         pb: option.pb,
         sb: option.sb,
@@ -250,10 +260,10 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
 
 
     try {
-        const res = id ? await axios.put(`/api/sportsmens/${id}`, newData) : await axios.post("/api/sportsmens", newData)
-        if (res.status === 200) {
-          toast.success("Спортсмен добавлен")
-        }
+      const res = id ? await axios.put(`/api/sportsmens/${id}`, newData) : await axios.post("/api/sportsmens", newData)
+      if (res.status === 200) {
+        toast.success("Спортсмен добавлен")
+      }
     } catch (error) {
       toast.error("Спортсмен не добавлен")
     } finally {
@@ -498,38 +508,66 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
                     }))}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   getOptionLabel={(option) => option.label}
+                  // onChange={(event, value) => {
+                  //   field.onChange(value)
+                  //   if (value) {
+
+                  //     const eventRegistration = options.find((option) => option.id === value.id)
+
+                  //     if (
+                  //       eventRegistration &&
+                  //       eventRegistration.multi_events &&
+                  //       eventRegistration.multi_events.length > 0
+                  //     ) {
+
+                  //       const newOptions = eventRegistration.multi_events.map((multiEvent: any) => ({
+                  //         id: multiEvent.id || multiEvent.event_registration_id || value.id,  // Используйте правильный ID
+                  //         label: multiEvent.name?.ru || "",
+                  //         sport_type_id: multiEvent.sport_type_id || value.sport_type_id,
+                  //         event_registration_id: multiEvent.event_registration_id || value.id,  // Храните оригинальный ID
+                  //         sb: "",
+                  //         pb: "",
+                  //       }))
+
+                  //       setSelectedOptions((prev) => [...prev, ...newOptions])
+                  //     } else if (!selectedOptions.includes(value)) {
+
+                  //       if (!selectedOptions.some((selectedOption) => selectedOption.id === value.id) && selectedOptions.length < 4) {
+                  //         setSelectedOptions([...selectedOptions, {
+                  //           ...value,
+                  //           event_registration_id: value.id,  // Храните оригинальный ID
+                  //           sb: "",
+                  //           pb: ""
+                  //         }])
+                  //       }
+                  //     }
+                  //   }
+                  // }}
+
                   onChange={(event, value) => {
-                    field.onChange(value)
+                    field.onChange(value);
                     if (value) {
+                      const eventRegistration = options.find((option) => option.id === value.id);
 
-                      const eventRegistration = options.find((option) => option.id === value.id)
-
-                      if (
-                        eventRegistration &&
-                        eventRegistration.multi_events &&
-                        eventRegistration.multi_events.length > 0
-                      ) {
-
-                        const newOptions = eventRegistration.multi_events.map((multiEvent: any) => ({
-                          id: multiEvent.id || multiEvent.event_registration_id || value.id,  // Используйте правильный ID
+                      if (eventRegistration?.multi_events?.length > 0) {
+                        const newOptions = eventRegistration?.multi_events.map((multiEvent: any) => ({
+                          id: null, // Новые дисциплины без ID (или можно вообще не добавлять поле id)
                           label: multiEvent.name?.ru || "",
                           sport_type_id: multiEvent.sport_type_id || value.sport_type_id,
-                          event_registration_id: multiEvent.event_registration_id || value.id,  // Храните оригинальный ID
+                          event_registration_id: multiEvent.event_registration_id || value.id,
                           sb: "",
                           pb: "",
-                        }))
-
-                        setSelectedOptions((prev) => [...prev, ...newOptions])
-                      } else if (!selectedOptions.includes(value)) {
-
-                        if (!selectedOptions.some((selectedOption) => selectedOption.id === value.id) && selectedOptions.length < 4) {
-                          setSelectedOptions([...selectedOptions, {
-                            ...value,
-                            event_registration_id: value.id,  // Храните оригинальный ID
-                            sb: "",
-                            pb: ""
-                          }])
-                        }
+                        }));
+                        setSelectedOptions((prev) => [...prev, ...newOptions]);
+                      } else if (!selectedOptions.some((selectedOption) => selectedOption.event_registration_id === value.id)) {
+                        setSelectedOptions([...selectedOptions, {
+                          id: null, // Новая дисциплина без ID
+                          label: value.label,
+                          sport_type_id: value.sport_type_id,
+                          event_registration_id: value.id,
+                          sb: "",
+                          pb: "",
+                        }]);
                       }
                     }
                   }}
