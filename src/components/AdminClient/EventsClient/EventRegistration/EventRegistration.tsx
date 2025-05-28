@@ -134,7 +134,14 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
                                       >
                                         <TableCell>{event.start_time.split(' ')[1]}</TableCell>
                                         {/* <TableCell>{event.name.ru === 'Многоборье' ? 'pentathlon' : event.name.ru}</TableCell> */}
-                                        <TableCell>{event.sport_types.length === 10 ? 'Decathlon' : event.sport_types.length === 8 ? 'Octathlon' : event.sport_types.length === 7 ? 'Heptathlon' : event.sport_types.length === 5 ? 'Pentathlon' : event.name.ru}</TableCell>
+                                        <TableCell>  {Array.isArray(event.sport_types) ? (
+                                          event.sport_types.length === 10 ? 'Decathlon' :
+                                            event.sport_types.length === 8 ? 'Octathlon' :
+                                              event.sport_types.length === 7 ? 'Heptathlon' :
+                                                event.sport_types.length === 5 ? 'Pentathlon' :
+                                                  event.name?.ru ?? ''
+                                        ) : event.name?.ru ?? ''}
+                                        </TableCell>
                                         <TableCell>
                                           {event.type === 'multievent' && (
                                             <IconButton size="small" onClick={() => toggleRow(index)}>
