@@ -50,6 +50,10 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
   }
 
 
+  console.log(days, 'day');
+
+
+
   const sortedData = (days ?? []).map(day => ({
     ...day,
     events: day.events.sort((a, b) => {
@@ -129,7 +133,8 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
                                         key={event.id}
                                       >
                                         <TableCell>{event.start_time.split(' ')[1]}</TableCell>
-                                        <TableCell>{event.name.ru}</TableCell>
+                                        {/* <TableCell>{event.name.ru === 'Многоборье' ? 'pentathlon' : event.name.ru}</TableCell> */}
+                                        <TableCell>{event.sport_types.length === 10 ? 'Decathlon' : event.sport_types.length === 8 ? 'Octathlon' : event.sport_types.length === 7 ? 'Heptathlon' : event.sport_types.length === 5 ? 'Pentathlon' : event.name.ru}</TableCell>
                                         <TableCell>
                                           {event.type === 'multievent' && (
                                             <IconButton size="small" onClick={() => toggleRow(index)}>

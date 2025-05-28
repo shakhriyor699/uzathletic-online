@@ -33,6 +33,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   const [value, setValue] = React.useState('1');
   const [open, setOpen] = React.useState(false)
   const [selectedAthletes, setSelectedAthletes] = useState<any[]>([]);
+  const [isDisabled, setIsDisabled] = useState(false);
   const { register, handleSubmit, reset, control, resetField, getValues } = useForm<FieldValues>({
     mode: 'onChange',
     defaultValues: {
@@ -77,6 +78,14 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       router.refresh()
     }
   }, [value]);
+
+
+  useEffect(() => {
+    if (eventSportsmen.result) {
+      setIsDisabled(true)
+    }
+  }, [eventSportsmen.result]);
+
 
   const addGroup = () => {
     if (!groupName.trim()) {
@@ -845,7 +854,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                                                 />
                                               </TableCell>
                                               <TableCell>
-                                                <Button onClick={() => handleSubmitWithId(sportsmen.sportsman.id)} variant='contained'>Сохранить</Button>
+                                                <Button disabled={isDisabled} onClick={() => handleSubmitWithId(sportsmen.sportsman.id)} variant='contained'>Сохранить</Button>
                                               </TableCell>
                                             </>
                                           }
@@ -967,6 +976,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                   {sortedSportsmen.map((sportsman: any, index: number) => {
 
                     console.log(sportsman, 'sportsman22222');
+                    // console.log(sportsman.address.split("–").pop().trim(), 'sportsman22222');
 
                     return (
                       <React.Fragment key={`row-${index}`}>
@@ -974,7 +984,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                           <TableCell>{index + 1}</TableCell>
                           <TableCell>{`${sportsman.family_name} ${sportsman.name}`}</TableCell>
                           <TableCell>{sportsman.birth}</TableCell>
-                          <TableCell align='center'>{sportsman.address.split(" - ")[1]}</TableCell>
+                          <TableCell align='center'>{sportsman.address.split("–").pop().trim()}</TableCell>
                           <TableCell align="center">{sportsman.chest_number}</TableCell>
 
 
