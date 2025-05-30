@@ -7,6 +7,10 @@ export const createOrUpdate = async (data: IEventSportsmen) => {
   const res = await axiosWithAuth.post<IEventSportsmen>('/event-sportsmen/event/create', data)
   return res
 }
+export const updateResult = async (data: IEventSportsmen, id: number) => {
+  const res = await axiosWithAuth.post<IEventSportsmen>(`/event-sportsmen/event/create/${id}`, data)
+  return res
+}
 
 export const getAll = async (page = 1) => {
   const { data } = await axiosWithAuth.get(`/event-sportsmen/all?page=${page}`)

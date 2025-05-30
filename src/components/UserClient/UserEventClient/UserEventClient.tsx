@@ -26,6 +26,7 @@ interface UserEventClientProps {
       status: number | null
       parent_id?: null
       sport_type_id: number
+      sport_types: any[] | null
       type: string
       user_id: number
     }[]
@@ -96,7 +97,15 @@ const UserEventClient: FC<UserEventClientProps> = ({ event, days }) => {
                                     key={event.id}
                                   >
                                     <TableCell>{event.start_time.split(' ')[1]}</TableCell>
-                                    <TableCell>{event.name.ru}</TableCell>
+                                    {/* <TableCell>{event.name.ru}</TableCell> */}
+                                    <TableCell>  {Array.isArray(event.sport_types) ? (
+                                      event.sport_types.length === 10 ? 'Decathlon' :
+                                        event.sport_types.length === 8 ? 'Octathlon' :
+                                          event.sport_types.length === 7 ? 'Heptathlon' :
+                                            event.sport_types.length === 5 ? 'Pentathlon' :
+                                              event.name?.ru ?? ''
+                                    ) : event.name?.ru ?? ''}
+                                    </TableCell>
                                     <TableCell>
                                       <Link href={`/user/events/${event.event_id}/event-registration/${event.id}`}>
                                         <Eye className='cursor-pointer' size={17} />
