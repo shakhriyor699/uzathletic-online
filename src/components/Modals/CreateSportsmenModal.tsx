@@ -206,7 +206,8 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
     }
   }
 
-  console.log(selectedOptions, 'selectedOptions');
+  console.log(currentUser, 'currentUserRoleName');
+  
 
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -348,7 +349,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
                     }}
                     renderInput={(params) => <TextField {...params} label="Страна" />}
                     renderOption={(props, option) => {
-                      return currentUser?.role.name === 'admin' && <li {...props} onClick={option.id === 'add-new' ? handleOpenAddCountries : props.onClick} >
+                      return (currentUser?.role.name === 'admin' || currentUser?.role.name === 'operator') && <li {...props} onClick={option.id === 'add-new' ? handleOpenAddCountries : props.onClick} >
                         {option.label}
                       </li>
                     }}

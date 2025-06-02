@@ -16,6 +16,7 @@ const SportsmensPage = async () => {
   const eventRegistrationTypes = await getAllEventRegistrations(1)
   const countries = await getAllCountry()
   const currentUser = await getCurrentUser()
+  
 
   return (
     <>
@@ -30,6 +31,7 @@ const SportsmensPage = async () => {
         genders={genders}
         eventRegistrationTypes={eventRegistrationTypes}
         countries={countries}
+         currentUser={currentUser['user-data']}
       />
     </>
   )
