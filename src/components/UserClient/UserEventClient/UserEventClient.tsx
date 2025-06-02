@@ -4,8 +4,8 @@ import { ILang } from '@/types/langTypes'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
-import { Box, Button, Collapse, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import { ArrowLeftFromLine, Eye } from 'lucide-react'
+import { Box, Button, Collapse, IconButton, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { ArrowLeftFromLine, CircleChevronDown, CircleChevronUp, Eye } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { FC, useState } from 'react'
@@ -116,6 +116,13 @@ const UserEventClient: FC<UserEventClientProps> = ({ event, days }) => {
                                                 event.sport_types.length === 5 ? 'Pentathlon' :
                                                   event.name?.ru ?? ''
                                         ) : event.name?.ru ?? ''}
+                                        </TableCell>
+                                        <TableCell>
+                                          {event.type === 'multievent' && (
+                                            <IconButton size="small" onClick={() => toggleRow(event.id)}>
+                                              {isOpen ? <CircleChevronUp /> : <CircleChevronDown />}
+                                            </IconButton>
+                                          )}
                                         </TableCell>
                                         <TableCell>
                                           <Link href={`/user/events/${event.event_id}/event-registration/${event.id}`}>
