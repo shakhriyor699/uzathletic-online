@@ -57,8 +57,6 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   const { handleOpen } = useAddCountriesModal()
 
 
-  console.log(options
-    .filter((option) => option.event !== null && option.status === true), 'options');
 
 
 
@@ -97,7 +95,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
       }))
       setSelectedOptions(disciplines)
     }
-    console.log(sportsmanToEdit, 'asd');
+
 
 
 
@@ -125,7 +123,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   // }, [id])
 
   useEffect(() => {
-    loadOptions(100)
+    loadOptions(50)
   }, [page])
 
   const handleModalClose = () => {
@@ -137,7 +135,8 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
 
   const loadOptions = async (page: number) => {
     const newOptions = await getAllEventRegistrations(page)
-    setOptions((prevOptions) => [...prevOptions, ...newOptions])
+    // setOptions((prevOptions) => [...prevOptions, ...newOptions])
+    setOptions(newOptions)
   }
 
   // const handleScroll = (event: any) => {
@@ -258,7 +257,6 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
       })),
     }
 
-    console.log(newData, 'newdata');
 
 
 
@@ -501,11 +499,19 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
                   //   onScroll: handleScroll,
                   // }}
                   id="sportType"
+
                   options={options
                     .filter((option) => option.event !== null && option.status === true)
                     .map((option) => ({
                       id: option.id,
-                      label: `${option.event.name?.ru ? option.event.name.ru : ""}, ${option.name.ru}`,
+                      label: `${option.event.name?.ru ? option.event.name.ru : ""}, ${Array.isArray(option.multi_events) ? (
+                        option.multi_events.length === 10 ? 'Decathlon' :
+                          option.multi_events.length === 8 ? 'Octathlon' :
+                            option.multi_events.length === 7 ? 'Heptathlon' :
+                              option.multi_events.length === 5 ? 'Pentathlon' :
+                                option.name?.ru ?? ''
+                      ) : option.name?.ru ?? ''
+                        }`,
                       gender_id: option.gender_id,
                       sport_type_id: option.sport_type_id,
                     }))}
