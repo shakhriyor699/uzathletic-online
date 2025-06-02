@@ -23,7 +23,9 @@ const SportsmensPage = async () => {
   const getAllCountries = await getAllCountry()
 
 
-  
+
+
+
 
   return (
     <>

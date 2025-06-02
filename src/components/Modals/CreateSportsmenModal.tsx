@@ -57,6 +57,8 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   const { handleOpen } = useAddCountriesModal()
 
 
+  console.log(options
+    .filter((option) => option.event !== null && option.status === true), 'options');
 
 
 
@@ -102,7 +104,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   }, [id, sportsmanToEdit, setValue])
 
 
-  console.log(selectedOptions, 'selectedOptions');
+
 
 
 
@@ -123,7 +125,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   // }, [id])
 
   useEffect(() => {
-    loadOptions(page + 1)
+    loadOptions(100)
   }, [page])
 
   const handleModalClose = () => {
@@ -138,12 +140,12 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
     setOptions((prevOptions) => [...prevOptions, ...newOptions])
   }
 
-  const handleScroll = (event: any) => {
-    const bottom = event.target.scrollHeight - event.target.scrollTop === event.target.clientHeight
-    if (bottom) {
-      setPage((prevPage) => prevPage + 1)
-    }
-  }
+  // const handleScroll = (event: any) => {
+  //   const bottom = event.target.scrollHeight - event.target.scrollTop === event.target.clientHeight
+  //   if (bottom) {
+  //     setPage((prevPage) => prevPage + 1)
+  //   }
+  // }
 
   // const handleInputChange = (id: number, type: string, value: string) => {
   //   setSelectedOptions((prevOptions) =>
@@ -207,7 +209,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   }
 
   console.log(currentUser, 'currentUserRoleName');
-  
+
 
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -495,9 +497,9 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
               render={({ field }) => (
                 <Autocomplete
                   {...field}
-                  ListboxProps={{
-                    onScroll: handleScroll,
-                  }}
+                  // ListboxProps={{
+                  //   onScroll: handleScroll,
+                  // }}
                   id="sportType"
                   options={options
                     .filter((option) => option.event !== null && option.status === true)
@@ -553,7 +555,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
                       if (eventRegistration?.multi_events?.length > 0) {
                         const newOptions = eventRegistration?.multi_events.map((multiEvent: any) => ({
                           id: null, // Новые дисциплины без ID (или можно вообще не добавлять поле id)
-                          label: multiEvent.name?.ru || "",
+                          label: multiEvent.sport_type_name || "",
                           sport_type_id: multiEvent.sport_type_id || value.sport_type_id,
                           event_registration_id: multiEvent.event_registration_id || value.id,
                           sb: "",

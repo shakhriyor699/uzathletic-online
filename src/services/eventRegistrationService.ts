@@ -8,7 +8,7 @@ export const create = async (data: IEventRegistration) => {
 }
 
 export const getAll = async (page = 1) => {
-  const { data } = await axiosWithAuth.get(`/event-registration/all?page=${page}`)
+  const { data } = await axiosWithAuth.get(`/event-registration/all?paginate=${page}`)
   return data.data
 }
 

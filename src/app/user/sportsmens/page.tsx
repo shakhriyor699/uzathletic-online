@@ -13,7 +13,7 @@ export const revalidate = 3600
 const SportsmensPage = async () => {
   const sportsmens = await getAllSportsmens()
   const genders = await getAllGender()
-  const eventRegistrationTypes = await getAllEventRegistrations(1)
+  const eventRegistrationTypes = await getAllEventRegistrations(100)
   const countries = await getAllCountry()
   const currentUser = await getCurrentUser()
   
