@@ -191,6 +191,7 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
                                                         <TableCell>Время</TableCell>
                                                         <TableCell align='center'>Дата</TableCell>
                                                         <TableCell>Дисциплина</TableCell>
+                                                        <TableCell></TableCell>
                                                       </TableRow>
                                                     </TableHead>
                                                     <TableBody>
@@ -215,6 +216,21 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
                                                             }).split(', ')[0]}
                                                           </TableCell>
                                                           <TableCell>{e.sport_type_name}</TableCell>
+                                                          <TableCell>
+                                                            <Box sx={{ display: 'flex' }}>
+                                                              <Button>
+                                                                <Link href={`/admin/events/${event.event_id}/registration/${event.id}`}>
+                                                                  <Eye className='cursor-pointer' size={17} />
+                                                                </Link>
+                                                              </Button>
+                                                              {/* <Button onClick={() => handleOpen(event.id)}>
+                                                                <Pencil size={17} />
+                                                              </Button>
+                                                              <Button>
+                                                                <Trash2 size={17} onClick={() => handleDelete(event.id)} color='red' className='cursor-pointer' />
+                                                              </Button> */}
+                                                            </Box>
+                                                          </TableCell>
                                                         </TableRow>
                                                       ))}
                                                     </TableBody>
