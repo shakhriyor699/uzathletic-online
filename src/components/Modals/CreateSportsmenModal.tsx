@@ -489,7 +489,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
                   }}
                   id="sportType"
                   options={options
-                    .filter((option) => option.event !== null && option.status === true)
+                    .filter((option) => option.event !== null && option.status === false)
                     .map((option) => ({
                       id: option.id,
                       label: `${option.event.name?.ru ? option.event.name.ru : ""}, ${option.name.ru}`,
