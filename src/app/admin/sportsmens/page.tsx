@@ -22,6 +22,11 @@ const SportsmensPage = async () => {
   const cities = await getAllCities()
   const getAllCountries = await getAllCountry()
 
+
+
+
+
+
   return (
     <>
       <SportsmensClient

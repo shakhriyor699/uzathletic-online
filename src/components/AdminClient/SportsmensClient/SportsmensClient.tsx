@@ -39,7 +39,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const [page, setPage] = React.useState(0);
   const [totalCount, setTotalCount] = React.useState(totalPage);
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
-  const filteredData = data.filter((item) => !item.status);
+  const filteredData = data.filter((item) => item.status);
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -98,7 +98,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const onSubmit = async (data: FieldValues) => {
     setSubmitting(true)
     console.log(data);
-    
+
     try {
       const res = await getAllSportsmens(page, '', data.gender ? data.gender.id : '', data.cities ? data.cities.label : data.countries ? data.countries.labe : '', data['event-type'] ? data['event-type'].id : '')
       console.log(data.cities ? data.cities.label : data.countries ? data.countries.label : '');

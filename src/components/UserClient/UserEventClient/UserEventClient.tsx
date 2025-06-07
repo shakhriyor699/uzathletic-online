@@ -4,11 +4,11 @@ import { ILang } from '@/types/langTypes'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
-import { Box, Button, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import { ArrowLeftFromLine, Eye } from 'lucide-react'
+import { Box, Button, Collapse, IconButton, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { ArrowLeftFromLine, CircleChevronDown, CircleChevronUp, Eye } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 
 interface UserEventClientProps {
   event: IEventResponse
@@ -26,6 +26,7 @@ interface UserEventClientProps {
       status: number | null
       parent_id?: null
       sport_type_id: number
+      sport_types: any[]
       type: string
       user_id: number
     }[]
@@ -35,6 +36,14 @@ interface UserEventClientProps {
 const UserEventClient: FC<UserEventClientProps> = ({ event, days }) => {
   const [value, setValue] = React.useState(`${days?.[0].date}`);
   const router = useRouter()
+  const [openRows, setOpenRows] = useState<Record<string, boolean>>({})
+
+  const toggleRow = (id: string) => {
+    setOpenRows(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }))
+  }
 
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -89,21 +98,89 @@ const UserEventClient: FC<UserEventClientProps> = ({ event, days }) => {
                             </TableHead>
                             <TableBody>
                               {
-                                day.events.map((event) => (
-                                  <TableRow sx={{
-                                    padding: 20,
-                                  }}
-                                    key={event.id}
-                                  >
-                                    <TableCell>{event.start_time.split(' ')[1]}</TableCell>
-                                    <TableCell>{event.name.ru}</TableCell>
-                                    <TableCell>
-                                      <Link href={`/user/events/${event.event_id}/event-registration/${event.id}`}>
-                                        <Eye className='cursor-pointer' size={17} />
-                                      </Link>
-                                    </TableCell>
-                                  </TableRow>
-                                ))
+                                day.events.map((event) => {
+                                  const isOpen = openRows[event.id] || false;
+                                  return (
+                                    <>
+                                      <TableRow sx={{
+                                        padding: 20,
+                                      }}
+                                        key={event.id}
+                                      >
+                                        <TableCell>{event.start_time.split(' ')[1]}</TableCell>
+                                        {/* <TableCell>{event.name.ru}</TableCell> */}
+                                        <TableCell>  {Array.isArray(event.sport_types) ? (
+                                          event.sport_types.length === 10 ? 'Decathlon' :
+                                            event.sport_types.length === 8 ? 'Octathlon' :
+                                              event.sport_types.length === 7 ? 'Heptathlon' :
+                                                event.sport_types.length === 5 ? 'Pentathlon' :
+                                                  event.name?.ru ?? ''
+                                        ) : event.name?.ru ?? ''}
+                                        </TableCell>
+                                        <TableCell>
+                                          {event.type === 'multievent' && (
+                                            <IconButton size="small" onClick={() => toggleRow(event.id)}>
+                                              {isOpen ? <CircleChevronUp /> : <CircleChevronDown />}
+                                            </IconButton>
+                                          )}
+                                        </TableCell>
+                                        <TableCell>
+                                          <Link href={`/user/events/${event.event_id}/event-registration/${event.id}`}>
+                                            <Eye className='cursor-pointer' size={17} />
+                                          </Link>
+                                        </TableCell>
+                                      </TableRow>
+
+                                      {event.type === 'multievent' && (
+                                        <TableRow>
+                                          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
+                                            <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                                              <Box margin={2}>
+                                                <Typography variant="subtitle1" gutterBottom>
+                                                  Дисциплины {event.sport_types.length}
+                                                </Typography>
+                                                <Table size="small">
+                                                  <TableHead>
+                                                    <TableRow>
+                                                      <TableCell>Время</TableCell>
+                                                      <TableCell align='center'>Дата</TableCell>
+                                                      <TableCell>Дисциплина</TableCell>
+                                                    </TableRow>
+                                                  </TableHead>
+                                                  <TableBody>
+                                                    {event.sport_types.map((e, idx) => (
+                                                      <TableRow key={idx}>
+                                                        <TableCell>
+                                                          {new Date(e.start_time).toLocaleString('ru-RU', {
+                                                            day: '2-digit',
+                                                            month: '2-digit',
+                                                            year: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                          }).split(', ')[1]}
+                                                        </TableCell>
+                                                        <TableCell align='center'>
+                                                          {new Date(e.start_time).toLocaleString('ru-RU', {
+                                                            day: '2-digit',
+                                                            month: '2-digit',
+                                                            year: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                          }).split(', ')[0]}
+                                                        </TableCell>
+                                                        <TableCell>{e.sport_type_name}</TableCell>
+                                                      </TableRow>
+                                                    ))}
+                                                  </TableBody>
+                                                </Table>
+                                              </Box>
+                                            </Collapse>
+                                          </TableCell>
+                                        </TableRow>
+                                      )}
+                                    </>
+                                  )
+                                })
                               }
                             </TableBody>
                           </Table>

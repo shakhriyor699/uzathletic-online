@@ -677,10 +677,10 @@ const CreateEventRegistratiomModal: FC<CreateEventRegistratiomModalProps> = ({
                         label="Попытки"
                         type="number"
                         value={item.attempts}
-                        onChange={(e) => updateMultiSportItem(index, "attempts", Number.parseInt(e.target.value) || 1)}
+                        onChange={(e) => updateMultiSportItem(index, "attempts", Number.parseInt(e.target.value) || 0)}
                         fullWidth
                         required
-                        inputProps={{ min: 1 }}
+                        inputProps={{ min: 0 }}
                       />
 
                       {multiSportItems.length > 1 && (

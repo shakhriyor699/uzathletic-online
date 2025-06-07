@@ -12,7 +12,7 @@ import axios from "axios"
 import { CircleFadingPlus, CircleX } from "lucide-react"
 import { useRouter } from "next/navigation"
 import type React from "react"
-import { type FC, useEffect, useState } from "react"
+import { type FC, useEffect, useMemo, useState } from "react"
 import { Controller, type FieldValues, type SubmitHandler, useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -57,6 +57,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   const { handleOpen } = useAddCountriesModal()
 
 
+  console.log(options, 'options');
 
 
 
@@ -95,14 +96,14 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
       }))
       setSelectedOptions(disciplines)
     }
-    console.log(sportsmanToEdit, 'asd');
+
 
 
 
   }, [id, sportsmanToEdit, setValue])
 
 
-  console.log(selectedOptions, 'selectedOptions');
+
 
 
 
@@ -123,7 +124,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   // }, [id])
 
   useEffect(() => {
-    loadOptions(page + 1)
+    loadOptions(50)
   }, [page])
 
   const handleModalClose = () => {
@@ -135,21 +136,44 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
 
   const loadOptions = async (page: number) => {
     const newOptions = await getAllEventRegistrations(page)
-    setOptions((prevOptions) => [...prevOptions, ...newOptions])
+    // setOptions((prevOptions) => [...prevOptions, ...newOptions])
+    setOptions(newOptions)
   }
 
-  const handleScroll = (event: any) => {
-    const bottom = event.target.scrollHeight - event.target.scrollTop === event.target.clientHeight
-    if (bottom) {
-      setPage((prevPage) => prevPage + 1)
-    }
-  }
+  // const handleScroll = (event: any) => {
+  //   const bottom = event.target.scrollHeight - event.target.scrollTop === event.target.clientHeight
+  //   if (bottom) {
+  //     setPage((prevPage) => prevPage + 1)
+  //   }
+  // }
 
-  const handleInputChange = (id: number, type: string, value: string) => {
-    setSelectedOptions((prevOptions) =>
-      prevOptions.map((option) => (option.id === id ? { ...option, [type]: value } : option)),
-    )
-  }
+  // const handleInputChange = (id: number, type: string, value: string) => {
+  //   setSelectedOptions((prevOptions) =>
+  //     prevOptions.map((option) => (option.id === id ? { ...option, [type]: value } : option)),
+  //   )
+  // }
+
+
+  // const handleInputChange = (id: number | null, type: string, value: string) => {
+  //   setSelectedOptions((prevOptions) =>
+  //     prevOptions.map((option) =>
+  //       (option.id === id || option.event_registration_id === id)
+  //         ? { ...option, [type]: value }
+  //         : option
+  //     ),
+  //   );
+  // };
+
+  const handleInputChange = (index: number, type: string, value: string) => {
+    setSelectedOptions(prevOptions => {
+      const newOptions = [...prevOptions];
+      newOptions[index] = {
+        ...newOptions[index],
+        [type]: value
+      };
+      return newOptions;
+    });
+  };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", ":", "."]
@@ -196,8 +220,9 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
     }
   }
 
-  console.log(selectedOptions);
-  
+  console.log(currentUser, 'currentUserRoleName');
+
+
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
 
@@ -237,7 +262,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
       //   event_registration_id: option.id,
       // })),
       sportsmen_disciplines: selectedOptions.map((option: any) => ({
-        id: id ? option.id : null,
+        id: option.id || null,
         name: option.label.replace(/^[^,]+, /, ""),
         pb: option.pb,
         sb: option.sb,
@@ -245,15 +270,14 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
       })),
     }
 
-    console.log(newData, 'newdata');
 
 
 
     try {
-        const res = id ? await axios.put(`/api/sportsmens/${id}`, newData) : await axios.post("/api/sportsmens", newData)
-        if (res.status === 200) {
-          toast.success("Спортсмен добавлен")
-        }
+      const res = id ? await axios.put(`/api/sportsmens/${id}`, newData) : await axios.post("/api/sportsmens", newData)
+      if (res.status === 200) {
+        toast.success("Спортсмен добавлен")
+      }
     } catch (error) {
       toast.error("Спортсмен не добавлен")
     } finally {
@@ -275,6 +299,8 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
     //   toast.error('Спортсмен не добавлен')
     // }
   }
+
+
 
   return (
     <Modal
@@ -338,7 +364,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
                     }}
                     renderInput={(params) => <TextField {...params} label="Страна" />}
                     renderOption={(props, option) => {
-                      return currentUser?.role.name === 'admin' && <li {...props} onClick={option.id === 'add-new' ? handleOpenAddCountries : props.onClick} >
+                      return (currentUser?.role.name === 'admin' || currentUser?.role.name === 'operator') && <li {...props} onClick={option.id === 'add-new' ? handleOpenAddCountries : props.onClick} >
                         {option.label}
                       </li>
                     }}
@@ -484,52 +510,88 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
               render={({ field }) => (
                 <Autocomplete
                   {...field}
-                  ListboxProps={{
-                    onScroll: handleScroll,
-                  }}
+                  // ListboxProps={{
+                  //   onScroll: handleScroll,
+                  // }}
                   id="sportType"
+
                   options={options
                     .filter((option) => option.event !== null && option.status === false)
                     .map((option) => ({
                       id: option.id,
-                      label: `${option.event.name?.ru ? option.event.name.ru : ""}, ${option.name.ru}`,
+                      label: `${option.event.name?.ru ? option.event.name.ru : ""}, ${Array.isArray(option.multi_events) ? (
+                        option.multi_events.length === 10 ? 'Decathlon' :
+                          option.multi_events.length === 8 ? 'Octathlon' :
+                            option.multi_events.length === 7 ? 'Heptathlon' :
+                              option.multi_events.length === 5 ? 'Pentathlon' :
+                                option.name?.ru ?? ''
+                      ) : option.name?.ru ?? ''
+                        }`,
                       gender_id: option.gender_id,
                       sport_type_id: option.sport_type_id,
                     }))}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   getOptionLabel={(option) => option.label}
+                  // onChange={(event, value) => {
+                  //   field.onChange(value)
+                  //   if (value) {
+
+                  //     const eventRegistration = options.find((option) => option.id === value.id)
+
+                  //     if (
+                  //       eventRegistration &&
+                  //       eventRegistration.multi_events &&
+                  //       eventRegistration.multi_events.length > 0
+                  //     ) {
+
+                  //       const newOptions = eventRegistration.multi_events.map((multiEvent: any) => ({
+                  //         id: multiEvent.id || multiEvent.event_registration_id || value.id,  // Используйте правильный ID
+                  //         label: multiEvent.name?.ru || "",
+                  //         sport_type_id: multiEvent.sport_type_id || value.sport_type_id,
+                  //         event_registration_id: multiEvent.event_registration_id || value.id,  // Храните оригинальный ID
+                  //         sb: "",
+                  //         pb: "",
+                  //       }))
+
+                  //       setSelectedOptions((prev) => [...prev, ...newOptions])
+                  //     } else if (!selectedOptions.includes(value)) {
+
+                  //       if (!selectedOptions.some((selectedOption) => selectedOption.id === value.id) && selectedOptions.length < 4) {
+                  //         setSelectedOptions([...selectedOptions, {
+                  //           ...value,
+                  //           event_registration_id: value.id,  // Храните оригинальный ID
+                  //           sb: "",
+                  //           pb: ""
+                  //         }])
+                  //       }
+                  //     }
+                  //   }
+                  // }}
+
                   onChange={(event, value) => {
-                    field.onChange(value)
+                    field.onChange(value);
                     if (value) {
+                      const eventRegistration = options.find((option) => option.id === value.id);
 
-                      const eventRegistration = options.find((option) => option.id === value.id)
-
-                      if (
-                        eventRegistration &&
-                        eventRegistration.multi_events &&
-                        eventRegistration.multi_events.length > 0
-                      ) {
-
-                        const newOptions = eventRegistration.multi_events.map((multiEvent: any) => ({
-                          id: multiEvent.id || multiEvent.event_registration_id || value.id,  // Используйте правильный ID
-                          label: multiEvent.name?.ru || "",
+                      if (eventRegistration?.multi_events?.length > 0) {
+                        const newOptions = eventRegistration?.multi_events.map((multiEvent: any) => ({
+                          id: null, // Новые дисциплины без ID (или можно вообще не добавлять поле id)
+                          label: multiEvent.sport_type_name || "",
                           sport_type_id: multiEvent.sport_type_id || value.sport_type_id,
-                          event_registration_id: multiEvent.event_registration_id || value.id,  // Храните оригинальный ID
+                          event_registration_id: multiEvent.event_registration_id || value.id,
                           sb: "",
                           pb: "",
-                        }))
-
-                        setSelectedOptions((prev) => [...prev, ...newOptions])
-                      } else if (!selectedOptions.includes(value)) {
-
-                        if (!selectedOptions.some((selectedOption) => selectedOption.id === value.id) && selectedOptions.length < 4) {
-                          setSelectedOptions([...selectedOptions, {
-                            ...value,
-                            event_registration_id: value.id,  // Храните оригинальный ID
-                            sb: "",
-                            pb: ""
-                          }])
-                        }
+                        }));
+                        setSelectedOptions((prev) => [...prev, ...newOptions]);
+                      } else if (!selectedOptions.some((selectedOption) => selectedOption.event_registration_id === value.id)) {
+                        setSelectedOptions([...selectedOptions, {
+                          id: null, // Новая дисциплина без ID
+                          label: value.label,
+                          sport_type_id: value.sport_type_id,
+                          event_registration_id: value.id,
+                          sb: "",
+                          pb: "",
+                        }]);
                       }
                     }
                   }}
@@ -537,7 +599,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
                 />
               )}
             />
-            {selectedOptions.map((option, index) => {
+            {/* {selectedOptions.map((option, index) => {
               const isTimeFormat = option.sport_type_id >= 1 && option.sport_type_id <= 49
               return (
                 <Box sx={{ my: 2, display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }} key={index}>
@@ -576,6 +638,47 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
                   </Box>
                 </Box>
               )
+            })} */}
+
+
+
+            {selectedOptions.map((option, index) => {
+              const isTimeFormat = option.sport_type_id >= 1 && option.sport_type_id <= 49;
+              return (
+                <Box sx={{ my: 2, display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }} key={index}>
+                  <Typography sx={{ mb: 1 }} component="p">
+                    {(option.label || '').toUpperCase()}:
+                  </Typography>
+
+                  <Box sx={{ display: "flex", gap: 0.7, alignItems: "center" }}>
+                    <InputLabel sx={{ mb: 2 }} htmlFor={`pb-${index}`}>
+                      PB
+                    </InputLabel>
+                    <TextField
+                      id={`pb-${index}`}
+                      label={`PB`}
+                      value={option.pb || ''}
+                      onChange={(e) => handleInputChange(index, "pb", e.target.value)}
+                      placeholder={isTimeFormat ? "00:00:00" : "00.00"}
+                      onKeyDown={handleKeyDown}
+                    />
+                    <InputLabel sx={{ mb: 2 }} htmlFor={`sb-${index}`}>
+                      SB
+                    </InputLabel>
+                    <TextField
+                      id={`sb-${index}`}
+                      label={`SB`}
+                      value={option.sb || ''}
+                      onChange={(e) => handleInputChange(index, "sb", e.target.value)}
+                      placeholder={isTimeFormat ? "00:00:00" : "00.00"}
+                      onKeyDown={handleKeyDown}
+                    />
+                    <button type="button" onClick={() => handleDelete(option)}>
+                      <CircleX />
+                    </button>
+                  </Box>
+                </Box>
+              );
             })}
           </Box>
           <Button sx={{ width: "100%", mt: 4 }} type="submit" variant="contained">

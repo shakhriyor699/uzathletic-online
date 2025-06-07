@@ -19,6 +19,7 @@ interface SportsmanRowProps {
   attempts: any[];
   handleSubmitWithId: (id: number) => void;
   shouldShowWindField: boolean
+  isDisabled?: boolean
 }
 
 const SportsmanRow: FC<SportsmanRowProps> = ({
@@ -31,7 +32,8 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
   isSpecialSportTypeWithPoints,
   attempts,
   handleSubmitWithId,
-  shouldShowWindField
+  shouldShowWindField,
+  isDisabled
 }) => {
   // Уникальный useFieldArray для каждого спортсмена
   // const { fields, append, remove } = useFieldArray({
@@ -73,18 +75,20 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
                     <TextField
                       inputProps={{ style: { height: "7px", width: "70px" } }}
                       placeholder={`Ветер`}
+                      disabled={isDisabled}
                       {...field}
                     />
                   )}
                 />
               )}
-             { <Controller
+              {<Controller
                 name={`attempt.${sportsman.id}.${attemptIndex + 1}`}
                 control={control}
                 render={({ field }) => (
                   <TextField
                     inputProps={{ style: { height: "7px", width: "70px" } }}
                     placeholder={`Попытка № ${attemptIndex + 1}`}
+                    disabled={isDisabled}
                     {...field}
                   />
                 )}
@@ -99,6 +103,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
               render={({ field }) => (
                 <TextField
                   inputProps={{ style: { height: "7px", width: "80px" } }}
+                  disabled={isDisabled}
                   placeholder="Результат после 3 попыток"
                   {...field}
                 />
@@ -115,6 +120,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
                   render={({ field }) => (
                     <TextField
                       inputProps={{ style: { height: "7px", width: "70px" } }}
+                      disabled={isDisabled}
                       placeholder={`Ветер`}
                       {...field}
                     />
@@ -126,6 +132,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
                   render={({ field }) => (
                     <TextField
                       inputProps={{ style: { height: "7px", width: "70px" } }}
+                      disabled={isDisabled}
                       placeholder={`Попытка № ${attemptIndex + 4}`}
                       {...field}
                     />
@@ -146,6 +153,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
                       render={({ field }) => (
                         <TextField
                           inputProps={{ style: { height: "7px", width: "120px" } }}
+                          disabled={isDisabled}
                           placeholder={`Высота`}
                           {...field}
                         />
@@ -157,6 +165,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
                       render={({ field }) => (
                         <TextField
                           inputProps={{ style: { height: "7px", width: "120px" } }}
+                          disabled={isDisabled}
                           placeholder={``}
                           {...field}
                         />
@@ -166,6 +175,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
                   <Button
                     className="p-0 min-w-[20px]"
                     color="error"
+                    disabled={isDisabled}
                     onClick={() => remove(pointIndex)}
                   >
                     <CircleMinus />
@@ -174,6 +184,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
               ))}
               <Button
                 className="p-0 min-w-[20px]"
+                disabled={isDisabled}
                 onClick={() => append({ height: "", point: "" })}
               >
                 <CirclePlus />
@@ -192,6 +203,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
             render={({ field }) => (
               <TextField
                 inputProps={{ style: { height: "7px", width: "100px" } }}
+                disabled={isDisabled}
                 placeholder="Результат"
                 {...field}
               />
@@ -209,6 +221,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
             render={({ field }) => (
               <TextField
                 inputProps={{ style: { height: "7px", width: "100px" } }}
+                disabled={isDisabled}
                 placeholder="Место"
                 {...field}
               />
