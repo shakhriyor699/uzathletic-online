@@ -607,7 +607,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
         (d: any) => d.event_registration_id === eventRegistration.id
       );
       const sb = discipline?.sb ?? '';
-      return `A,${athlete.family_name},${athlete.name},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(" - ")[1]},${eventSportsmen.sport_type.sport_type_number},${sb},M\n`
+      return `A,${athlete.family_name},${athlete.name},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(/ *[-–] */).pop()?.trim()},${eventSportsmen.sport_type.sport_type_number},${sb},M\n`
     })
     const blob = new Blob(rows, { type: "text/plain;charset=utf-8" });
     saveAs(blob, "Athletes.txt");
