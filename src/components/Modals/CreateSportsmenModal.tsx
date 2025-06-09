@@ -57,7 +57,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
   const { handleOpen } = useAddCountriesModal()
 
 
-  console.log(options, 'options');
+  console.log(options.filter((option) => option.event !== null && option.status === false), 'options');
 
 
 
@@ -516,7 +516,7 @@ const CreateSportsmenModal: FC<CreateSportsmenModalProps> = ({ genders, eventReg
                   id="sportType"
 
                   options={options
-                    .filter((option) => option.event !== null && option.status === false)
+                    .filter((option) => option.event !== null && option.status === true)
                     .map((option) => ({
                       id: option.id,
                       label: `${option.event.name?.ru ? option.event.name.ru : ""}, ${Array.isArray(option.multi_events) ? (
