@@ -239,10 +239,86 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
 
 
+  // const downloadDoc = () => {
+  //   const tables: any = startList?.map((startListItem: any, index) => {
+
+
+  //     return Object.keys(startListItem.sportsmen || {}).map((key) => {
+  //       const titleParagraph = new Paragraph({
+  //         children: [new TextRun({ text: key, bold: true, size: 20 })],
+  //         spacing: { after: 200 },
+  //       });
+
+  //       const tableRows = startListItem.sportsmen[key]?.map((athlete: any, i: number) => {
+  //         if (!athlete.sportsman) return null;
+
+  //         return new DocxTableRow({
+  //           children: [
+  //             new DocxTableCell({ children: [new Paragraph((i + 1).toString())] }),
+  //             new DocxTableCell({ children: [new Paragraph(athlete.sportsman.chest_number)] }),
+  //             new DocxTableCell({ children: [new Paragraph(athlete.sportsman.name || "")] }),
+  //             new DocxTableCell({ children: [new Paragraph(athlete.sportsman.family_name || "")] }),
+  //             new DocxTableCell({ children: [new Paragraph(athlete.sportsman.birth || "")] }),
+  //             new DocxTableCell({ children: [new Paragraph(athlete.sportsman.address.split(" - ")[1] || "")] }),
+  //             new DocxTableCell({
+  //               children: [new Paragraph(
+  //                 athlete.sportsman.sportsmen_disciplines?.map((discipline: any) => {
+  //                   if (eventRegistration.id === discipline.event_registration_id) {
+  //                     return discipline.sb
+  //                   }
+  //                 }).join(", ") || ""
+  //               )]
+  //             }),
+  //           ],
+  //         });
+  //       }).filter((row: any) => row !== null);
+
+  //       const table = new DocxTable({
+  //         rows: [
+  //           new DocxTableRow({
+  //             children: [
+  //               new DocxTableCell({ children: [new Paragraph("№")] }),
+  //               new DocxTableCell({ children: [new Paragraph("BIB")] }),
+  //               new DocxTableCell({ children: [new Paragraph("Name")] }),
+  //               new DocxTableCell({ children: [new Paragraph("Surname")] }),
+  //               new DocxTableCell({ children: [new Paragraph("DOB")] }),
+  //               new DocxTableCell({ children: [new Paragraph("Country/Region")] }),
+  //               new DocxTableCell({ children: [new Paragraph("Seeding")] }),
+  //             ],
+  //           }),
+  //           ...tableRows,
+  //         ],
+  //         width: { size: 100, type: WidthType.PERCENTAGE },
+  //       });
+  //       return [titleParagraph, table];
+  //     }).flat();
+  //   }).flat();
+
+  //   const dateParagraph = new Paragraph({
+  //     children: [new TextRun({ text: "Дата проведения: (число.месяц.год)", size: 14 })],
+  //   });
+
+  //   const cityParagraph = new Paragraph({
+  //     children: [new TextRun({ text: "Город:", size: 14 })],
+  //   });
+
+  //   const doc = new Document({
+  //     sections: [
+  //       {
+  //         properties: {},
+  //         children: [dateParagraph, cityParagraph, ...tables],
+  //       },
+  //     ],
+  //   });
+
+  //   Packer.toBlob(doc).then((blob) => {
+  //     saveAs(blob, "Athletes.docx");
+  //   });
+  // };
+
+
   const downloadDoc = () => {
     const tables: any = startList?.map((startListItem: any, index) => {
-
-
       return Object.keys(startListItem.sportsmen || {}).map((key) => {
         const titleParagraph = new Paragraph({
           children: [new TextRun({ text: key, bold: true, size: 20 })],
@@ -251,6 +327,24 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
         const tableRows = startListItem.sportsmen[key]?.map((athlete: any, i: number) => {
           if (!athlete.sportsman) return null;
+
+          // Handle different types of sportsmen_disciplines
+          let seedingValue = "";
+          if (Array.isArray(athlete.sportsman.sportsmen_disciplines)) {
+            seedingValue = athlete.sportsman.sportsmen_disciplines
+              .map((discipline: any) => {
+                if (eventRegistration.id === discipline.event_registration_id) {
+                  return discipline.sb;
+                }
+                return undefined;
+              })
+              .filter((val: any) => val !== undefined)
+              .join(", ");
+          } else if (athlete.sportsman.sportsmen_disciplines !== undefined &&
+            athlete.sportsman.sportsmen_disciplines !== null) {
+            // Handle case where it's a single value (number or string)
+            seedingValue = athlete.sportsman.sportsmen_disciplines.toString();
+          }
 
           return new DocxTableRow({
             children: [
@@ -261,13 +355,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.birth || "")] }),
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.address.split(" - ")[1] || "")] }),
               new DocxTableCell({
-                children: [new Paragraph(
-                  athlete.sportsman.sportsmen_disciplines?.map((discipline: any) => {
-                    if (eventRegistration.id === discipline.event_registration_id) {
-                      return discipline.sb
-                    }
-                  }).join(", ") || ""
-                )]
+                children: [new Paragraph(seedingValue)]
               }),
             ],
           });
@@ -316,20 +404,16 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     });
   };
 
-
   sortedSportsmen.map((sportsman: any) => {
-    const attemptCells =
-      sportsman.pivot?.attempts?.length > 0
-        ? sportsman.pivot.attempts.map((attempt: any) => {
-          const val = String(Object.values(attempt)[0] || '');
-          console.log(attempt.value?.value, 'val');
-
-          return new DocxTableCell({ children: [new Paragraph(attempt.value?.value || '-')] });
-        })
-        : eventSportsmen.attempts.map(() =>
-          new DocxTableCell({ children: [new Paragraph("Нет данных")] })
-        );
-    console.log(attemptCells, 'attemptCells');
+    const attemptCells = Array.isArray(eventSportsmen.attempts)
+      ? eventSportsmen.attempts.map((attempt: any) => {
+        return new DocxTableCell({
+          children: [new Paragraph(attempt.value?.value || '-')]
+        });
+      })
+      : [new DocxTableCell({
+        children: [new Paragraph("Нет данных")]
+      })];
 
   })
 
