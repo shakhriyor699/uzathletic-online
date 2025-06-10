@@ -353,7 +353,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.name || "")] }),
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.family_name || "")] }),
               new DocxTableCell({ children: [new Paragraph(athlete.sportsman.birth || "")] }),
-              new DocxTableCell({ children: [new Paragraph(athlete.sportsman.address.split(" - ")[1] || "")] }),
+              new DocxTableCell({ children: [new Paragraph(athlete.sportsman.address.split(/ *[-–] */).pop()?.trim())] }),
               new DocxTableCell({
                 children: [new Paragraph(seedingValue)]
               }),
@@ -497,7 +497,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
           children: [new Paragraph(`${sportsman.name || ''} ${sportsman.family_name || ''}`)],
         }),
         new DocxTableCell({ children: [new Paragraph(sportsman.birth || '')] }),
-        new DocxTableCell({ children: [new Paragraph(sportsman.address.split(" - ")[1] || '')] }),
+        new DocxTableCell({ children: [new Paragraph(sportsman.address.split(/ *[-–] */).pop()?.trim())] }),
         new DocxTableCell({ children: [new Paragraph(sportsman.chest_number || '')] }),
       ];
 
