@@ -810,7 +810,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                         <Autocomplete
                           {...field}
                           multiple
-                          options={eventRegistration.sportsmen.map((athletes) => ({ id: athletes.id, label: `${athletes.name} ${athletes.family_name}` }))}
+                          options={eventRegistration.sportsmen.map((athletes) => ({ id: athletes.id, label: `${athletes.name} ${athletes.family_name}, ${athletes.address}` }))}
                           getOptionLabel={(option) => option.label}
                           renderInput={(params) => <TextField {...params} label="Спортсмены" />}
                           onChange={(event, value) => {
