@@ -634,8 +634,8 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
 
     try {
-      // const res = await axios.post('/api/eventSportsmen', payload);
-      const res = await axios.put(`/api/eventSportsmen/${eventRegistration.id}`, payload);
+      const res = await axios.post('/api/eventSportsmen', payload);
+      // const res = await axios.put(`/api/eventSportsmen/${eventRegistration.id}`, payload);
       if (res.status === 200) {
         toast.success('Сохранено');
         // router.refresh();
