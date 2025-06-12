@@ -12,7 +12,7 @@ import React, { FC, useEffect, useMemo, useState } from 'react'
 import { Controller, FieldValues, SubmitHandler, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 import { saveAs } from "file-saver";
-import { Document, Packer, Paragraph, Table as DocxTable, TableCell as DocxTableCell, TableRow as DocxTableRow, WidthType, TextRun } from "docx";
+import { Document, Packer, Paragraph, Table as DocxTable, TableCell as DocxTableCell, TableRow as DocxTableRow, WidthType, TextRun, AlignmentType } from "docx";
 import { FaFileWord } from "react-icons/fa";
 import { BsFiletypeTxt } from "react-icons/bs";
 import { IUserData } from '@/types/authTypes'
@@ -394,7 +394,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       sections: [
         {
           properties: {},
-          children: [dateParagraph, cityParagraph, ...tables],
+          children: [dateParagraph, cityParagraph, ...tables].filter(Boolean),
         },
       ],
     });
@@ -617,6 +617,12 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       saveAs(blob, "AthletesResults.docx");
     });
   };
+
+
+ 
+
+
+
 
   const onSubmitSportsmans = async (data: FieldValues, id: number) => {
 
@@ -1066,7 +1072,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                     {currentUser?.name === 'Admin' && <TableCell>Действия</TableCell>}
                   </TableRow>
                 </TableHead>
-                   <TableBody>
+                <TableBody>
                   {sortedSportsmen.map((sportsman: any, index: number) => {
 
                     console.log(sportsman, 'sportsman22222');
