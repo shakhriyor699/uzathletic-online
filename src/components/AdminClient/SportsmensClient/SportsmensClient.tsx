@@ -39,7 +39,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const [page, setPage] = React.useState(0);
   const [totalCount, setTotalCount] = React.useState(totalPage);
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
-  const filteredData = data.filter((item) => item.status);
+  const filteredData = data.filter((item) => !item.status);
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('');
   const [submitting, setSubmitting] = useState(false);
