@@ -1066,77 +1066,81 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                     {currentUser?.name === 'Admin' && <TableCell>Действия</TableCell>}
                   </TableRow>
                 </TableHead>
-                <TableBody>
+                   <TableBody>
                   {sortedSportsmen.map((sportsman: any, index: number) => {
-                    const isEditing = editingRowId === sportsman.id;
+
+                    console.log(sportsman, 'sportsman22222');
+                    // console.log(sportsman.address.split("–").pop().trim(), 'sportsman22222');
 
                     return (
-                      <TableRow key={`row-${index}`}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>{`${sportsman.family_name} ${sportsman.name}`}</TableCell>
-                        <TableCell>{sportsman.birth}</TableCell>
-                        <TableCell align='center'>{sportsman.address.split("–").pop().trim()}</TableCell>
-                        <TableCell align="center">{sportsman.chest_number}</TableCell>
+                      <React.Fragment key={`row-${index}`}>
+                        <TableRow>
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{`${sportsman.family_name} ${sportsman.name}`}</TableCell>
+                          <TableCell>{sportsman.birth}</TableCell>
+                          <TableCell align='center'>{sportsman.address.split("–").pop().trim()}</TableCell>
+                          <TableCell align="center">{sportsman.chest_number}</TableCell>
 
-                        {/* Попытки */}
-                        {!isSpecialSportType && !isSpecialSportTypeWithPoints && eventSportsmen?.attempts?.length > 0 &&
-                          eventSportsmen.attempts.map((_: any, attemptIndex: number) => (
-                            <TableCell key={attemptIndex}>
-                              {isEditing ? (
-                                <TextField
-                                  // value={editedData.attempts?.[attemptIndex] || ''}
-                                  // onChange={(e) => handleInputChange(attemptIndex, e.target.value)}
-                                  size="small"
-                                />
-                              ) : (
-                                sportsman.pivot?.attempts?.[attemptIndex]?.value?.value || '-'
-                              )}
-                            </TableCell>
-                          ))}
 
-                        {/* Результат */}
-                        <TableCell>
-                          {isEditing ? (
-                            <TextField
-                              // value={editedData.result}
-                              // onChange={(e) => setEditedData({ ...editedData, result: e.target.value })}
-                              size="small"
-                            />
-                          ) : (
-                            sportsman.pivot.result
-                          )}
-                        </TableCell>
 
-                        {/* Позиция */}
-                        <TableCell>
-                          {isEditing ? (
-                            <TextField
-                              // value={editedData.position}
-                              // onChange={(e) => setEditedData({ ...editedData, position: e.target.value })}
-                              size="small"
-                            />
-                          ) : (
-                            sportsman.pivot.position
-                          )}
-                        </TableCell>
 
-                        {/* Кнопки действий */}
-                        {currentUser?.name === 'Admin' && (
-                          <TableCell>
-                            {isEditing ? (
-                              <>
-                                <Button /* onClick={() => handleSave(sportsman.id)} */ variant="contained" size="small">Сохранить</Button>
-                                <Button onClick={() => setEditingRowId(null)} variant="text" size="small">Отмена</Button>
-                              </>
-                            ) : (
-                              <Button onClick={() => handleEditClick(sportsman)} variant="outlined" size="small">Редактировать</Button>
-                            )}
-                          </TableCell>
-                        )}
-                      </TableRow>
+                          {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
+                            sortedSportsmen[index]?.pivot.attempts && sortedSportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
+                              console.log(key, 'key');
+                              // console.log(eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex]?.value, 'asd');
+
+
+                              return key?.key !== 'resultAfterThreeAttempts' && <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
+                                {shouldShowWindField && <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ''} {sortedSportsmen[index]?.pivot.condition.wind[attemptIndex + 1]?.value}</p>}
+                                <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ` `}  {key?.key === 'resultAfterThreeAttempts' ? null : key.value.value}</p>
+                              </TableCell>
+                            })
+                          }
+
+
+
+                          {isSpecialSportTypeWithPoints &&
+                            sortedSportsmen[index]?.pivot.attempts && sortedSportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => (
+                              <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
+                                {['height', 'point'].map((key) => {
+                                  // Попытаемся взять значение из первого попавшегося спортсмена, у кого оно есть
+                                  const value = sortedSportsmen.find(
+                                    (s: any) => s.pivot?.attempts?.[attemptIndex]?.[key] !== undefined
+                                  )?.pivot?.attempts?.[attemptIndex]?.[key];
+
+                                  return (
+                                    <p key={key}>
+                                      {key === 'height' ? ` ${value ?? '-'}` : ` ${value ?? '-'}`}
+                                    </p>
+                                  );
+                                })}
+                              </TableCell>
+                            ))}
+
+
+                          <TableCell>{sportsman.pivot.result}</TableCell>
+                          <TableCell>{sportsman.pivot.position}</TableCell>
+
+                          {currentUser?.name === 'Admin' && <TableCell>
+
+                            <Button /* onClick={() => handleDelete(row.id)} */>
+                              <Trash2 className='cursor-pointer' color='red' />
+                            </Button>
+                          </TableCell>}
+                        </TableRow>
+
+                        {/* {shouldShowWindField && (
+                             <TableRow>
+                               <TableCell colSpan={5} />
+   
+                               <TableCell colSpan={2 + (currentUser?.name === 'Admin' ? 1 : 0)} />
+                             </TableRow>
+                           )} */}
+                      </React.Fragment>
                     );
                   })}
                 </TableBody>
+
 
 
               </Table>
