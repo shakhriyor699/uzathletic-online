@@ -266,7 +266,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
 
     console.log("Sending payload:", payload, data, 'data');
 
-  
+
 
 
     try {
@@ -790,7 +790,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                           <TableCell>{index + 1}</TableCell>
                           <TableCell>{`${sportsman.family_name} ${sportsman.name}`}</TableCell>
                           <TableCell>{sportsman.birth}</TableCell>
-                          <TableCell align='center'>{sportsman.address.split(" - ")[1]}</TableCell>
+                          <TableCell align='center'>{sportsman.address.split("–").pop().trim()}</TableCell>
                           <TableCell align="center">{sportsman.chest_number}</TableCell>
 
                           {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
