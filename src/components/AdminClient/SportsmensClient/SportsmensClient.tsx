@@ -40,6 +40,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const [totalCount, setTotalCount] = React.useState(totalPage);
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
   const filteredData = data.filter((item) => item.status);
+  // const [filteredData, setFilteredData] = useState<ISportsman[]>(data.filter((item) => item.status !== false));
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -52,7 +53,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   }, [page, searchQuery, sportsmens, handleOpen]);
 
 
-  // console.log(filteredData, 'sportsmen');
+  console.log(filteredData, 'sportsmen');
 
 
 
@@ -60,13 +61,13 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const loadEvents = async (page: number, name?: string) => {
     const res = await getAllSportsmens(page, name, null, '', null, true)
     setData(res.data)
+    // setFilteredData(res.data.filter((item: any) => item.status !== false));
     setTotalCount(res.total);
   }
 
-
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    debounce(() => loadEvents(page, event.target.value), 500)
-    setSearchQuery(event.target.value);
+    const value = event.target.value;
+    setSearchQuery(value);
     setPage(0);
   }
 
@@ -97,13 +98,17 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
 
   const onSubmit = async (data: FieldValues) => {
     setSubmitting(true)
-    console.log(data);
+    // console.log(data);
 
     try {
       const res = await getAllSportsmens(page, '', data.gender ? data.gender.id : '', data.cities ? data.cities.label : data.countries ? data.countries.labe : '', data['event-type'] ? data['event-type'].id : '')
-      console.log(data.cities ? data.cities.label : data.countries ? data.countries.label : '');
+      console.log(data.gender ? data.gender.id : '', data.cities ? data.cities.label : data.countries ? data.countries.labe : '', data['event-type'] ? data['event-type'].id : '', data.chest_number ? data.chest_number : '');
+
+      console.log(res.data, 'res.data');
+
 
       setData(res.data)
+      // setFilteredData(res.data.filter((item: any) => item.status !== false));
     } catch (error) {
       throw error
     } finally {
@@ -116,6 +121,8 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
     router.refresh();
     setData(sportsmens)
   }
+
+
 
 
   return (
@@ -152,6 +159,23 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
                   getOptionLabel={(option) => option.label}
                   onChange={(event, value) => field.onChange(value)}
                   renderInput={(params) => <TextField  {...params} label="Пол" />}
+                />
+              )}
+            />
+            <Controller
+              name="chest_number"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label={'BIB'}
+                  variant="outlined"
+                  value={field.value || ''}
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                    // setSearchQuery(e.target.value);
+                  }}
+                  size="small"
+                  sx={{ width: '300px' }}
                 />
               )}
             />
@@ -203,8 +227,11 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
                     width: 300,
                   }}
                   id='event-type'
-                  options={sportTypes?.map((option) => ({ id: option.id, label: `${option.sport_type_name.en}` })) || []}
-                  value={sportTypes?.map((option) => ({ id: option.id, label: `${option.sport_type_name.en}` })).find((option) => option.id === field.value?.id) || null}
+                  options={sportTypes?.map((option) => ({
+                    id: option.sport_type_number
+                    , label: `${option.sport_type_name.en}`
+                  })) || []}
+                  value={sportTypes?.map((option) => ({ id: option.sport_type_number, label: `${option.sport_type_name.en}` })).find((option) => option.id === field.value?.id) || null}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   getOptionLabel={(option) => option.label}
                   onChange={(event, value) => field.onChange(value)}
