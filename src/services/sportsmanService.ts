@@ -10,7 +10,7 @@ export const create = async (data: ICreateSportsman) => {
 export const getAll = async (page = 1, name?: string, gender?: number | null, address?: string, eventType?: number | null, chest_number: string = '') => {
   console.log(chest_number, 'chest_number');
 
-  const { data } = await axiosWithAuth.get(`/sportsman/all?paginate=${1000}${gender ? `&gender=${gender}` : ''}${address ? `&address=${address}` : ''}${eventType ? `&event-type=${eventType}` : ''}${chest_number ? `&chest_number=${chest_number}` : ''}`, {
+  const { data } = await axiosWithAuth.get(`/sportsman/all?pagw=${page}${gender ? `&gender=${gender}` : ''}${address ? `&address=${address}` : ''}${eventType ? `&event-type=${eventType}` : ''}${chest_number ? `&chest_number=${chest_number}` : ''}`, {
     params: {
       name,
       limit: 10
