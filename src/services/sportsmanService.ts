@@ -7,13 +7,34 @@ export const create = async (data: ICreateSportsman) => {
   return res
 }
 
-export const getAll = async (page = 1, name?: string, gender?: number | null, address?: string, eventType?: number | null, is_archive?: boolean, chest_number: string = '') => {
+export const getAll = async (page = 1, name?: string, gender?: number | null, address?: string, eventType?: number | null, chest_number: string = '') => {
+  console.log(chest_number, 'chest_number');
+
   const { data } = await axiosWithAuth.get(`/sportsman/all?page=${page}${gender ? `&gender=${gender}` : ''}${address ? `&address=${address}` : ''}${eventType ? `&event-type=${eventType}` : ''}${chest_number ? `&chest_number=${chest_number}` : ''}`, {
     params: {
       name,
       limit: 10
     }
   })
+  // try {
+  //   const { data } = await axiosWithAuth.get('/sportsman/all', {
+  //     params: {
+  //       page,
+  //       name,
+  //       limit: 10,
+  //       ...(gender && { gender }),
+  //       ...(address && { address }),
+  //       ...(eventType && { 'event-type': eventType }),
+  //       ...(chest_number && { chest_number }),
+  //     }
+  //   });
+  //   console.log(data, 'data from getAll');
+
+  //   return data;
+  // } catch (error) {
+  //   console.error('Request failed:', error);
+  //   throw error;
+  // }
   return data
 }
 

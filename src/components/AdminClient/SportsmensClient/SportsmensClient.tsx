@@ -39,7 +39,9 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const [page, setPage] = React.useState(0);
   const [totalCount, setTotalCount] = React.useState(totalPage);
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
-  const filteredData = data.filter((item) => item.status);
+  console.log(data, 'data');
+
+  const filteredData = data/* .filter((item) => !item.status); */
   // const [filteredData, setFilteredData] = useState<ISportsman[]>(data.filter((item) => item.status !== false));
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('');
@@ -59,7 +61,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
 
 
   const loadEvents = async (page: number, name?: string) => {
-    const res = await getAllSportsmens(page, name, null, '', null, true)
+    const res = await getAllSportsmens(page, name, null, '', null, '');
     setData(res.data)
     // setFilteredData(res.data.filter((item: any) => item.status !== false));
     setTotalCount(res.total);
@@ -98,10 +100,12 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
 
   const onSubmit = async (data: FieldValues) => {
     setSubmitting(true)
-    // console.log(data);
+    console.log(data);
 
     try {
-      const res = await getAllSportsmens(page, '', data.gender ? data.gender.id : '', data.cities ? data.cities.label : data.countries ? data.countries.labe : '', data['event-type'] ? data['event-type'].id : '')
+      const res = await getAllSportsmens(page, '', data.gender ? data.gender.id : '', data.cities ? data.cities.label : data.countries ? data.countries.labe : '', data['event-type'] ? data['event-type'].id : '', data.chest_number ? data.chest_number : '')
+
+
       console.log(data.gender ? data.gender.id : '', data.cities ? data.cities.label : data.countries ? data.countries.labe : '', data['event-type'] ? data['event-type'].id : '', data.chest_number ? data.chest_number : '');
 
       console.log(res.data, 'res.data');
