@@ -41,7 +41,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
   console.log(data, 'data');
 
-  const filteredData = data.filter((item) => item.status);
+  const filteredData = data.filter((item) => !item.status);
   // const [filteredData, setFilteredData] = useState<ISportsman[]>(data.filter((item) => item.status !== false));
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('');
