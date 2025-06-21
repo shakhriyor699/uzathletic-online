@@ -619,7 +619,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   };
 
 
- 
+
 
 
 
@@ -677,7 +677,18 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
 
   const deleteStartListItem = async (id: number) => {
-
+    console.log(id);
+    try {
+      const res = await axios.delete(`/api/startList/${id}`);
+      console.log(res);
+      if (res.status === 200) {
+        toast.success('Группа стартлиста удалена');
+        router.refresh();
+      }
+    } catch (error) {
+      console.error('Error deleting start list item:', error);
+      toast.error('Произошла ошибка при удалении группы стартлиста');
+    }
   }
 
 
@@ -844,7 +855,17 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                 {
                   Object.keys(startList.sportsmen).map((key, index) => (
                     <Box sx={{ my: 5 }} key={index}>
-                      <Typography sx={{ mb: 2 }} variant='h4'>{key}</Typography>
+                      <Box className='flex justify-between items-center'>
+                        <Box>
+                          <Typography sx={{ mb: 2 }} variant='h4'>{key}</Typography>
+                          <Typography variant='subtitle1'>Количество спортсменов: {startList.sportsmen[key].length}</Typography>
+                        </Box>
+                        {currentUser?.name === 'Admin' &&
+                          <Button onClick={() => deleteStartListItem(startList.id)} variant='outlined' color='error'>
+                            Удалить группу <Trash2 color='red' className='cursor-pointer ml-3' />
+                          </Button>
+                        }
+                      </Box>
                       <form>
                         {
                           currentUser?.name === 'Admin' && eventRegistration.event_registration_setting.condition.status === 'true' ? (
@@ -958,10 +979,10 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                                               </TableCell>
                                             </>
                                           }
-                                          {currentUser?.name === 'Admin' &&
+                                          {/* {currentUser?.name === 'Admin' &&
                                             <TableCell>
                                               <Trash2 color='red' className='cursor-pointer' />
-                                            </TableCell>}
+                                            </TableCell>} */}
                                         </TableRow>
                                       )
                                     )
