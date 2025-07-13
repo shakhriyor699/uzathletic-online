@@ -418,199 +418,382 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   })
 
 
-  const downLoadResultDoc = (sortedSportsmen: any) => {
-    // Создаем заголовки таблицы
-    const headerCells = [
+  /* скачать результаты соревнований */
+  // const downLoadResultDoc = (sortedSportsmen: any) => {
+  //   // Создаем заголовки таблицы
+  //   const headerCells = [
+  //     new DocxTableCell({ children: [new Paragraph("№")] }),
+  //     new DocxTableCell({ children: [new Paragraph("Name Surname")] }),
+  //     new DocxTableCell({ children: [new Paragraph("DOB")] }),
+  //     new DocxTableCell({ children: [new Paragraph("Country/Region")] }),
+  //     new DocxTableCell({ children: [new Paragraph("BIB")] }),
+  //   ];
+
+  //   // Добавляем заголовки для попыток в зависимости от типа спорта
+  //   if (isSpecialSportType) {
+  //     // Для специальных видов спорта (прыжки, метания)
+  //     const maxAttempts = Math.max(
+  //       ...sortedSportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+  //     ) - 1;
+
+  //     for (let i = 0; i < maxAttempts; i++) {
+  //       headerCells.push(
+  //         new DocxTableCell({
+  //           children: [
+  //             new Paragraph({
+  //               children: [
+  //                 new TextRun({
+  //                   text: shouldShowWindField ? "Ветер" : "",
+  //                   break: 1
+  //                 }),
+  //                 new TextRun({ text: `Attempt ${i + 1}` })
+  //               ]
+  //             })
+  //           ]
+  //         })
+  //       );
+  //     }
+  //   } else if (isSpecialSportTypeWithPoints) {
+  //     // Для видов с высотой и очками (прыжки в высоту/шест)
+  //     const maxAttempts = Math.max(
+  //       ...sortedSportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+  //     );
+
+  //     for (let i = 0; i < maxAttempts; i++) {
+  //       headerCells.push(
+  //         new DocxTableCell({
+  //           children: [
+  //             new Paragraph({
+  //               children: [
+  //                 new TextRun({ text: "Высота", break: 1 }),
+  //                 new TextRun({ text: "Результат" })
+  //               ]
+  //             })
+  //           ]
+  //         })
+  //       );
+  //     }
+  //   } else {
+  //     // Для обычных видов (беговые)
+  //     eventSportsmen?.attempts?.forEach((_: any, index: number) => {
+  //       headerCells.push(
+  //         new DocxTableCell({ children: [new Paragraph(`Попытка ${index + 1}`)] })
+  //       );
+  //     });
+  //   }
+
+  //   // Добавляем финальные колонки
+  //   headerCells.push(
+  //     new DocxTableCell({ children: [new Paragraph("Result")] }),
+  //     new DocxTableCell({ children: [new Paragraph("Place")] })
+  //   );
+
+  //   const headerRow = new DocxTableRow({ children: headerCells });
+
+  //   // Создаем строки с данными
+  //   const bodyRows = sortedSportsmen.map((sportsman: any, index: number) => {
+  //     const baseCells = [
+  //       new DocxTableCell({ children: [new Paragraph((index + 1).toString())] }),
+  //       new DocxTableCell({
+  //         children: [new Paragraph(`${sportsman.name || ''} ${sportsman.family_name || ''}`)],
+  //       }),
+  //       new DocxTableCell({ children: [new Paragraph(sportsman.birth || '')] }),
+  //       new DocxTableCell({ children: [new Paragraph(sportsman.address.split(/ *[-–] */).pop()?.trim())] }),
+  //       new DocxTableCell({ children: [new Paragraph(sportsman.chest_number || '')] }),
+  //     ];
+
+  //     let attemptCells: DocxTableCell[] = [];
+
+  //     if (isSpecialSportType) {
+  //       // Обработка специальных видов (прыжки/метания)
+  //       sportsman.pivot?.attempts?.forEach((attempt: any, attemptIndex: number) => {
+  //         if (attempt?.key !== 'resultAfterThreeAttempts') {
+  //           attemptCells.push(
+  //             new DocxTableCell({
+  //               children: [
+  //                 new Paragraph({
+  //                   children: [
+  //                     new TextRun({
+  //                       text: shouldShowWindField
+  //                         ? `${sportsman.pivot?.condition?.wind?.[attemptIndex + 1]?.value || '-'}`
+  //                         : "",
+  //                       break: 1
+  //                     }),
+  //                     new TextRun({
+  //                       text: attempt?.value?.value?.toString() || '-'
+  //                     })
+  //                   ]
+  //                 })
+  //               ]
+  //             })
+  //           );
+  //         }
+  //       });
+  //     } else if (isSpecialSportTypeWithPoints) {
+  //       // Обработка видов с высотой и очками
+  //       sportsman.pivot?.attempts?.forEach((attempt: any) => {
+  //         attemptCells.push(
+  //           new DocxTableCell({
+  //             children: [
+  //               new Paragraph({
+  //                 children: [
+  //                   new TextRun({ text: attempt?.height?.toString() || '-', break: 1 }),
+  //                   new TextRun({ text: attempt?.point?.toString() || '-' })
+  //                 ]
+  //               })
+  //             ]
+  //           })
+  //         );
+  //       });
+  //     } else {
+  //       // Обработка обычных видов
+  //       eventSportsmen?.attempts?.forEach((_: any, attemptIndex: number) => {
+  //         const attempt = sportsman.pivot?.attempts?.[attemptIndex];
+  //         attemptCells.push(
+  //           new DocxTableCell({
+  //             children: [
+  //               new Paragraph(attempt?.value?.value?.toString() || '-')
+  //             ]
+  //           })
+  //         );
+  //       });
+  //     }
+
+  //     const resultCells = [
+  //       new DocxTableCell({
+  //         children: [new Paragraph(sportsman.pivot?.result || 'нет результата')],
+  //       }),
+  //       new DocxTableCell({
+  //         children: [new Paragraph(sportsman.pivot?.position || 'нет результата')],
+  //       }),
+  //     ];
+
+  //     return new DocxTableRow({
+  //       children: [...baseCells, ...attemptCells, ...resultCells]
+  //     });
+  //   });
+
+  //   const table = new DocxTable({
+  //     width: { size: 100, type: WidthType.PERCENTAGE },
+  //     rows: [headerRow, ...bodyRows],
+  //   });
+
+  //   const titleParagraph = new Paragraph({
+  //     children: [new TextRun({ text: "Результат соревнований", bold: true, size: 24 })],
+  //     spacing: { after: 300 },
+  //   });
+
+  //   const dateParagraph = new Paragraph({
+  //     children: [new TextRun({ text: `Дата проведения: ${new Date().toLocaleDateString()}`, size: 16 })],
+  //   });
+
+  //   let windParagraph = new Paragraph({});
+
+
+
+  //   if (!isSpecialSportType &&
+  //     !isSpecialSportTypeWithPoints) {
+  //     const wind = sortedSportsmen?.[0]?.pivot?.condition?.wind
+
+  //     windParagraph = new Paragraph({
+  //       children: [new TextRun({ text: `Ветер: ${wind}`, size: 16 })],
+  //     });
+  //   }
+
+
+  //   const cityParagraph = new Paragraph({
+  //     children: [new TextRun({ text: "Город:", size: 16 })],
+  //   });
+
+  //   const doc = new Document({
+  //     sections: [
+  //       {
+  //         properties: {},
+  //         children: [titleParagraph, dateParagraph, windParagraph, cityParagraph, table],
+  //       },
+  //     ],
+  //   });
+
+  //   Packer.toBlob(doc).then((blob) => {
+  //     saveAs(blob, "AthletesResults.docx");
+  //   });
+  // };
+
+
+  const downLoadResultDoc = (sortedSportsmen: any[]) => {
+    const tableHeaderCells: DocxTableCell[] = [
       new DocxTableCell({ children: [new Paragraph("№")] }),
-      new DocxTableCell({ children: [new Paragraph("Name Surname")] }),
-      new DocxTableCell({ children: [new Paragraph("DOB")] }),
-      new DocxTableCell({ children: [new Paragraph("Country/Region")] }),
+      new DocxTableCell({ children: [new Paragraph("ФИО")] }),
+      new DocxTableCell({ children: [new Paragraph("Дата рождения")] }),
+      new DocxTableCell({ children: [new Paragraph("Регион")] }),
       new DocxTableCell({ children: [new Paragraph("BIB")] }),
     ];
 
-    // Добавляем заголовки для попыток в зависимости от типа спорта
-    if (isSpecialSportType) {
-      // Для специальных видов спорта (прыжки, метания)
-      const maxAttempts = Math.max(
-        ...sortedSportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
-      ) - 1;
 
-      for (let i = 0; i < maxAttempts; i++) {
-        headerCells.push(
-          new DocxTableCell({
-            children: [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: shouldShowWindField ? "Ветер" : "",
-                    break: 1
-                  }),
-                  new TextRun({ text: `Attempt ${i + 1}` })
-                ]
-              })
-            ]
-          })
-        );
-      }
-    } else if (isSpecialSportTypeWithPoints) {
-      // Для видов с высотой и очками (прыжки в высоту/шест)
+    // isSpecialSportTypeWithPoints && eventSportsmen.sportsmen.length > 0 && sortedSportsmen[1].pivot.attempts[0].height.map((item: any, index: number) => (
+    //                     <TableCell align="center" key={index}>{item.height}</TableCell>
+    //                   ))
+
+    // Add attempt columns based on sport type
+    if (isSpecialSportTypeWithPoints) {
+      // Высота и очки
       const maxAttempts = Math.max(
-        ...sortedSportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+        ...sortedSportsmen.map(s => s.pivot?.attempts?.length || 0)
       );
 
-      for (let i = 0; i < maxAttempts; i++) {
-        headerCells.push(
+      // Предполагаем, что у каждого attempt есть поле height — массив объектов { height: string }
+      const heights = sortedSportsmen[1]?.pivot?.attempts[0]?.height || [];
+
+      // Добавляем заголовок "Высота" перед высотами
+      // tableHeaderCells.push(
+      //   new DocxTableCell({
+      //     children: [
+      //       new Paragraph({
+      //         children: [new TextRun({ text: "Высота", bold: true })],
+      //         alignment: AlignmentType.CENTER,
+      //       }),
+      //     ],
+      //   })
+      // );
+
+      // Каждую высоту добавляем в отдельную ячейку таблицы
+      heights.forEach((item: any) => {
+        tableHeaderCells.push(
           new DocxTableCell({
             children: [
               new Paragraph({
                 children: [
-                  new TextRun({ text: "Высота", break: 1 }),
-                  new TextRun({ text: "Результат" })
-                ]
-              })
-            ]
+                  new TextRun({ text: "Высота", bold: true }),
+                  new TextRun({ text: String(item.height), break: 1 }),
+                ],
+                alignment: AlignmentType.CENTER,
+              }),
+            ],
           })
         );
+      });
+      // for (let i = 0; i < maxAttempts; i++) {
+      //   tableHeaderCells.push(new DocxTableCell({
+      //     children: [new Paragraph(`Высота ${i + 1}`)],
+      //   }));
+      // }
+    } else if (isSpecialSportType) {
+      // Метания / прыжки с ветром
+      const maxAttempts = Math.max(...sortedSportsmen.map(s => s.pivot?.attempts?.length || 0)) - 1;
+      for (let i = 0; i < maxAttempts; i++) {
+        tableHeaderCells.push(new DocxTableCell({
+          children: [new Paragraph({
+            children: [
+              ...(shouldShowWindField ? [new TextRun({ text: "Ветер", break: 1 })] : []),
+              new TextRun({ text: `Попытка ${i + 1}`, break: 1 }),
+            ]
+          })]
+        }));
       }
     } else {
-      // Для обычных видов (беговые)
+      // Беговые виды
       eventSportsmen?.attempts?.forEach((_: any, index: number) => {
-        headerCells.push(
-          new DocxTableCell({ children: [new Paragraph(`Попытка ${index + 1}`)] })
-        );
+        tableHeaderCells.push(new DocxTableCell({ children: [new Paragraph(`Попытка ${index + 1}`)] }));
       });
     }
 
-    // Добавляем финальные колонки
-    headerCells.push(
-      new DocxTableCell({ children: [new Paragraph("Result")] }),
-      new DocxTableCell({ children: [new Paragraph("Place")] })
+    // Add final result & place columns
+    tableHeaderCells.push(
+      new DocxTableCell({ children: [new Paragraph("Результат")] }),
+      new DocxTableCell({ children: [new Paragraph("Место")] }),
     );
 
-    const headerRow = new DocxTableRow({ children: headerCells });
+    const headerRow = new DocxTableRow({ children: tableHeaderCells });
 
-    // Создаем строки с данными
-    const bodyRows = sortedSportsmen.map((sportsman: any, index: number) => {
+    const dataRows = sortedSportsmen.map((s: any, index: number) => {
       const baseCells = [
         new DocxTableCell({ children: [new Paragraph((index + 1).toString())] }),
-        new DocxTableCell({
-          children: [new Paragraph(`${sportsman.name || ''} ${sportsman.family_name || ''}`)],
-        }),
-        new DocxTableCell({ children: [new Paragraph(sportsman.birth || '')] }),
-        new DocxTableCell({ children: [new Paragraph(sportsman.address.split(/ *[-–] */).pop()?.trim())] }),
-        new DocxTableCell({ children: [new Paragraph(sportsman.chest_number || '')] }),
+        new DocxTableCell({ children: [new Paragraph(`${s.family_name} ${s.name}`)] }),
+        new DocxTableCell({ children: [new Paragraph(s.birth || "")] }),
+        new DocxTableCell({ children: [new Paragraph(s.address?.split(/ *[-–] */).pop()?.trim() || "")] }),
+        new DocxTableCell({ children: [new Paragraph(s.chest_number || "")] }),
       ];
 
       let attemptCells: DocxTableCell[] = [];
 
-      if (isSpecialSportType) {
-        // Обработка специальных видов (прыжки/метания)
-        sportsman.pivot?.attempts?.forEach((attempt: any, attemptIndex: number) => {
-          if (attempt?.key !== 'resultAfterThreeAttempts') {
-            attemptCells.push(
-              new DocxTableCell({
-                children: [
-                  new Paragraph({
-                    children: [
-                      new TextRun({
-                        text: shouldShowWindField
-                          ? `${sportsman.pivot?.condition?.wind?.[attemptIndex + 1]?.value || '-'}`
-                          : "",
-                        break: 1
-                      }),
-                      new TextRun({
-                        text: attempt?.value?.value?.toString() || '-'
-                      })
-                    ]
-                  })
-                ]
-              })
-            );
-          }
-        });
-      } else if (isSpecialSportTypeWithPoints) {
-        // Обработка видов с высотой и очками
-        sportsman.pivot?.attempts?.forEach((attempt: any) => {
+
+
+      if (isSpecialSportTypeWithPoints) {
+        const maxAttempts = Math.max(
+          ...sortedSportsmen.map(s => s.pivot?.attempts?.length || 0)
+        );
+
+        for (let i = 0; i < maxAttempts; i++) {
+          const attempt = s.pivot?.attempts?.[i];
+          const point = attempt?.point ?? "-";
+
           attemptCells.push(
             new DocxTableCell({
               children: [
                 new Paragraph({
                   children: [
-                    new TextRun({ text: attempt?.height?.toString() || '-', break: 1 }),
-                    new TextRun({ text: attempt?.point?.toString() || '-' })
-                  ]
-                })
-              ]
+                    new TextRun({ text: point, bold: false }),
+                  ],
+                  alignment: AlignmentType.CENTER,
+                }),
+              ],
             })
           );
+        }
+      }
+      else if (isSpecialSportType) {
+        s.pivot?.attempts?.forEach((a: any, i: number) => {
+          if (a?.key === "resultAfterThreeAttempts") return;
+          const wind = shouldShowWindField ? `${s.pivot?.condition?.wind?.[i + 1]?.value || "-"}` : "";
+          const value = a?.value?.value?.toString() || "-";
+          attemptCells.push(new DocxTableCell({
+            children: [new Paragraph(`${wind ? wind + "\n" : ""}${value}`)],
+          }));
         });
       } else {
-        // Обработка обычных видов
+        // Беговые
         eventSportsmen?.attempts?.forEach((_: any, attemptIndex: number) => {
-          const attempt = sportsman.pivot?.attempts?.[attemptIndex];
-          attemptCells.push(
-            new DocxTableCell({
-              children: [
-                new Paragraph(attempt?.value?.value?.toString() || '-')
-              ]
-            })
-          );
+          const value = s.pivot?.attempts?.[attemptIndex]?.value?.value || "-";
+          attemptCells.push(new DocxTableCell({ children: [new Paragraph(value)] }));
         });
       }
 
       const resultCells = [
-        new DocxTableCell({
-          children: [new Paragraph(sportsman.pivot?.result || 'нет результата')],
-        }),
-        new DocxTableCell({
-          children: [new Paragraph(sportsman.pivot?.position || 'нет результата')],
-        }),
+        new DocxTableCell({ children: [new Paragraph(s.pivot?.result || "-")] }),
+        new DocxTableCell({ children: [new Paragraph(s.pivot?.position || "-")] }),
       ];
 
-      return new DocxTableRow({
-        children: [...baseCells, ...attemptCells, ...resultCells]
-      });
-    });
-
-    const table = new DocxTable({
-      width: { size: 100, type: WidthType.PERCENTAGE },
-      rows: [headerRow, ...bodyRows],
-    });
-
-    const titleParagraph = new Paragraph({
-      children: [new TextRun({ text: "Результат соревнований", bold: true, size: 24 })],
-      spacing: { after: 300 },
-    });
-
-    const dateParagraph = new Paragraph({
-      children: [new TextRun({ text: `Дата проведения: ${new Date().toLocaleDateString()}`, size: 16 })],
-    });
-
-    let windParagraph = new Paragraph({});
-
-
-
-    if (!isSpecialSportType &&
-      !isSpecialSportTypeWithPoints) {
-      const wind = sortedSportsmen?.[0]?.pivot?.condition?.wind
-
-      windParagraph = new Paragraph({
-        children: [new TextRun({ text: `Ветер: ${wind}`, size: 16 })],
-      });
-    }
-
-
-    const cityParagraph = new Paragraph({
-      children: [new TextRun({ text: "Город:", size: 16 })],
+      return new DocxTableRow({ children: [...baseCells, ...attemptCells, ...resultCells] });
     });
 
     const doc = new Document({
-      sections: [
-        {
-          properties: {},
-          children: [titleParagraph, dateParagraph, windParagraph, cityParagraph, table],
-        },
-      ],
+      sections: [{
+        properties: {},
+        children: [
+          new Paragraph({
+            children: [new TextRun({ text: "Результаты соревнования", bold: true, size: 28 })],
+            spacing: { after: 300 },
+          }),
+          new Paragraph({
+            children: [new TextRun({ text: `Дата проведения: ${new Date().toLocaleDateString()}`, size: 20 })],
+            spacing: { after: 100 },
+          }),
+          !isSpecialSportType && !isSpecialSportTypeWithPoints && sortedSportsmen?.[0]?.pivot?.condition?.wind && (
+            new Paragraph({
+              children: [new TextRun({ text: `Ветер: ${sortedSportsmen[0].pivot.condition.wind}`, size: 20 })],
+              spacing: { after: 100 },
+            })
+          ),
+          new Paragraph({
+            children: [new TextRun({ text: "Город:", size: 20 })],
+            spacing: { after: 200 },
+          }),
+          new DocxTable({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [headerRow, ...dataRows],
+          }),
+        ].filter(Boolean),
+      }]
     });
 
     Packer.toBlob(doc).then((blob) => {
@@ -1074,7 +1257,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                       })
                     }
 
-                    {isSpecialSportTypeWithPoints && Array.from({
+                    {/* {isSpecialSportTypeWithPoints && Array.from({
                       length: Math.max(
                         ...eventSportsmen.sportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
                       )
@@ -1086,7 +1269,13 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                           </p>
                         ))}
                       </TableCell>
-                    ))}
+                    ))} */}
+
+                    {
+                      isSpecialSportTypeWithPoints && eventSportsmen.sportsmen.length > 0 && sortedSportsmen[1].pivot.attempts[0].height.map((item: any, index: number) => (
+                        <TableCell align="center" key={index}>{item.height}</TableCell>
+                      ))
+                    }
 
                     <TableCell>Результат</TableCell>
                     <TableCell>Занятое место</TableCell>
@@ -1126,27 +1315,30 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
 
 
-                          {isSpecialSportTypeWithPoints &&
-                            sortedSportsmen[index]?.pivot.attempts && sortedSportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => (
+                          {isSpecialSportTypeWithPoints && (() => {
+
+                            const maxAttempts = Math.max(
+                              ...sortedSportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+                            );
+
+                            return Array.from({ length: maxAttempts }).map((_, attemptIndex) => (
                               <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
-                                {['height', 'point'].map((key) => {
-                                  // Попытаемся взять значение из первого попавшегося спортсмена, у кого оно есть
-                                  const value = sortedSportsmen.find(
-                                    (s: any) => s.pivot?.attempts?.[attemptIndex]?.[key] !== undefined
-                                  )?.pivot?.attempts?.[attemptIndex]?.[key];
+                                {['point'].map((key) => {
+                                  const value = sortedSportsmen[index]?.pivot?.attempts?.[attemptIndex]?.[key];
 
                                   return (
                                     <p key={key}>
-                                      {key === 'height' ? ` ${value ?? '-'}` : ` ${value ?? '-'}`}
+                                      {value ?? '-'}
                                     </p>
                                   );
                                 })}
                               </TableCell>
-                            ))}
+                            ));
+                          })()}
 
 
-                          <TableCell>{sportsman.pivot.result}</TableCell>
-                          <TableCell>{sportsman.pivot.position}</TableCell>
+                          <TableCell>{sportsman.pivot.result ? sportsman.pivot.result : '-'}</TableCell>
+                          <TableCell>{sportsman.pivot.position ? sportsman.pivot.position : '-'}</TableCell>
 
                           {currentUser?.name === 'Admin' && <TableCell>
 

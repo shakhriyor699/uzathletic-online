@@ -1,11 +1,13 @@
 'use client'
 import { useSportsmanPoints } from "@/hooks/useSportsmenPoints";
+import { useSportsmenPointsStore } from "@/hooks/useSportsmenPointsStore";
 import { IUserData } from "@/types/authTypes";
 import { IEventRegistrationResponse } from "@/types/eventRegistrationTypes";
 import { Box, Button, TableCell, TableRow, TextField } from "@mui/material";
 import { CircleMinus, CirclePlus } from "lucide-react";
 import { FC, useEffect, useRef } from "react";
 import { Control, Controller, FieldValues, useFieldArray } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 
 interface SportsmanRowProps {
@@ -16,10 +18,12 @@ interface SportsmanRowProps {
   currentUser: IUserData;
   isSpecialSportType: boolean;
   isSpecialSportTypeWithPoints: boolean;
+  isSpecialSportTypeWithHight: boolean;
   attempts: any[];
   handleSubmitWithId: (id: number) => void;
   shouldShowWindField: boolean
   isDisabled?: boolean
+  getValues: any
 }
 
 const SportsmanRow: FC<SportsmanRowProps> = ({
@@ -30,10 +34,12 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
   currentUser,
   isSpecialSportType,
   isSpecialSportTypeWithPoints,
+  isSpecialSportTypeWithHight,
   attempts,
   handleSubmitWithId,
   shouldShowWindField,
-  isDisabled
+  isDisabled,
+  getValues
 }) => {
   // Уникальный useFieldArray для каждого спортсмена
   // const { fields, append, remove } = useFieldArray({
@@ -43,7 +49,39 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
 
   const { fields, append, remove } = useSportsmanPoints(control, sportsman.id);
 
+  useEffect(() => {
+    useSportsmenPointsStore.getState().set(sportsman.id, { append, remove });
+  }, [append, remove, sportsman.id]);
+
+  const handleAddPointToAll = () => {
+    const store = useSportsmenPointsStore.getState().store;
+    Object.values(store).forEach(({ append }) => {
+      append({ height: "", point: "" });
+    });
+  };
+
+  const handleRemoveLastPointFromAll = () => {
+    const store = useSportsmenPointsStore.getState().store;
+
+    // Предположим, что у всех одинаковое количество попыток
+    // Определим maxIndex
+    const one = Object.values(store)[0];
+    if (!one) return;
+
+    // Получим индекс последнего поля (например, 2 если три записи)
+    const lastIndex = getValues(`points.${Object.keys(store)[0]}`)?.length - 1;
+
+    if (lastIndex >= 0) {
+      Object.values(store).forEach(({ remove }) => {
+        remove(lastIndex);
+      });
+    }
+  };
+
   const hasInitialized = useRef(false);
+
+  console.log(isSpecialSportTypeWithPoints, 'isSpecialSportTypeWithPoints');
+
 
 
   useEffect(() => {
@@ -51,6 +89,9 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
       append({ height: "", point: "" });
       hasInitialized.current = true;
     }
+    return () => {
+      useSportsmenPointsStore.getState().clear();
+    };
   }, [isSpecialSportTypeWithPoints]);
 
   return (
@@ -141,6 +182,10 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
               </Box>
             ))}
 
+
+
+
+
           {/* Поля для высоты и очков (только для isSpecialSportTypeWithPoints) */}
           {isSpecialSportTypeWithPoints && (
             <>
@@ -148,7 +193,7 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
                 <Box key={field.id} sx={{ display: "flex", gap: 0.5 }}>
                   <Box className="flex flex-col gap-2">
                     <Controller
-                      name={`points.${sportsman.id}.${pointIndex}.height`}
+                      name={`points.${pointIndex}.heights`}
                       control={control}
                       render={({ field }) => (
                         <TextField
@@ -172,23 +217,25 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
                       )}
                     />
                   </Box>
-                  <Button
+                  {index === 0 && <Button
                     className="p-0 min-w-[20px]"
                     color="error"
                     disabled={isDisabled}
-                    onClick={() => remove(pointIndex)}
+                    // onClick={() => remove(pointIndex)}
+                    onClick={handleRemoveLastPointFromAll}
                   >
                     <CircleMinus />
-                  </Button>
+                  </Button>}
                 </Box>
               ))}
-              <Button
+              {index === 0 && <Button
                 className="p-0 min-w-[20px]"
                 disabled={isDisabled}
-                onClick={() => append({ height: "", point: "" })}
+                // onClick={() => append({ height: "", point: "" })}
+                onClick={handleAddPointToAll}
               >
                 <CirclePlus />
-              </Button>
+              </Button>}
             </>
           )}
         </TableCell>
@@ -247,3 +294,4 @@ const SportsmanRow: FC<SportsmanRowProps> = ({
 
 
 export default SportsmanRow
+
