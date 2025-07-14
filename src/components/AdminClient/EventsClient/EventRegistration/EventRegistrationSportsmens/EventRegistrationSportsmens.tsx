@@ -678,7 +678,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
       //   }));
       // }
     } else if (isSpecialSportType) {
-      // Метания / прыжки с ветром
       const maxAttempts = Math.max(...sortedSportsmen.map(s => s.pivot?.attempts?.length || 0)) - 1;
       for (let i = 0; i < maxAttempts; i++) {
         tableHeaderCells.push(new DocxTableCell({
@@ -1272,7 +1271,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                     ))} */}
 
                     {
-                      isSpecialSportTypeWithPoints && eventSportsmen.sportsmen.length > 0 && sortedSportsmen[1].pivot.attempts[0].height.map((item: any, index: number) => (
+                      isSpecialSportTypeWithPoints && eventSportsmen.sportsmen.length > 0 && sortedSportsmen[1].pivot.attempts && sortedSportsmen[1].pivot.attempts[0].height.map((item: any, index: number) => (
                         <TableCell align="center" key={index}>{item.height}</TableCell>
                       ))
                     }
