@@ -1271,7 +1271,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                     ))} */}
 
                     {
-                      isSpecialSportTypeWithPoints && eventSportsmen.sportsmen.length > 0 && sortedSportsmen[1].pivot.attempts && sortedSportsmen[1].pivot.attempts[0].height.map((item: any, index: number) => (
+                      isSpecialSportTypeWithPoints && eventSportsmen.sportsmen.length > 0 && sortedSportsmen[0].pivot.attempts && sortedSportsmen[0].pivot.attempts[0].height.map((item: any, index: number) => (
                         <TableCell align="center" key={index}>{item.height}</TableCell>
                       ))
                     }
@@ -1284,7 +1284,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                 <TableBody>
                   {sortedSportsmen.map((sportsman: any, index: number) => {
 
-                    console.log(sportsman, 'sportsman22222');
+
                     // console.log(sportsman.address.split("–").pop().trim(), 'sportsman22222');
 
                     return (
@@ -1295,8 +1295,6 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
                           <TableCell>{sportsman.birth}</TableCell>
                           <TableCell align='center'>{sportsman.address.split("–").pop().trim()}</TableCell>
                           <TableCell align="center">{sportsman.chest_number}</TableCell>
-
-
 
 
                           {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&

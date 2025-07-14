@@ -598,7 +598,7 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
                     ))} */}
 
                     {
-                      isSpecialSportTypeWithPoints && eventSportsmen.sportsmen.length > 0 && sortedSportsmen[1].pivot.attempts[0].height.map((item: any, index: number) => (
+                      isSpecialSportTypeWithPoints && eventSportsmen.sportsmen.length > 0 && sortedSportsmen[0].pivot.attempts && sortedSportsmen[0].pivot.attempts[0].height.map((item: any, index: number) => (
                         <TableCell align="center" key={index}>{item.height}</TableCell>
                       ))
                     }
