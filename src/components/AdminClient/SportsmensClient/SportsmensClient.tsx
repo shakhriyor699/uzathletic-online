@@ -37,12 +37,14 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const { handleOpen } = useSportsmenModal()
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [page, setPage] = React.useState(0);
-  const [totalCount, setTotalCount] = React.useState(totalPage);
+  const [totalCount, setTotalCount] = React.useState(
+    sportsmens.filter((item) => item.status !== false).length
+  );
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
   console.log(data, 'data');
 
-  const filteredData = data.filter((item) => item.status);
-  // const [filteredData, setFilteredData] = useState<ISportsman[]>(data.filter((item) => item.status !== false));
+  // const filteredData = data.filter((item) => item.status);
+  const [filteredData, setFilteredData] = useState<ISportsman[]>(data.filter((item) => item.status !== false));
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -50,21 +52,25 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
     mode: 'onChange',
   });
 
+
   useEffect(() => {
     loadEvents(page + 1, searchQuery)
-  }, [page, searchQuery, sportsmens, handleOpen]);
+  }, [page, searchQuery]);
 
-
-  console.log(filteredData, 'sportsmen');
+  useEffect(() => {
+    setFilteredData(data.filter((item) => item.status !== false));
+  }, [data]);
 
 
 
 
   const loadEvents = async (page: number, name?: string) => {
     const res = await getAllSportsmens(page, name, null, '', null, '');
+    console.log(page, res, 'page');
+    const filtered = res.data.filter((item: ISportsman) => item.status !== false);
     setData(res.data)
-    // setFilteredData(res.data.filter((item: any) => item.status !== false));
-    setTotalCount(res.total);
+    setFilteredData(res.data.filter((item: any) => item.status !== false));
+    setTotalCount(filtered.length);
   }
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -251,7 +257,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
         }
 
         {
-          filteredData.length > 0 ?
+          data.filter((item) => item.status !== false).length > 0 ?
 
             (
               <Paper sx={{ width: '100%' }}>
@@ -272,7 +278,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {filteredData.map((row, i) => {
+                      {data.filter((item) => item.status !== false).map((row, i) => {
                         return (
                           <TableRow
                             key={row.id}

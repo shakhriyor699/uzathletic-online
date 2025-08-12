@@ -23,6 +23,6 @@ export const deleteEvent = async (id: number) => {
 }
 
 export const getOne = async (id: string) => {
-  const { data } = await axiosWithAuth.get(`/event-sportsmen/show/${id}`)
+  const { data } = await axiosWithAuth.get(`/event-sportsmen/show/new/${id}`)
   return data
 }
