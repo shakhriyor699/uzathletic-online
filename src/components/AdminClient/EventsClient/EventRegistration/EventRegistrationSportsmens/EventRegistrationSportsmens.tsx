@@ -22,6 +22,7 @@ interface EventRegistrationSportsmens {
   startList: StartListSportsmen[]
   currentUser?: IUserData | undefined
   eventSportsmen?: any
+  eventSportsmenOld?: any
 }
 
 type Sportsman = {
@@ -44,7 +45,8 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   eventRegistration,
   startList,
   currentUser,
-  eventSportsmen
+  eventSportsmen,
+  eventSportsmenOld
 }) => {
   const [value, setValue] = React.useState('1');
   const [open, setOpen] = React.useState(false)
@@ -969,7 +971,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
 
 
-  console.log(eventRegistration, 'eee');
+
 
 
 
@@ -1044,6 +1046,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
 
 
+
   const downloadTxt = () => {
     // const rows: any = startList?.map((startListItem: any) => {
     //   return Object.keys(startListItem.sportsmen).map((key) => {
@@ -1054,7 +1057,7 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
     //   })
     // })
 
-    const rows: any = eventSportsmen.sportsmen.map((athlete: any) => {
+    const rows: any = eventSportsmenOld.sportsmen.map((athlete: any) => {
       const discipline = athlete.sportsmen_disciplines?.find(
         (d: any) => d.event_registration_id === eventRegistration.id
       );
@@ -1066,17 +1069,12 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   };
 
 
-  // console.log(eventRegistration.id, 'id');
 
-  // const rows: any = eventSportsmen.sportsmen.map((athlete: any) => {
-  //   return `A,${athlete.name},${athlete.family_name},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(" - ")[1]},${eventSportsmen.sport_type.sport_type_number},${athlete.sportsmen_disciplines?.map((discipline: any) => {
-  //     console.log(eventRegistration.id == discipline.event_registration_id);
 
-  //     if (eventRegistration.id == discipline.event_registration_id) return discipline.sb
-  //   })},M\n`
-  // })
+  console.log(eventSportsmen, 'aaa');
 
-  // console.log(rows);
+
+
 
 
 

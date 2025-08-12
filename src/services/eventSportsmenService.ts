@@ -26,3 +26,7 @@ export const getOne = async (id: string) => {
   const { data } = await axiosWithAuth.get(`/event-sportsmen/show/new/${id}`)
   return data
 }
+export const getOneTxt = async (id: string) => {
+  const { data } = await axiosWithAuth.get(`/event-sportsmen/show/${id}`)
+  return data
+}

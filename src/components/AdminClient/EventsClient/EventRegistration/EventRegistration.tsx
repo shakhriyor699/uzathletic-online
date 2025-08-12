@@ -57,7 +57,7 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
   }
 
 
-  console.log(days, 'day');
+
 
 
 

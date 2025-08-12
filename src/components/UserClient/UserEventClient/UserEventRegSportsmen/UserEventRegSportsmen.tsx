@@ -46,6 +46,22 @@ interface UserEventRegSportsmenProps {
   eventSportsmen?: any
 }
 
+type Sportsman = {
+  id: number; // уникальный ID спортсмена
+  firstName: string;
+  lastName: string;
+  age: number;
+  gender: "male" | "female"; // или string, если не ограничивать
+  country?: string; // необязательное поле
+  team?: string; // необязательное поле
+  sport?: string; // вид спорта
+  pivot: {
+    position: number | string; // позиция в списке (число или строка)
+    [key: string]: any; // если в pivot могут быть дополнительные поля
+  };
+  [key: string]: any; // дополнительные поля спортсмена
+};
+
 const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
   eventRegistration,
   startList,
@@ -532,161 +548,131 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
 
 
 
-        {eventSportsmen && !Array.isArray(eventSportsmen) && <TabPanel value="3">
-          <Box>
-            <Typography variant='h4' mb={5}>Результаты</Typography>
-          </Box>
-          {/* <Box>
-            <Button onClick={() => downLoadResultDoc(eventSportsmen)} type='button' variant='contained' sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <FaFileWord />
-              Скачать результаты</Button>
-          </Box> */}
-          <Paper sx={{ width: '100%' }}>
-            <TableContainer sx={{ maxHeight: 440 }}>
-              <Table stickyHeader aria-label="sticky table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>№</TableCell>
-                    <TableCell>Спортсмен</TableCell>
-                    <TableCell>Дата рождения</TableCell>
-                    <TableCell align="center">Регион</TableCell>
-                    <TableCell align="center">BIB</TableCell>
+        {eventSportsmen && !Array.isArray(eventSportsmen) && (
+          <TabPanel value="3">
+            <Box>
+              <Typography variant='h4' mb={5}>Результаты</Typography>
+            </Box>
 
-                    {/* <TableCell>Вид</TableCell> */}
+            {/* <Box>
+              <Button
+                onClick={() => downLoadResultDoc(sortedGroups)}
+                type='button'
+                variant='contained'
+                sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}
+              >
+                <FaFileWord />
+                Скачать результаты
+              </Button>
+            </Box> */}
 
-                    {/* Отображение заголовков для попыток */}
-                    {!isSpecialSportType &&
-                      !isSpecialSportTypeWithPoints && eventSportsmen?.attempts?.length > 0 &&
-                      eventSportsmen.attempts.map((_: any, index: number) => (
-                        <TableCell key={`attempt-header-${index}`}>Попытка {index + 1}</TableCell>
-                      ))}
+            {Object.entries(eventSportsmen?.sportsmen as Record<string, Sportsman[]> || {}).map(([groupKey, sportsmenArray]) => {
+              const sortedSportsmen = [...sportsmenArray].sort((a, b) => {
+                const posA = isNaN(Number(a.pivot.position)) ? Infinity : Number(a.pivot.position);
+                const posB = isNaN(Number(b.pivot.position)) ? Infinity : Number(b.pivot.position);
+                return posA - posB;
+              });
 
-                    {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
-                      Array.from({
-                        length: Math.max(
-                          ...eventSportsmen.sportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
-                        ) - 1
-                      }).map((key: any, attemptIndex: number) => {
-                        return <TableCell align="center" key={`attempt-header-${attemptIndex}`}>{key?.key ? 'Результат после 3 попыток' : `Попытка ${attemptIndex + 1}`}</TableCell>
-                      })
-                    }
+              return (
+                <Paper sx={{ width: '100%', mb: 4 }} key={groupKey}>
+                  <Typography variant='h5' sx={{ p: 2 }}>
+                    Группа {groupKey}
+                  </Typography>
 
-                    {/* {isSpecialSportTypeWithPoints && Array.from({
-                      length: Math.max(
-                        ...eventSportsmen.sportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
-                      )
-                    }).map((_, attemptIndex) => (
-                      <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
-                        {['height'].map((key) => {
-                          // const value = sortedSportsmen.find(
-                          //   (s: any) => s.pivot?.attempts?.[attemptIndex]?.[key] !== undefined
-                          // )?.pivot?.attempts?.[attemptIndex]?.[key];
+                  {!isSpecialSportType &&
+                    !isSpecialSportTypeWithPoints &&
+                    sortedSportsmen?.[0]?.pivot?.condition?.wind && (
+                      <Typography variant="h6" sx={{ mb: 2, ml: 2 }}>
+                        Ветер: {sortedSportsmen[0].pivot.condition.wind}
+                      </Typography>
+                    )}
 
-                          // console.log(value);
-                          const value = sortedSportsmen[1].pivot.attempts[0].height
-                          console.log(value, 'wwww');
-
-
-                          return (
-                            value.map((item: any, index: number) => (
-                              <div key={index}>{item.height}</div>
-                            ))
-                          )
-
-                        })}
-                      </TableCell>
-                    ))} */}
-
-                    {
-                      isSpecialSportTypeWithPoints && eventSportsmen.sportsmen.length > 0 && sortedSportsmen[0].pivot.attempts && sortedSportsmen[0].pivot.attempts[0].height.map((item: any, index: number) => (
-                        <TableCell align="center" key={index}>{item.height}</TableCell>
-                      ))
-                    }
-
-
-
-                    <TableCell>Результат</TableCell>
-                    <TableCell>Занятое место</TableCell>
-                    {currentUser?.name === 'Admin' && <TableCell>Действия</TableCell>}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-
-                  {sortedSportsmen.map((sportsman: any, index: number) => {
-
-                    console.log(sortedSportsmen[0], 'index');
-
-
-
-
-
-                    return (
-                      <React.Fragment key={`row-${index}`}>
+                  <TableContainer sx={{ maxHeight: 440 }}>
+                    <Table stickyHeader aria-label="sticky table">
+                      <TableHead>
                         <TableRow>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>{`${sportsman.family_name} ${sportsman.name}`}</TableCell>
-                          <TableCell>{sportsman.birth}</TableCell>
-                          <TableCell align='center'>{sportsman.address.split("–").pop().trim()}</TableCell>
-                          <TableCell align="center">{sportsman.chest_number}</TableCell>
+                          <TableCell>№</TableCell>
+                          <TableCell>Спортсмен</TableCell>
+                          <TableCell>Дата рождения</TableCell>
+                          <TableCell align="center">Регион</TableCell>
+                          <TableCell align="center">BIB</TableCell>
 
+                          {/* Заголовки попыток */}
+                          {!isSpecialSportType &&
+                            !isSpecialSportTypeWithPoints &&
+                            eventSportsmen?.attempts?.length > 0 &&
+                            eventSportsmen.attempts.map((_: any, index: number) => (
+                              <TableCell key={`attempt-header-${index}`}>Попытка {index + 1}</TableCell>
+                            ))}
 
-                          {isSpecialSportType && eventSportsmen.sportsmen.length > 0 &&
-                            sortedSportsmen[index]?.pivot.attempts && sortedSportsmen[index]?.pivot.attempts.map((key: any, attemptIndex: number) => {
-                              console.log(key, 'key');
-                              // console.log(eventSportsmen.sportsmen[index]?.pivot.condition.wind[attemptIndex]?.value, 'asd');
-
-
-                              return key?.key !== 'resultAfterThreeAttempts' && <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
-                                {shouldShowWindField && <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ''} {sortedSportsmen[index]?.pivot.condition.wind[attemptIndex + 1]?.value}</p>}
-                                <p>{key?.key === 'resultAfterThreeAttempts' ? '' : ` `}  {key?.key === 'resultAfterThreeAttempts' ? null : key.value.value}</p>
-                              </TableCell>
-                            })
+                          {isSpecialSportTypeWithPoints &&
+                            sortedSportsmen.length > 0 &&
+                            sortedSportsmen[0]?.pivot?.attempts?.[0]?.height?.map((item: any, index: number) => (
+                              <TableCell align="center" key={index}>{item.height}</TableCell>
+                            ))
                           }
 
-                          {isSpecialSportTypeWithPoints && (() => {
-
-                            const maxAttempts = Math.max(
-                              ...sortedSportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
-                            );
-
-                            return Array.from({ length: maxAttempts }).map((_, attemptIndex) => (
-                              <TableCell align="center" key={`attempt-header-${attemptIndex}`}>
-                                {['point'].map((key) => {
-                                  const value = sortedSportsmen[index]?.pivot?.attempts?.[attemptIndex]?.[key];
-
-                                  return (
-                                    <p key={key}>
-                                      {value ?? '-'}
-                                    </p>
-                                  );
-                                })}
-                              </TableCell>
-                            ));
-                          })()}
-
-
-                          <TableCell>{sportsman.pivot.result ? sportsman.pivot.result : '-'}</TableCell>
-                          <TableCell>{sportsman.pivot.position ? sportsman.pivot.position : '-'}</TableCell>
-
-                          {currentUser?.name === 'Admin' && <TableCell>Редактировать</TableCell>}
+                          <TableCell>Результат</TableCell>
+                          <TableCell>Занятое место</TableCell>
+                          {currentUser?.name === 'Admin' && <TableCell>Действия</TableCell>}
                         </TableRow>
+                      </TableHead>
 
-                        {/* {shouldShowWindField && (
-                          <TableRow>
-                            <TableCell colSpan={5} />
+                      <TableBody>
+                        {sortedSportsmen.map((sportsman: any, index: number) => (
+                          <React.Fragment key={`row-${index}`}>
+                            <TableRow>
+                              <TableCell>{index + 1}</TableCell>
+                              <TableCell>{`${sportsman.family_name} ${sportsman.name}`}</TableCell>
+                              <TableCell>{sportsman.birth}</TableCell>
+                              <TableCell align='center'>
+                                {sportsman.address.split("–").pop().trim()}
+                              </TableCell>
+                              <TableCell align="center">{sportsman.chest_number}</TableCell>
 
-                            <TableCell colSpan={2 + (currentUser?.name === 'Admin' ? 1 : 0)} />
-                          </TableRow>
-                        )} */}
-                      </React.Fragment>
-                    );
-                  })}
-                </TableBody>
+                              {/* Попытки для обычного типа */}
+                              {isSpecialSportType && sortedSportsmen.length > 0 &&
+                                sportsman?.pivot?.attempts?.map((key: any, attemptIndex: number) => (
+                                  key?.key !== 'resultAfterThreeAttempts' && (
+                                    <TableCell align="center" key={`attempt-${attemptIndex}`}>
+                                      {shouldShowWindField && (
+                                        <p>
+                                          {sportsman?.pivot?.condition?.wind?.[attemptIndex + 1]?.value || ''}
+                                        </p>
+                                      )}
+                                      <p>{key?.value?.value}</p>
+                                    </TableCell>
+                                  )
+                                ))
+                              }
 
-              </Table>
-            </TableContainer>
-          </Paper>
-        </TabPanel>}
+                              {/* Попытки для типа с поинтами */}
+                              {isSpecialSportTypeWithPoints && (() => {
+                                const maxAttempts = Math.max(
+                                  ...sortedSportsmen.map((s: any) => s.pivot?.attempts?.length || 0)
+                                );
+                                return Array.from({ length: maxAttempts }).map((_, attemptIndex) => (
+                                  <TableCell align="center" key={`point-${attemptIndex}`}>
+                                    {sportsman?.pivot?.attempts?.[attemptIndex]?.point ?? '-'}
+                                  </TableCell>
+                                ));
+                              })()}
+
+                              <TableCell>{sportsman.pivot.result || '-'}</TableCell>
+                              <TableCell>{sportsman.pivot.position || '-'}</TableCell>
+
+
+                            </TableRow>
+                          </React.Fragment>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              );
+            })}
+          </TabPanel>
+        )}
       </TabContext>
     </Box>
   )
