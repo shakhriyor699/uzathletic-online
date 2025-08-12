@@ -1,4 +1,5 @@
 import { getAllEventProcedures } from '@/app/actions/getAllEventProcedures'
+import { getAllEventRegistrations } from '@/app/actions/getAllEventRegistration'
 import { getAllSportTypes } from '@/app/actions/getAllSportTypes'
 import { getUsers } from '@/app/actions/getAllUsers'
 import { getCityByCountries } from '@/app/actions/getCityByCountry'

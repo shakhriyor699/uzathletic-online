@@ -126,6 +126,7 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
                                 <TableRow>
                                   <TableCell>Время</TableCell>
                                   <TableCell>Событие</TableCell>
+                                  <TableCell>Стадия</TableCell>
                                   <TableCell></TableCell>
                                   <TableCell></TableCell>
                                 </TableRow>
@@ -133,6 +134,8 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
                               <TableBody>
                                 {
                                   day.events.map((event) => {
+                                    console.log(event, 'event');
+                                    
                                     const isOpen = openRows[event.id] || false;
                                     return (
                                       <>
@@ -150,6 +153,9 @@ const EventRegistration: FC<EventRegistrationProps> = ({ event, days }) => {
                                                   event.sport_types.length === 5 ? 'Pentathlon' :
                                                     event.name?.ru ?? ''
                                           ) : event.name?.ru ?? ''}
+                                          </TableCell>
+                                          <TableCell>
+                                            {/* {event.stage} */}
                                           </TableCell>
                                           <TableCell>
                                             {event.type === 'multievent' && (

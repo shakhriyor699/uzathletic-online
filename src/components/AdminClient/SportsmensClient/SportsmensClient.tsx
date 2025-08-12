@@ -37,8 +37,11 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
   const { handleOpen } = useSportsmenModal()
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [page, setPage] = React.useState(0);
+  // const [totalCount, setTotalCount] = React.useState(
+  //   sportsmens.filter((item) => item.status !== false).length
+  // );
   const [totalCount, setTotalCount] = React.useState(
-    sportsmens.filter((item) => item.status !== false).length
+    totalPage
   );
   const [data, setData] = React.useState<ISportsman[]>(sportsmens)
   console.log(data, 'data');
@@ -70,7 +73,7 @@ const SportsmensClient: FC<SportsmentsClientProps> = ({
     const filtered = res.data.filter((item: ISportsman) => item.status !== false);
     setData(res.data)
     setFilteredData(res.data.filter((item: any) => item.status !== false));
-    setTotalCount(filtered.length);
+    setTotalCount(res.total);
   }
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
