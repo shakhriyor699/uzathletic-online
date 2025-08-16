@@ -315,7 +315,9 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
       console.log(data, 'asdasd');
 
 
-      const sportsman = eventSportsmen.sportsmen.find((s: any) => s.id === id)
+      // const sportsman = eventSportsmen.sportsmen.find((s: any) => s.id === id)
+      const allSportsmen = Object.values(eventSportsmen?.sportsmen || {}).flat()
+      const sportsman = allSportsmen.find((s: any) => s.id === id)
       if (sportsman) {
 
         const attemptValues: any = {}

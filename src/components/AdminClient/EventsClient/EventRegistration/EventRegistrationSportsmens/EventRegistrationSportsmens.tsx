@@ -1013,7 +1013,9 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
   const handleSubmitWithId = (id: number) => {
     handleSubmit((data) => {
-      const sportsman = eventSportsmen.sportsmen.find((s: any) => s.id === id)
+      // const sportsman = eventSportsmen.sportsmen.find((s: any) => s.id === id)
+      const allSportsmen = Object.values(eventSportsmen?.sportsmen || {}).flat()
+      const sportsman = allSportsmen.find((s: any) => s.id === id)
       if (sportsman) {
         onSubmitSportsmans(
           {
@@ -1025,6 +1027,8 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
           id,
         )
       }
+      console.log(sportsman, 'event');
+
     })()
   }
 
