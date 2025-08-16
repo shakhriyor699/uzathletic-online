@@ -103,11 +103,22 @@ const UserEventRegSportsmen: FC<UserEventRegSportsmenProps> = ({
   // }, [startList])
   // console.log(startListSpostsmen, 'dataWithState');
 
-  const sortedSportsmen = [...eventSportsmen?.sportsmen].sort((a, b) => {
-    const posA = isNaN(Number(a.pivot.position)) ? Infinity : Number(a.pivot.position);
-    const posB = isNaN(Number(b.pivot.position)) ? Infinity : Number(b.pivot.position);
-    return posA - posB;
-  });
+  // const sortedSportsmen = [...eventSportsmen?.sportsmen].sort((a, b) => {
+  //   const posA = isNaN(Number(a.pivot.position)) ? Infinity : Number(a.pivot.position);
+  //   const posB = isNaN(Number(b.pivot.position)) ? Infinity : Number(b.pivot.position);
+  //   return posA - posB;
+  // });
+
+  const sortedGroups = (Object.entries(eventSportsmen?.sportsmen || {}) as [string, any[]][])
+    .map(([groupKey, sportsmen]) => {
+      const sortedSportsmen = [...sportsmen].sort((a, b) => {
+        const posA = isNaN(Number(a.pivot.position)) ? Infinity : Number(a.pivot.position);
+        const posB = isNaN(Number(b.pivot.position)) ? Infinity : Number(b.pivot.position);
+        return posA - posB;
+      });
+
+      return { groupKey, sportsmen: sortedSportsmen };
+    });
 
   const defaultValues = useMemo(() => ({
     position: {},
