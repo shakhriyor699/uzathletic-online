@@ -1155,15 +1155,25 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
 
 
   const downloadTxt = () => {
-    const rows: any = sortedGroups.map((group) => {
-      return group.sportsmen.map((athlete: any) => {
-        const discipline = athlete.sportsmen_disciplines?.find(
-          (d: any) => d.event_registration_id === eventRegistration.id
-        );
-        const sb = discipline?.sb ?? '';
-        return `A,${athlete.family_name},${athlete.name},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(/ *[-–] */).pop()?.trim()},${eventSportsmen.sport_type.sport_type_number},${sb},M\n`
-      })
-    }).flat();
+    // const rows: any = sortedGroups.map((group) => {
+    //   return group.sportsmen.map((athlete: any) => {
+    //     const discipline = athlete.sportsmen_disciplines?.find(
+    //       (d: any) => d.event_registration_id === eventRegistration.id
+    //     );
+    //     const sb = discipline?.sb ?? '';
+    //     return `A,${athlete.family_name},${athlete.name},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(/ *[-–] */).pop()?.trim()},${eventSportsmen.sport_type.sport_type_number},${sb},M\n`
+    //   })
+    // }).flat();
+    // const blob = new Blob(rows, { type: "text/plain;charset=utf-8" });
+    // saveAs(blob, "Athletes.txt");
+
+    const rows: any = eventSportsmenOld.sportsmen.map((athlete: any) => {
+      const discipline = athlete.sportsmen_disciplines?.find(
+        (d: any) => d.event_registration_id === eventRegistration.id
+      );
+      const sb = discipline?.sb ?? '';
+      return `A,${athlete.family_name},${athlete.name},${athlete.gender_id === 1 ? 'M' : 'F'},${athlete.address.split(/ *[-–] */).pop()?.trim()},${eventSportsmen.sport_type.sport_type_number},${sb},M\n`
+    })
     const blob = new Blob(rows, { type: "text/plain;charset=utf-8" });
     saveAs(blob, "Athletes.txt");
   };
