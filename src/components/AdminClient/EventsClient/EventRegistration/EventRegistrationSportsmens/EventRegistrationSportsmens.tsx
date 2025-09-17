@@ -832,6 +832,8 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
   //     saveAs(blob, "AthletesResults.docx");
   //   });
   // };
+  console.log(eventRegistration, 'asdasdasd');
+  
 
 
   const downLoadResultDoc = (sortedSportsmen: any[]) => {
@@ -1045,8 +1047,8 @@ const EventRegistrationSportsmens: FC<EventRegistrationSportsmens> = ({
             spacing: { after: 300 },
           }),
           new Paragraph({
-            children: [new TextRun({ text: ` ${eventRegistration.event_procedures[0].name.ru}`, bold: true, size: 28 })],
-            spacing: { after: 300 },
+            // children: [new TextRun({ text: ` ${eventRegistration.event_procedures[0].name.ru}`, bold: true, size: 28 })],
+            // spacing: { after: 300 },
           }),
           new Paragraph({
             children: [new TextRun({ text: `Дата проведения: ${eventRegistration.start_time}`, size: 20 })],
